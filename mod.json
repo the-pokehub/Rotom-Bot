@@ -1,0 +1,25 @@
+{
+    "current_league": "Pok\u00e9hub League II",
+    "start": "yes",
+    "prefix": ".",
+
+    "gen6_badges": {
+        "scythe": "<:scythe:806712233161261056>",
+        "lol": "<:lol:807134009897123841>",
+        "heat": "<:heat:807147475651002408>",
+        "knuckle": "<:knuckle:807226151805517845>",
+        "venom": "<:venom:807630518040526848>",
+        "earthquake": "<:earthquake:809758051237101638>",
+        "beak": "<:beak:809984418684993536>"
+    },
+    
+    "gen7_badges": {
+        "adamant": "<:adamant:807077113878282240>",
+        "frost": "<:frost:807085902563639327>",
+        "volcano": "<:volcano:807147475856130078>",
+        "dazzling": "<:dazzling:807225198016725053>",
+        "intellect": "<:intellect:807588562315771934>",
+        "ebony": "<:ebony:809796202861559818>",
+        "mystic": "<:mystic:809984418529542144>"
+    }
+}
