@@ -6,7 +6,14 @@ import asyncio
 with open("mod.json", "r") as mod_data:
     save = json.load(mod_data)
 
-prefix = str(save["prefix"])
+
+def server_prefix(msg):
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+        s_prefix = prefixes[str(msg.guild.id)]
+
+    return s_prefix
+
 
 current_title = str(save["current_league"])
 

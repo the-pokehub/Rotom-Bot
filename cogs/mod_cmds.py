@@ -4,11 +4,6 @@ import json
 import os
 import asyncio
 
-with open("mod.json", "r") as mod_data:
-    save = json.load(mod_data)
-
-current_prefix = str(save["prefix"])
-
 
 class Mod(commands.Cog):
     def __init__(self, client):
@@ -172,12 +167,6 @@ class Mod(commands.Cog):
     async def history(self, ctx, member: discord.Member):
         async for msg in member.history(limit=1):
             await ctx.send(msg.content)
-
-    @commands.command()
-    @commands.has_permissions(manage_guild=True)
-    async def prefix(self, ctx, new_prefix):
-
-        global current_prefix
 
 
 def setup(client):

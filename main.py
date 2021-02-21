@@ -5,23 +5,48 @@ import keep_alive
 import json
 from itertools import cycle
 
+
 with open("mod.json", "r") as mod_data:
     save = json.load(mod_data)
 
-prefix = str(save["prefix"])
+
+def get_prefix(client, message):
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+
+    return prefixes[str(message.guild.id)]
+
+
+prefix = get_prefix
 
 current_title = str(save["current_league"])
 intents = discord.Intents.all()
 
 presence = cycle([
-    discord.Activity(type=discord.ActivityType.listening, name=".help | .h"),
+    discord.Activity(type=discord.ActivityType.listening, name=".help"),
     discord.Activity(type=discord.ActivityType.watching, name="Citra Pokéhub"),
     discord.Activity(type=discord.ActivityType.playing, name=current_title)
 ])
 
-client = commands.Bot(command_prefix=prefix,
-                      intents=intents,
-                      case_insensitive=True)
+client = commands.Bot(
+    command_prefix=prefix, intents=intents, case_insensitive=True)
+
+
+@client.event
+async def on_ready():
+    change_presence.start()
+    json_entry.start()
+
+    print(f"Bot is Ready.\nLogged in as {client.user.name}\n---------------------")
+
+    client.remove_command("help")
+
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            client.load_extension(f"cogs.{filename[:-3]}")
+
+    version = discord.__version__.replace(" ", "")
+    print("discord.py Version: v" + version)
 
 
 @client.event
@@ -40,7 +65,7 @@ async def on_message(message):
     #     await message.add_reaction(emoji1)
     #     await message.add_reaction(emoji2)
 
-    # if message.channel.name == "📝challengers-registration":
+    # if message.channel.name == "📝registration":
     #     channel = message.channel
     #     await channel.purge(limit=1)
 
@@ -48,23 +73,39 @@ async def on_message(message):
 
 
 @client.event
-async def on_ready():
+async def on_guild_join(guild):
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
 
-    print(
-        f"Bot is Ready.\nLogged in as {client.user.name}\n---------------------"
-    )
+    prefixes[str(guild.id)] = "."
 
-    version = discord.__version__.replace(" ", "")
-    print("discord.py Version: v" + version)
+    with open("prefixes.json", "w") as f:
+        json.dump(prefixes, f, indent=4)
 
-    client.remove_command("help")
 
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
-            client.load_extension(f"cogs.{filename[:-3]}")
+@client.event
+async def on_guild_leave(guild):
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
 
-    change_presence.start()
-    json_entry.start()
+    prefixes.pop(str(guild.id))
+
+    with open("prefixes.json", "w") as f:
+        json.dump(prefixes, f, indent=4)
+
+
+@client.command()
+@commands.has_permissions(manage_guild=True)
+async def change_prefix(ctx, new_prefix):
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+
+    prefixes[(str(ctx.guild.id))] = new_prefix
+
+    with open("prefixes.json", "w") as f:
+        json.dump(prefixes, f, indent=4)
+
+    await ctx.send(f"Server Prefix has been change to {new_prefix}")
 
 
 @client.event
@@ -76,11 +117,8 @@ async def on_command_error(ctx, error):
 
 
 @client.command()
+@commands.is_owner()
 async def reload(ctx):
-    if ctx.author.id != 549415697726439434:
-        await ctx.send(f"{ctx.author.mention} you cannot use this.")
-        return
-
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
             client.unload_extension(f"cogs.{filename[:-3]}")

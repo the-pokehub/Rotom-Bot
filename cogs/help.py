@@ -2,10 +2,13 @@ import discord
 from discord.ext import commands
 import json
 
-with open("mod.json", "r") as mod_data:
-    save = json.load(mod_data)
 
-prefix = str(save["prefix"])
+def server_prefix(msg):
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+        s_prefix = prefixes[str(msg.guild.id)]
+
+    return s_prefix
 
 
 class Help(commands.Cog):
@@ -16,6 +19,8 @@ class Help(commands.Cog):
                     case_insensitive=True,
                     aliases=["h"])
     async def help(self, ctx):
+
+        prefix = server_prefix(ctx)
 
         if ctx.channel.name == "📝registration":
             return
@@ -136,6 +141,8 @@ class Help(commands.Cog):
     @help.command(aliases=["r", "registration"])
     async def register(self, ctx):
 
+        prefix = server_prefix(ctx)
+
         if ctx.channel.name == "📝registration":
             return
 
@@ -164,6 +171,8 @@ class Help(commands.Cog):
 
     @help.command(aliases=["p", "summary"])
     async def profile(self, ctx):
+
+        prefix = server_prefix(ctx)
 
         if ctx.channel.name == "📝registration":
             return
@@ -213,6 +222,8 @@ class Help(commands.Cog):
     @help.command(aliases=["as"])
     async def add_streak(self, ctx):
 
+        prefix = server_prefix(ctx)
+
         if ctx.channel.name == "📝registration":
             return
 
@@ -241,6 +252,8 @@ class Help(commands.Cog):
 
     @help.command(aliases=["ab"])
     async def add_badge(self, ctx):
+
+        prefix = server_prefix(ctx)
 
         if ctx.channel.name == "📝registration":
             return
@@ -271,6 +284,8 @@ class Help(commands.Cog):
     @help.command(aliases=["s", "sp", "swap_pokemon", "swap_pool", "change"])
     async def swap(self, ctx):
 
+        prefix = server_prefix(ctx)
+
         if ctx.channel.name == "📝registration":
             return
 
@@ -300,6 +315,8 @@ class Help(commands.Cog):
 
     @help.command(aliases=["pl", "pokemon"])
     async def pool(self, ctx):
+
+        prefix = server_prefix(ctx)
 
         if ctx.channel.name == "📝registration":
             return
@@ -342,6 +359,8 @@ class Help(commands.Cog):
     @commands.has_any_role("admin", "moderator")
     async def moderator(self, ctx):
 
+        prefix = server_prefix(ctx)
+
         if ctx.channel.name == "📝registration":
             return
 
@@ -366,6 +385,8 @@ class Help(commands.Cog):
     @help.command(aliases=["hof"])
     async def hall_of_fame(self, ctx):
 
+        prefix = server_prefix(ctx)
+
         if ctx.channel.name == "📝registration":
             return
 
@@ -384,6 +405,8 @@ class Help(commands.Cog):
 
     @help.command(aliases=["champ", "nc"])
     async def champion(self, ctx):
+
+        prefix = server_prefix(ctx)
 
         em = discord.Embed(
             title="Champion",
@@ -413,6 +436,8 @@ class Help(commands.Cog):
     @help.command(aliases=["res"])
     async def reset_streak(self, ctx):
 
+        prefix = server_prefix(ctx)
+
         em = discord.Embed(
             title="Reset_streak",
             description=
@@ -441,6 +466,8 @@ class Help(commands.Cog):
     @help.command(aliases=["epl", "epk"])
     async def elite_pool(self, ctx):
 
+        prefix = server_prefix(ctx)
+
         em = discord.Embed(title="Elite_pool",
                            description="See the elite pool if available",
                            colour=discord.Colour.green())
@@ -462,6 +489,8 @@ class Help(commands.Cog):
 
     @help.command(aliases=["et", "ep"])
     async def elite_team(self, ctx):
+
+        prefix = server_prefix(ctx)
 
         em = discord.Embed(title="Elite_team",
                            description="Submit the elite team of a member.",
@@ -488,15 +517,15 @@ class Help(commands.Cog):
 
         await ctx.send(embed=em)
 
-
-    
     @help.command(aliases=["fun"])
     async def game(self, ctx):
 
+        prefix = server_prefix(ctx)
+
         em = discord.Embed(title="Game", description="", colour=discord.Colour.green())
         em.set_thumbnail(url=self.client.user.avatar_url)
-        em.add_field(name="GG", value="A basic guessing text based game.", inline=False)
-        em.add_field(name="tic-tac-toe", value="Play Tic-Tac-Toe with another member. Aliases: `ttt`", inline=False)
+        em.add_field(name=f"{prefix}GG", value="A basic guessing text based game.", inline=False)
+        em.add_field(name=f"{prefix}tic-tac-toe", value=f"Play Tic-Tac-Toe with another member. Aliases: `{prefix}ttt`", inline=False)
 
         await ctx.send(embed=em)
 
