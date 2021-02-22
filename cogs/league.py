@@ -37,6 +37,8 @@ class League(commands.Cog):
     @commands.has_any_role("gym-leaders", "admin", "moderator")
     async def add_badge(self, ctx, generation, member: discord.Member, badge):
 
+        prefix = server_prefix(ctx)
+
         obtained = []
         valid_badges = []
         empty_list = []
@@ -163,6 +165,8 @@ class League(commands.Cog):
     @commands.has_any_role("elites", "admin", "moderator")
     async def add_streak(self, ctx, generation, *, member: discord.Member):
 
+        prefix = server_prefix(ctx)
+
         if ctx.channel.name == "📝registration":
             return
 
@@ -257,6 +261,8 @@ class League(commands.Cog):
 
     @commands.command(aliases=["p", "summary"])
     async def profile(self, ctx, generation, *, member: discord.Member = None):
+
+        prefix = server_prefix(ctx)
 
         if ctx.channel.name == "📝registration":
             return
@@ -545,6 +551,8 @@ class League(commands.Cog):
     @commands.has_any_role("champion", "admin", "moderator")
     async def champion(self, ctx, generation, member: discord.Member):
 
+        prefix = server_prefix(ctx)
+
         if generation == "6":
             data_file = "gen6.json"
             prof_file = "league_prof6.json"
@@ -622,6 +630,8 @@ class League(commands.Cog):
     @commands.command(aliases=["res"])
     @commands.has_any_role("elites", "champion", "admin", "moderator")
     async def reset_streak(self, ctx, generation, member: discord.Member):
+
+        prefix = server_prefix(ctx)
 
         if ctx.channel.name == "📝registration":
             return
@@ -730,6 +740,8 @@ class League(commands.Cog):
     @commands.command(aliases=["et", "ep"])
     @commands.has_any_role("challengers", "elites", "admin", "moderator")
     async def elite_team(self, ctx, generation, member: discord.Member, *, team):
+
+        prefix = server_prefix(ctx)
 
         if generation == "6":
             data_file = "gen6.json"
@@ -866,6 +878,8 @@ class League(commands.Cog):
     @commands.command(aliases=["epl", "epk"])
     async def elite_pool(self, ctx, generation, member: discord.Member = None):
 
+        prefix = server_prefix(ctx)
+
         if member is None:
             member = ctx.author
 
@@ -950,6 +964,8 @@ class League(commands.Cog):
 
     @commands.command(aliases=["r", "registration"])
     async def register(self, ctx, generation, *, raw_input):
+
+        prefix = server_prefix(ctx)
 
         if ctx.channel.name == "📝challengers-registration":
             pass
@@ -1238,6 +1254,8 @@ class League(commands.Cog):
     @commands.command(aliases=["s", "sp", "swap_pokemon", "swap_pool", "change"])
     async def swap(self, ctx, generation, prev_mon, new_mon):
 
+        prefix = server_prefix(ctx)
+
         if ctx.channel.name == "📝challengers-registration":
             pass
         else:
@@ -1335,6 +1353,8 @@ class League(commands.Cog):
     @commands.command(aliases=["pl", "pokemon"])
     async def pool(self, ctx, generation, *, member: discord.Member = None):
 
+        prefix = server_prefix(ctx)
+
         if ctx.channel.name == "📝registration":
             return
 
@@ -1376,6 +1396,8 @@ class League(commands.Cog):
 
     @commands.command()
     async def check(self, ctx, generation, *, mon):
+
+        prefix = server_prefix(ctx)
 
         valid = False
 

@@ -32,11 +32,11 @@
         ],
         "Elite_Pool": [
             "Landorus-therian",
-            "Tapu-koko",
-            "Medicham",
+            "Hawlucha",
             "Magearna",
-            "Greninja",
-            "Hawlucha"
+            "Medicham",
+            "Tapu-koko",
+            "Greninja"
         ]
     },
     "154248794215546880": {
@@ -362,9 +362,7 @@
             "<:intellect:807588562315771934>",
             "<:dazzling:807225198016725053>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
@@ -684,10 +682,19 @@
         "Badges": [
             "<:dazzling:807225198016725053>",
             "<:frost:807085902563639327>",
-            "<:adamant:807077113878282240>"
+            "<:adamant:807077113878282240>",
+            "<:ebony:809796202861559818>"
         ],
         "Elite_Streak": [],
         "Reset_Token": 1,
-        "Achievements": []
+        "Achievements": [],
+        "Elite_Pool": [
+            "Scizor",
+            "Rotom-wash",
+            "Ferrothorn",
+            "Swampert",
+            "Greninja",
+            "Pelipper"
+        ]
     }
 }

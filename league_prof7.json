@@ -61,7 +61,9 @@
         },
         "154248794215546880": {
             "Type": "Electric",
-            "Badges": [],
+            "Badges": [
+                "<:ebony:809796202861559818>"
+            ],
             "Achievements": []
         },
         "691982761874948096": {
@@ -73,7 +75,7 @@
     "champion": {
         "693412587290886194": {
             "Season": "Pok\u00e9hub League II",
-            "Saved": 2,
+            "Saved": 3,
             "Image": "https://cdn.discordapp.com/attachments/756886222520975440/809810046531141712/GEN7_HARI2.png",
             "Achievements": [
                 "Pok\u00e9hub League II"
