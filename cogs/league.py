@@ -384,8 +384,12 @@ class League(commands.Cog):
                 with open(prof_file, "r") as bot_data:
                     data = json.load(bot_data)
 
-                embed.set_thumbnail(url=member.avatar_url)
+                if {data['gym-leaders'][str(member.id)]['Badge']}:
+                    pass
+
                 name = str({data['gym-leaders'][str(member.id)]['Badge']})
+
+                embed.set_thumbnail(url=member.avatar_url)
 
                 embed.add_field(name="**Status:**",
                                 value="<@&761488015829762048>",
@@ -437,9 +441,31 @@ class League(commands.Cog):
                 await ctx.send(embed=embed)
 
             except KeyError:
-                await pf()
+                if role2 in member.roles:
+                    try:
+                        with open(prof_file, "r") as bot_data:
+                            data = json.load(bot_data)
 
-        elif role2 in member.roles:  # elites
+                        if data['gym-leaders'][str(member.id)]:
+                            pass
+
+                    except KeyError:
+                        await pf()
+
+                elif role3 in member.roles:
+                    try:
+                        with open(prof_file, "r") as bot_data:
+                            data = json.load(bot_data)
+
+                        if data['champion'][str(member.id)]:
+                            pass
+
+                    except KeyError:
+                        await pf()
+                else:
+                    await pf()
+
+        if role2 in member.roles:  # elites
 
             try:
 
@@ -494,9 +520,31 @@ class League(commands.Cog):
                 await ctx.send(embed=embed)
 
             except KeyError:
-                await pf()
+                if role1 in member.roles:
+                    try:
+                        with open(prof_file, "r") as bot_data:
+                            data = json.load(bot_data)
 
-        elif role3 in member.roles:  # champion
+                        if data['elites'][str(member.id)]:
+                            pass
+
+                    except KeyError:
+                        await pf()
+
+                elif role3 in member.roles:
+                    try:
+                        with open(prof_file, "r") as bot_data:
+                            data = json.load(bot_data)
+
+                        if data['champion'][str(member.id)]:
+                            pass
+
+                    except KeyError:
+                        await pf()
+                else:
+                    await pf()
+
+        if role3 in member.roles:  # champion
 
             try:
 
@@ -568,6 +616,7 @@ class League(commands.Cog):
         past_titles = []
         channel = self.client.get_channel(802027595302174730)
         prev_champ = ""
+        empty_list = []
 
         with open(prof_file, "r") as champ_data:
             data1 = json.load(champ_data)
@@ -576,6 +625,14 @@ class League(commands.Cog):
 
         for mem in json_champ:
             prev_champ = await ctx.guild.fetch_member(int(mem))
+
+        with open(data_file, "r") as bot_data:
+            data2 = json.load(bot_data)
+
+        data2[str(prev_champ.id)]["Elite_Streak"] = empty_list
+
+        with open(data_file, "w") as bot_data:
+            json.dump(data2, bot_data, indent=4)
 
         json_champ.pop(str(prev_champ.id))
 
@@ -588,7 +645,7 @@ class League(commands.Cog):
 
         with open(prof_file, "w") as champ_data:
             json.dump(data1, champ_data, indent=4)
-
+        
         with open(data_file, "r") as bot_data:
             data2 = json.load(bot_data)
 

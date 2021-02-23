@@ -129,7 +129,8 @@
             "Kyurem-black"
         ],
         "Badges": [
-            "<:dazzling:807225198016725053>"
+            "<:dazzling:807225198016725053>",
+            "<:adamant:807077113878282240>"
         ],
         "Elite_Streak": [],
         "Reset_Token": 1,
@@ -164,7 +165,9 @@
             "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
-        "Achievements": [],
+        "Achievements": [
+            "Pok\u00e9hub League II"
+        ],
         "Elite_Pool": [
             "Necrozma",
             "Marowak-alolan",
@@ -328,7 +331,8 @@
         "Elite_Streak": [
             "<:pokeball:790056814216740874>",
             "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>"
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
         "Achievements": [],
@@ -366,10 +370,10 @@
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
-            "Salamence",
             "Landorus-therian",
-            "Heatran",
+            "Salamence",
             "Lopunny",
+            "Ditto",
             "Xurkitree",
             "Tangrowth"
         ]
@@ -533,12 +537,7 @@
             "<:dazzling:807225198016725053>",
             "<:volcano:807147475856130078>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [
             "Pok\u00e9hub League II"
