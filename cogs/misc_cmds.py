@@ -7,7 +7,7 @@ class Misc(commands.Cog):
         self.client = client
 
     @commands.command()
-    async def av(self, ctx, member: discord.Member = None):
+    async def av(self, ctx, *, member: discord.Member = None):
 
         if member is None:
             member = ctx.author

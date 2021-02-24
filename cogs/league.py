@@ -2,6 +2,7 @@ import json
 import discord
 from discord.ext import commands
 import asyncio
+import os
 
 with open("mod.json", "r") as mod_data:
     save = json.load(mod_data)
@@ -378,6 +379,7 @@ class League(commands.Cog):
         role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
         role2 = discord.utils.get(ctx.guild.roles, name="elites")
         role3 = discord.utils.get(ctx.guild.roles, name="champion")
+        role4 = discord.utils.get(ctx.guild.roles, name="challengers")
 
         if role1 in member.roles:  # gym-leaders
             try:
@@ -499,7 +501,7 @@ class League(commands.Cog):
                                     value="**Obtained:**",
                                     inline=False)
 
-                    for badges in data[str(member.id)]["Badges"]:
+                    for badges in data['elites'][str(member.id)]["Badges"]:
                         badge_name = badges.split(":")
                         embed.add_field(
                             name=f"{badge_name[1].capitalize()} Badge",
@@ -592,8 +594,18 @@ class League(commands.Cog):
             except KeyError:
                 await pf()
 
-        else:  # else all
-            await pf()
+        if role4 in member.roles:  # else all
+            if role1 in member.roles:
+                pass
+
+            elif role2 in member.roles:
+                pass
+
+            elif role3 in member.roles:
+                pass
+
+            else:
+                await pf()
 
     @commands.command(aliases=["champ", "nc"])
     @commands.has_any_role("champion", "admin", "moderator")
@@ -645,7 +657,7 @@ class League(commands.Cog):
 
         with open(prof_file, "w") as champ_data:
             json.dump(data1, champ_data, indent=4)
-        
+
         with open(data_file, "r") as bot_data:
             data2 = json.load(bot_data)
 
@@ -1507,6 +1519,78 @@ class League(commands.Cog):
                              inline=True)
 
         await ctx.send(embed=em)
+
+    @commands.command(aliases=["sc"])
+    @commands.has_any_role("moderator", "admin")
+    async def swap_close(self, ctx):
+
+        with open("mod.json", "r") as bot_data:
+            data = json.load(bot_data)
+
+        data["start"] = "yes"
+        with open("mod.json", "w") as bot_data:
+            json.dump(data, bot_data, indent=4)
+
+        await ctx.send("Pokémon Swap has been closed now")
+
+    @commands.command(aliases=["rl"])
+    @commands.has_any_role("moderator", "admin")
+    async def restart_league(self, ctx, *, title):
+
+        with open("gen6.json", "r") as bot_data:
+            data = json.load(bot_data)
+
+        for items in data:
+            achievements = data[items]["Achievements"]
+            data[items] = {
+                "Registered": list(),
+                "Badges": list(),
+                "Elite_Streak": list(),
+                "Reset_Token": 1,
+                "Achievements": list()
+            }
+            with open("gen6.json", "w") as bot_data:
+                json.dump(data, bot_data, indent=4)
+            data[items]["Achievements"] = achievements
+            with open("gen6.json", "w") as bot_data:
+                json.dump(data, bot_data, indent=4)
+
+        with open("gen7.json", "r") as bot_data:
+            data = json.load(bot_data)
+
+        for items in data:
+            achievements = data[items]["Achievements"]
+            data[items] = {
+                "Registered": list(),
+                "Badges": list(),
+                "Elite_Streak": list(),
+                "Reset_Token": 1,
+                "Achievements": list()
+            }
+            with open("gen7.json", "w") as bot_data:
+                json.dump(data, bot_data, indent=4)
+            data[items]["Achievements"] = achievements
+            with open("gen7.json", "w") as bot_data:
+                json.dump(data, bot_data, indent=4)
+
+        with open("mod.json", "r") as bot_data:
+            data = json.load(bot_data)
+
+        data["start"] = "no"
+
+        with open("mod.json", "w") as bot_data:
+            json.dump(data, bot_data, indent=4)
+
+        data["current_league"] = title
+        with open("mod.json", "w") as bot_data:
+            json.dump(data, bot_data, indent=4)
+
+        for filename in os.listdir("./cogs"):
+            if filename.endswith(".py"):
+                self.client.unload_extension(f"cogs.{filename[:-3]}")
+                self.client.load_extension(f"cogs.{filename[:-3]}")
+
+        await ctx.send("League data has been reseted.")
 
 
 def setup(client):

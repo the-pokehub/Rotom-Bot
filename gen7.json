@@ -39,44 +39,6 @@
             "Greninja"
         ]
     },
-    "154248794215546880": {
-        "Registered": [
-            "Greninja",
-            "Kartana",
-            "Charizard",
-            "Toxapex",
-            "Tapu-koko",
-            "Scizor",
-            "Landorus-therian",
-            "Tapu-fini",
-            "Excadrill",
-            "Reuniclus",
-            "Tyranitar",
-            "Tornadus-therian"
-        ],
-        "Badges": [
-            "<:dazzling:807225198016725053>",
-            "<:frost:807085902563639327>",
-            "<:intellect:807588562315771934>",
-            "<:adamant:807077113878282240>"
-        ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
-        "Reset_Token": 1,
-        "Achievements": [],
-        "Elite_Pool": [
-            "Tornadus-therian",
-            "Toxapex",
-            "Kartana",
-            "Tapu-koko",
-            "Excadrill",
-            "Tyranitar"
-        ]
-    },
     "581093280406700032": {
         "Registered": [
             "Tapu-koko",
@@ -184,7 +146,7 @@
         "Reset_Token": 1,
         "Achievements": []
     },
-    "768388281485623297": {
+    "813758321613996033": {
         "Registered": [
             "Landorus-therian",
             "Scizor",
@@ -502,7 +464,8 @@
         "Elite_Streak": [
             "<:pokeball:790056814216740874>",
             "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>"
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
         "Achievements": [],
@@ -543,12 +506,12 @@
             "Pok\u00e9hub League II"
         ],
         "Elite_Pool": [
-            "Tyranitar",
-            "Greninja",
+            "Muk-alolan",
             "Pangoro",
-            "Mandibuzz",
             "Hoopa-unbound",
-            "Muk-alolan"
+            "Mandibuzz",
+            "Tyranitar",
+            "Cacturne"
         ]
     },
     "745253335686316043": {
@@ -573,7 +536,9 @@
             "<:volcano:807147475856130078>",
             "<:intellect:807588562315771934>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>"
+        ],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
@@ -695,5 +660,58 @@
             "Greninja",
             "Pelipper"
         ]
+    },
+    "813992130019459134": {
+        "Registered": [
+            "Dragonite",
+            "Garchomp",
+            "Cloyster",
+            "Metagross",
+            "Charizard",
+            "Latios",
+            "Volcanion",
+            "Lucario",
+            "Hydreigon",
+            "Victini",
+            "Mimikyu",
+            "Serperior"
+        ],
+        "Badges": [
+            "<:frost:807085902563639327>",
+            "<:dazzling:807225198016725053>"
+        ],
+        "Elite_Streak": [],
+        "Reset_Token": 1,
+        "Achievements": []
+    },
+    "814034429797597214": {
+        "Registered": [
+            "Celesteela",
+            "Greninja",
+            "Tapu-lele",
+            "Landorus-therian",
+            "Charizard",
+            "Magearna",
+            "Tapu-fini",
+            "Scizor",
+            "Zapdos",
+            "Lopunny",
+            "Heatran",
+            "Serperior"
+        ],
+        "Badges": [
+            "<:intellect:807588562315771934>",
+            "<:frost:807085902563639327>",
+            "<:adamant:807077113878282240>",
+            "<:dazzling:807225198016725053>"
+        ],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>",
+            "<:greatball:792262525835018250>",
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
+        ],
+        "Reset_Token": 1,
+        "Achievements": []
     }
 }
