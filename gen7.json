@@ -28,7 +28,8 @@
         ],
         "Reset_Token": 1,
         "Achievements": [
-            "Pok\u00e9hub League 2020"
+            "Pok\u00e9hub League 2020",
+            "Pok\u00e9hub League II"
         ],
         "Elite_Pool": [
             "Landorus-therian",
@@ -120,12 +121,7 @@
             "<:frost:807085902563639327>",
             "<:intellect:807588562315771934>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [
             "Pok\u00e9hub League II"
@@ -328,7 +324,10 @@
             "<:intellect:807588562315771934>",
             "<:dazzling:807225198016725053>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>",
+            "<:greatball:792262525835018250>"
+        ],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
@@ -536,9 +535,7 @@
             "<:volcano:807147475856130078>",
             "<:intellect:807588562315771934>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
@@ -678,7 +675,8 @@
         ],
         "Badges": [
             "<:frost:807085902563639327>",
-            "<:dazzling:807225198016725053>"
+            "<:dazzling:807225198016725053>",
+            "<:ebony:809796202861559818>"
         ],
         "Elite_Streak": [],
         "Reset_Token": 1,

@@ -251,7 +251,7 @@ class League(commands.Cog):
                 if data1['elites'][str(member.id)]:
                     pass
 
-                await ctx.send("Gym-Leaders cannot challenge Elites")
+                await ctx.send("Elites cannot challenge Elites")
                 return
 
             except KeyError:
@@ -695,6 +695,7 @@ class League(commands.Cog):
         await channel.send(
             f"Congratulations {member.mention}!\nYou are the new champion of Generation {generation} until someone defeats you in a champion battle."
         )
+        await ctx.send(f"{prev_champ.mention}'s Elite streak has now been resetted.")
 
     @commands.command(aliases=["res"])
     @commands.has_any_role("elites", "champion", "admin", "moderator")
