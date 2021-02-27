@@ -20,12 +20,7 @@
             "<:adamant:807077113878282240>",
             "<:frost:807085902563639327>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [
             "Pok\u00e9hub League 2020",
@@ -123,7 +118,9 @@
             "<:intellect:807588562315771934>"
         ],
         "Elite_Streak": [
-            "<:pokeball:790056814216740874>"
+            "<:pokeball:790056814216740874>",
+            "<:greatball:792262525835018250>",
+            "<:ultraball:790056815652110386>"
         ],
         "Reset_Token": 1,
         "Achievements": [
@@ -251,14 +248,11 @@
             "<:intellect:807588562315771934>",
             "<:volcano:807147475856130078>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
-        "Achievements": [],
+        "Achievements": [
+            "Pok\u00e9hub League II"
+        ],
         "Elite_Pool": [
             "Greninja",
             "Tapu-lele",
@@ -296,7 +290,9 @@
             "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
-        "Achievements": [],
+        "Achievements": [
+            "Pok\u00e9hub League II"
+        ],
         "Elite_Pool": [
             "Xurkitree",
             "Crawdaunt",
@@ -683,15 +679,16 @@
             "<:adamant:807077113878282240>"
         ],
         "Elite_Streak": [
-            "<:pokeball:790056814216740874>"
+            "<:pokeball:790056814216740874>",
+            "<:greatball:792262525835018250>"
         ],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
             "Mimikyu",
-            "Metagross",
             "Charizard",
-            "Volcanion",
+            "Metagross",
+            "Garchomp",
             "Serperior",
             "Cloyster"
         ]
