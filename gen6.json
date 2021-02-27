@@ -149,7 +149,8 @@
             "<:scythe:806712233161261056>"
         ],
         "Elite_Streak": [
-            "<:pokeball:790056814216740874>"
+            "<:pokeball:790056814216740874>",
+            "<:greatball:792262525835018250>"
         ],
         "Reset_Token": 1,
         "Achievements": [],
@@ -336,7 +337,9 @@
             "<:venom:807630518040526848>",
             "<:scythe:806712233161261056>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>"
+        ],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
@@ -403,7 +406,9 @@
         ],
         "Badges": [
             "<:knuckle:807226151805517845>",
-            "<:lol:807134009897123841>"
+            "<:lol:807134009897123841>",
+            "<:scythe:806712233161261056>",
+            "<:earthquake:809758051237101638>"
         ],
         "Elite_Streak": [],
         "Reset_Token": 1,

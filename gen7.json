@@ -93,7 +93,8 @@
         ],
         "Badges": [
             "<:dazzling:807225198016725053>",
-            "<:adamant:807077113878282240>"
+            "<:adamant:807077113878282240>",
+            "<:frost:807085902563639327>"
         ],
         "Elite_Streak": [],
         "Reset_Token": 1,
@@ -121,7 +122,9 @@
             "<:frost:807085902563639327>",
             "<:intellect:807588562315771934>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>"
+        ],
         "Reset_Token": 1,
         "Achievements": [
             "Pok\u00e9hub League II"
@@ -676,11 +679,22 @@
         "Badges": [
             "<:frost:807085902563639327>",
             "<:dazzling:807225198016725053>",
-            "<:ebony:809796202861559818>"
+            "<:ebony:809796202861559818>",
+            "<:adamant:807077113878282240>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>"
+        ],
         "Reset_Token": 1,
-        "Achievements": []
+        "Achievements": [],
+        "Elite_Pool": [
+            "Mimikyu",
+            "Metagross",
+            "Charizard",
+            "Volcanion",
+            "Serperior",
+            "Cloyster"
+        ]
     },
     "814034429797597214": {
         "Registered": [

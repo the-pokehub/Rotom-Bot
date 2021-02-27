@@ -33,8 +33,7 @@ class Game(commands.Cog):
 
         em = discord.Embed(
             title="Choose your level of difficulty:",
-            description=
-            "The bot will randomly select any number between the highest and the lowest value. You have to guess it. Guessing wrong will provide you a hint weather to guess higher or lower than you guessed.",
+            description="The bot will randomly select any number between the highest and the lowest value. You have to guess it. Guessing wrong will provide you a hint weather to guess higher or lower than you guessed.",
             colour=discord.Colour.green())
 
         em.set_thumbnail(url=ctx.author.avatar_url)
@@ -123,8 +122,7 @@ class Game(commands.Cog):
                             break
                         else:
                             await ctx.send(
-                                "Well done! You guessed it right.\nYou guessed it correct in {} times..."
-                                .format(guesses))
+                                "Well done! You guessed it right.\nYou guessed it correct in {} times...".format(guesses))
 
                     else:
                         if guess < answer:
@@ -136,8 +134,7 @@ class Game(commands.Cog):
 
                 else:
                     await ctx.send(
-                        "Oops! that number is out of your range...\nIt must be between 1 and {}:"
-                        .format(highest))
+                        "Oops! that number is out of your range...\nIt must be between 1 and {}:".format(highest))
                     continue
 
             except ValueError:
@@ -148,7 +145,9 @@ class Game(commands.Cog):
                 return
 
     @commands.command(aliases=["tictactoe", "tic-tac-toe", "tic_tac_toe"])
-    async def ttt(self, ctx, p2: discord.Member):
+    async def ttt(self, ctx, player2: discord.Member):
+        
+        p2 = player2
 
         if p2.bot:
             await ctx.send("You cannot play with a Bot.")
@@ -168,8 +167,7 @@ class Game(commands.Cog):
         def check_winner(w_conditions, point):
             global over
             for condition in w_conditions:
-                if board[condition[0]] == point and board[condition[
-                        1]] == point and board[condition[2]] == point:
+                if board[condition[0]] == point and board[condition[1]] == point and board[condition[2]] == point:
                     over = True
 
         board = [
@@ -221,25 +219,29 @@ class Game(commands.Cog):
                                                        check=check,
                                                        timeout=60.0)
                     pos = place.content
-                    if pos.casefold() == "quit" or pos == "0" or pos.casefold(
-                    ) == "fortify":
+
+                    if pos.casefold() == "quit" or pos == "0" or pos.casefold() == "fortify":
                         await ctx.send(f"{turn.mention} fortified.")
                         if turn == p1:
                             await ctx.send(f"{p2.mention} wins...")
                         else:
                             await ctx.send(f"{p1.mention} wins...")
+
                     elif pos.isnumeric():
                         position = int(pos)
                         break
+
                     elif pos.casefold() in pos_dict:
-                        position = pos_dict[pos]
+                        position = pos_dict[pos.lower()]
                         break
+
                     else:
                         continue
+
                 except asyncio.TimeoutError:
                     await ctx.send("Response Timeout...")
                     if turn == p1:
-                            await ctx.send(f"{p2.mention} wins...")
+                        await ctx.send(f"{p2.mention} wins...")
                     else:
                         await ctx.send(f"{p1.mention} wins...")
                     return
