@@ -120,7 +120,8 @@
         "Elite_Streak": [
             "<:pokeball:790056814216740874>",
             "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>"
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
         "Achievements": [
@@ -248,18 +249,23 @@
             "<:intellect:807588562315771934>",
             "<:volcano:807147475856130078>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>",
+            "<:greatball:792262525835018250>",
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
+        ],
         "Reset_Token": 1,
         "Achievements": [
             "Pok\u00e9hub League II"
         ],
         "Elite_Pool": [
-            "Greninja",
-            "Tapu-lele",
             "Charizard",
-            "Kartana",
-            "Magearna",
-            "Hawlucha"
+            "Hawlucha",
+            "Ferrothorn",
+            "Tapu-lele",
+            "Landorus-therian",
+            "Magearna"
         ]
     },
     "605203786419535893": {
@@ -649,12 +655,12 @@
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
+            "Medicham",
             "Scizor",
-            "Rotom-wash",
-            "Ferrothorn",
+            "Tapu-koko",
             "Swampert",
-            "Greninja",
-            "Pelipper"
+            "Hawlucha",
+            "Ferrothorn"
         ]
     },
     "813992130019459134": {
