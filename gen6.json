@@ -149,7 +149,10 @@
             "<:scythe:806712233161261056>"
         ],
         "Elite_Streak": [
-            "<:pokeball:790056814216740874>"
+            "<:pokeball:790056814216740874>",
+            "<:greatball:792262525835018250>",
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
         "Achievements": [],
@@ -186,7 +189,8 @@
         "Elite_Streak": [
             "<:pokeball:790056814216740874>",
             "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>"
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
         "Achievements": [],
@@ -413,6 +417,13 @@
             "<:scythe:806712233161261056>",
             "<:earthquake:809758051237101638>"
         ],
+        "Elite_Streak": [],
+        "Reset_Token": 1,
+        "Achievements": []
+    },
+    "581093280406700032": {
+        "Registered": [],
+        "Badges": [],
         "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": []
