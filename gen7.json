@@ -20,7 +20,9 @@
             "<:adamant:807077113878282240>",
             "<:frost:807085902563639327>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>"
+        ],
         "Reset_Token": 1,
         "Achievements": [
             "Pok\u00e9hub League 2020",
@@ -89,7 +91,8 @@
         "Badges": [
             "<:dazzling:807225198016725053>",
             "<:adamant:807077113878282240>",
-            "<:frost:807085902563639327>"
+            "<:frost:807085902563639327>",
+            "<:ebony:809796202861559818>"
         ],
         "Elite_Streak": [],
         "Reset_Token": 1,
@@ -331,7 +334,9 @@
         ],
         "Elite_Streak": [
             "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>"
+            "<:greatball:792262525835018250>",
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
         "Achievements": [],
@@ -686,7 +691,8 @@
         ],
         "Elite_Streak": [
             "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>"
+            "<:greatball:792262525835018250>",
+            "<:ultraball:790056815652110386>"
         ],
         "Reset_Token": 1,
         "Achievements": [],
