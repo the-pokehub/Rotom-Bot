@@ -1,6 +1,19 @@
 {
     "402057666576384001": {
-        "Registered": [],
+        "Registered": [
+            "Starmie",
+            "Pinsir",
+            "Beedrill",
+            "Weavile",
+            "Garchomp",
+            "Jirachi",
+            "Keldeo",
+            "Clefable",
+            "Landorus-therian",
+            "Talonflame",
+            "Darmanitan",
+            "Bisharp"
+        ],
         "Badges": [],
         "Elite_Streak": [],
         "Reset_Token": 1,
@@ -77,7 +90,9 @@
             "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
-        "Achievements": [],
+        "Achievements": [
+            "Pok\u00e9hub League II"
+        ],
         "Elite_Pool": [
             "Keldeo",
             "Altaria",
@@ -148,12 +163,7 @@
             "<:venom:807630518040526848>",
             "<:scythe:806712233161261056>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [

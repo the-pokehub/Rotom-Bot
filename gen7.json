@@ -94,9 +94,19 @@
             "<:frost:807085902563639327>",
             "<:ebony:809796202861559818>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>"
+        ],
         "Reset_Token": 1,
-        "Achievements": []
+        "Achievements": [],
+        "Elite_Pool": [
+            "Blacephalon",
+            "Landorus-therian",
+            "Toxapex",
+            "Weavile",
+            "Latias",
+            "Rotom-wash"
+        ]
     },
     "802228956979789824": {
         "Registered": [
@@ -470,22 +480,10 @@
             "<:mystic:809984418529542144>",
             "<:adamant:807077113878282240>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [],
-        "Elite_Pool": [
-            "Volcarona",
-            "Alakazam",
-            "Landorus-therian",
-            "Rotom-wash",
-            "Porygon-z",
-            "Electivire"
-        ]
+        "Elite_Pool": []
     },
     "693412587290886194": {
         "Registered": [
@@ -734,5 +732,58 @@
         ],
         "Reset_Token": 1,
         "Achievements": []
+    },
+    "154248794215546880": {
+        "Registered": [
+            "Heatran",
+            "Zapdos",
+            "Landorus-therian",
+            "Lopunny",
+            "Charizard",
+            "Scizor",
+            "Tapu-fini",
+            "Serperior",
+            "Greninja",
+            "Tapu-lele",
+            "Magearna",
+            "Celesteela"
+        ],
+        "Badges": [],
+        "Elite_Streak": [],
+        "Reset_Token": 1,
+        "Achievements": []
+    },
+    "697832306139988090": {
+        "Registered": [
+            "Incineroar",
+            "Landorus-therian",
+            "Toxapex",
+            "Charizard",
+            "Tapu-bulu",
+            "Garchomp",
+            "Lucario",
+            "Greninja",
+            "Zeraora",
+            "Gliscor",
+            "Mimikyu",
+            "Celesteela"
+        ],
+        "Badges": [
+            "<:dazzling:807225198016725053>",
+            "<:intellect:807588562315771934>",
+            "<:ebony:809796202861559818>",
+            "<:frost:807085902563639327>"
+        ],
+        "Elite_Streak": [],
+        "Reset_Token": 1,
+        "Achievements": [],
+        "Elite_Pool": [
+            "Tapu-bulu",
+            "Garchomp",
+            "Greninja",
+            "Landorus-therian",
+            "Mimikyu",
+            "Charizard"
+        ]
     }
 }

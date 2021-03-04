@@ -216,8 +216,8 @@ class Game(commands.Cog):
                 try:
 
                     place = await self.client.wait_for("message",
-                                                       check=check,
-                                                       timeout=60.0)
+                                                        check=check,
+                                                        timeout=60.0)
                     pos = place.content
 
                     if pos.casefold() == "quit" or pos == "0" or pos.casefold() == "fortify":
@@ -247,7 +247,7 @@ class Game(commands.Cog):
                     return
 
             if 0 < position < 10 and board[position -
-                                           1] == ":white_large_square:":
+                                            1] == ":white_large_square:":
                 board[position - 1] = mark
                 count += 1
             else:
