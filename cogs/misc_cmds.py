@@ -30,6 +30,15 @@ class Misc(commands.Cog):
         await ctx.send("Pong! Response Time: **{}ms**".format(
             int(self.client.latency * 1000)))
 
+    @commands.command()
+    async def icon(self, ctx):
+
+        em = discord.Embed(title=f"{ctx.guild.name}'s Icon")
+        em.set_image(url=ctx.guild.icon_url)
+        em.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+
+        await ctx.send(embed=em)
+
 
 def setup(client):
     client.add_cog(Misc(client))
