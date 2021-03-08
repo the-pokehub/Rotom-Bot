@@ -338,12 +338,7 @@
             "<:intellect:807588562315771934>",
             "<:dazzling:807225198016725053>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
@@ -683,7 +678,9 @@
             "<:ebony:809796202861559818>",
             "<:adamant:807077113878282240>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>"
+        ],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
@@ -716,12 +713,7 @@
             "<:adamant:807077113878282240>",
             "<:dazzling:807225198016725053>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": []
     },

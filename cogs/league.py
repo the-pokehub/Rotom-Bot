@@ -171,6 +171,10 @@ class League(commands.Cog):
         if ctx.channel.name == "📝registration":
             return
 
+        if member == ctx.author:
+            await ctx.send("You cannot add yourself an elite streak...")
+            return
+
         if generation == "6":
             data_file = "gen6.json"
             prof_file = "league_prof6.json"

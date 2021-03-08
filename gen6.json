@@ -83,12 +83,7 @@
             "<:lol:807134009897123841>",
             "<:earthquake:809758051237101638>"
         ],
-        "Elite_Streak": [
-            "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>",
-            "<:ultraball:790056815652110386>",
-            "<:masterball:790056815173828628>"
-        ],
+        "Elite_Streak": [],
         "Reset_Token": 1,
         "Achievements": [
             "Pok\u00e9hub League II"
@@ -294,10 +289,14 @@
         ],
         "Elite_Streak": [
             "<:pokeball:790056814216740874>",
-            "<:greatball:792262525835018250>"
+            "<:greatball:792262525835018250>",
+            "<:ultraball:790056815652110386>",
+            "<:masterball:790056815173828628>"
         ],
         "Reset_Token": 1,
-        "Achievements": [],
+        "Achievements": [
+            "Pok\u00e9hub League II"
+        ],
         "Elite_Pool": [
             "Garchomp",
             "Magnezone",
@@ -348,7 +347,10 @@
             "<:venom:807630518040526848>",
             "<:scythe:806712233161261056>"
         ],
-        "Elite_Streak": [],
+        "Elite_Streak": [
+            "<:pokeball:790056814216740874>",
+            "<:greatball:792262525835018250>"
+        ],
         "Reset_Token": 1,
         "Achievements": [],
         "Elite_Pool": [
