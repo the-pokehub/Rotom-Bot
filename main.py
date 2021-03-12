@@ -4,6 +4,7 @@ import os
 import keep_alive
 import json
 from itertools import cycle
+from better_profanity import profanity
 
 
 with open("mod.json", "r") as mod_data:
@@ -59,6 +60,81 @@ async def on_message(message):
             "Use command in Server...\nhttps://discord.gg/n5zdSC6Ftb")
         return
 
+
+    if message.channel.id == 775388498919948299:
+        if "you just advanced to level 15!" in message.content:
+            member_id = ''.join(filter(lambda i: i.isdigit(), message.content))
+
+            mem = await message.guild.fetch_member(int(member_id[:-2]))            
+            role = discord.utils.get(message.guild.roles, name="advanced-trainers")
+
+            await mem.add_roles(role)
+
+
+    if message.channel.id == 809594017947975690:
+        if "I'm MEE6 the Discord Bot!" in message.content:
+            await message.channel.send("Hello")
+        
+
+    # if ":gengar:" in message.content:
+    #     emoji = "🪥"
+    #     try:
+    #         await message.add_reaction(emoji)
+    #     except discord.errors.NotFound:
+    #         pass
+
+    # if ":hehe:" in message.content:
+    #     emoji = "🪥"
+    #     try:
+    #         await message.add_reaction(emoji)
+    #     except discord.errors.NotFound:
+    #         pass
+    
+    # if ":sutta:" in message.content:
+    #     # emoji = "🚭"
+    #     try:
+    #         # await message.add_reaction(emoji)
+    #         await message.delete()
+    #     except discord.errors.NotFound:
+    #         pass
+
+    # if ":pepe_smoke:" in message.content:
+    #     # emoji = "🚭"
+    #     try:
+    #         # await message.add_reaction(emoji)
+    #         await message.delete()
+    #     except discord.errors.NotFound:
+    #         pass
+
+    # if "🚬" in message.content:
+    #     # emoji = "🚭"
+    #     try:
+    #         # await message.add_reaction(emoji)
+    #         await message.delete()
+    #     except discord.errors.NotFound:
+    #         pass
+
+    # if ":sed:" in message.content:
+    #     emoji = "🚰"
+    #     try:
+    #         await message.add_reaction(emoji)
+    #     except discord.errors.NotFound:
+    #         pass
+
+    # if ":is:" in message.content:
+    #     emoji = "♥"
+    #     try:
+    #         await message.add_reaction(emoji)
+    #     except discord.errors.NotFound:
+    #         pass
+
+    # if message.author.id == 763666468222664744:
+    #     emoji = "🐐"
+    #     try:
+    #         await message.add_reaction(emoji)
+    #     except discord.errors.NotFound:
+    #         pass
+    
     # if message.channel.name == "💭opinions-and-requests":
     #     emoji1 = "<a:thumbs_up:796407963459780628>"
     #     emoji2 = "<a:thumbs_down:796407964033351800>"

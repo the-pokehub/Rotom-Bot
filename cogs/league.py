@@ -1036,115 +1036,115 @@ class League(commands.Cog):
         else:
             await ep()
 
-    @commands.command(aliases=["r", "registration"])
-    async def register(self, ctx, generation, *, raw_input):
+    # @commands.command(aliases=["r", "registration"])
+    # async def register(self, ctx, generation, *, raw_input):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        if ctx.channel.name == "📝challengers-registration":
-            pass
-        else:
-            return
+    #     if ctx.channel.name == "📝challengers-registration":
+    #         pass
+    #     else:
+    #         return
 
-        illegal_found = 0
-        illegal_mon = []
-        pool_of_12 = set()
-        perfect_mons = set()
-        pokemon = set()
-        empty_list = []
-        user = ctx.author
-        channel = self.client.get_channel(802027595302174730)
+    #     illegal_found = 0
+    #     illegal_mon = []
+    #     pool_of_12 = set()
+    #     perfect_mons = set()
+    #     pokemon = set()
+    #     empty_list = []
+    #     user = ctx.author
+    #     channel = self.client.get_channel(802027595302174730)
 
-        if generation == "6":
-            illegal = "illegal6.txt"
-            data_file = "gen6.json"
-            dex = "mons6.txt"
-        elif generation == "7":
-            illegal = "illegal7.txt"
-            data_file = "gen7.json"
-            dex = "mons7.txt"
-        else:
-            await user.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help r` to know more.")
-            return
+    #     if generation == "6":
+    #         illegal = "illegal6.txt"
+    #         data_file = "gen6.json"
+    #         dex = "mons6.txt"
+    #     elif generation == "7":
+    #         illegal = "illegal7.txt"
+    #         data_file = "gen7.json"
+    #         dex = "mons7.txt"
+    #     else:
+    #         await user.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help r` to know more.")
+    #         return
 
-        raw_input = raw_input.replace(" ", "")
+    #     raw_input = raw_input.replace(" ", "")
 
-        raw_pokemon = set(raw_input.split(","))
+    #     raw_pokemon = set(raw_input.split(","))
 
-        for mons in raw_pokemon:
-            pokemon.add(mons.capitalize())
+    #     for mons in raw_pokemon:
+    #         pokemon.add(mons.capitalize())
 
-        with open(illegal, "r") as banned:
-            illegal_mons = banned.read().split("\n")
+    #     with open(illegal, "r") as banned:
+    #         illegal_mons = banned.read().split("\n")
 
-        with open(data_file, "r") as bot_data:
-            data = json.load(bot_data)
+    #     with open(data_file, "r") as bot_data:
+    #         data = json.load(bot_data)
 
-        if str(ctx.author.id) not in data:
-            data[str(ctx.author.id)] = {"Registered": list(), "Badges": list(), "Elite_Streak": list(),
-                                        "Reset_Token": 1, "Achievements": list()}
+    #     if str(ctx.author.id) not in data:
+    #         data[str(ctx.author.id)] = {"Registered": list(), "Badges": list(), "Elite_Streak": list(),
+    #                                     "Reset_Token": 1, "Achievements": list()}
 
-            with open(data_file, "w") as bot_data:
-                json.dump(data, bot_data, indent=4)
+    #         with open(data_file, "w") as bot_data:
+    #             json.dump(data, bot_data, indent=4)
 
-        if data[str(ctx.author.id)]["Registered"] != empty_list:
-            await user.send("You have already registered for this generation.")
-            return
+    #     if data[str(ctx.author.id)]["Registered"] != empty_list:
+    #         await user.send("You have already registered for this generation.")
+    #         return
 
-        with open(dex, "r") as file:
-            pokedex = file.read().split("\n")
+    #     with open(dex, "r") as file:
+    #         pokedex = file.read().split("\n")
 
-        for a in pokemon:
-            for b in pokedex:
-                if a.casefold() == b.casefold():
-                    pool_of_12.add(a.capitalize())
+    #     for a in pokemon:
+    #         for b in pokedex:
+    #             if a.casefold() == b.casefold():
+    #                 pool_of_12.add(a.capitalize())
 
-        not_valid = list(pokemon.difference(pool_of_12))
-        wrong = ", ".join(not_valid)
+    #     not_valid = list(pokemon.difference(pool_of_12))
+    #     wrong = ", ".join(not_valid)
 
-        if len(pokemon) != len(pool_of_12):
-            await user.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
-            return
+    #     if len(pokemon) != len(pool_of_12):
+    #         await user.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
+    #         return
 
-        for pmon in pool_of_12:
-            for mons in illegal_mons:
-                if pmon.casefold() == mons.casefold():
-                    illegal_mon.append(pmon.capitalize())
-                    illegal_found += 1
-                else:
-                    perfect_mons.add(pmon.capitalize())
+    #     for pmon in pool_of_12:
+    #         for mons in illegal_mons:
+    #             if pmon.casefold() == mons.casefold():
+    #                 illegal_mon.append(pmon.capitalize())
+    #                 illegal_found += 1
+    #             else:
+    #                 perfect_mons.add(pmon.capitalize())
 
-        if illegal_found >= 1:
-            not_legal = ", ".join(illegal_mon)
-            await user.send(
-                f"Your team is not valid because it contains {not_legal} which is/are in higher tier than OU")
-            return
+    #     if illegal_found >= 1:
+    #         not_legal = ", ".join(illegal_mon)
+    #         await user.send(
+    #             f"Your team is not valid because it contains {not_legal} which is/are in higher tier than OU")
+    #         return
 
-        if len(perfect_mons) < 12:
-            await user.send("You Pool contains less than 12 Pokémon")
-            return
-        elif len(perfect_mons) > 12:
-            await user.send("You Pool contains more than 12 Pokémon")
-            return
+    #     if len(perfect_mons) < 12:
+    #         await user.send("You Pool contains less than 12 Pokémon")
+    #         return
+    #     elif len(perfect_mons) > 12:
+    #         await user.send("You Pool contains more than 12 Pokémon")
+    #         return
 
-        submitted = "\n".join(perfect_mons)
+    #     submitted = "\n".join(perfect_mons)
 
-        data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
-        with open(data_file, "w") as bot_data:
-            json.dump(data, bot_data, indent=4)
+    #     data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
+    #     with open(data_file, "w") as bot_data:
+    #         json.dump(data, bot_data, indent=4)
 
-        msg = await ctx.send(
-            f"{ctx.author.mention}'s Generation {generation} Pool has been submitted...\nSubmitted:\n{submitted}")
+    #     msg = await ctx.send(
+    #         f"{ctx.author.mention}'s Generation {generation} Pool has been submitted...\nSubmitted:\n{submitted}")
 
-        await user.send(f"Your Generation {generation} Pool have been Submitted.\n{submitted}")
+    #     await user.send(f"Your Generation {generation} Pool have been Submitted.\n{submitted}")
 
-        await channel.send(f"{ctx.author.mention}'s' Generation {generation} Pool have been Submitted.\n{submitted}")
+    #     await channel.send(f"{ctx.author.mention}'s' Generation {generation} Pool have been Submitted.\n{submitted}")
 
-        role = discord.utils.get(ctx.guild.roles, name="challengers")
-        await ctx.author.add_roles(role)
+    #     role = discord.utils.get(ctx.guild.roles, name="challengers")
+    #     await ctx.author.add_roles(role)
 
-        await asyncio.sleep(3)
-        await msg.delete()
+    #     await asyncio.sleep(3)
+    #     await msg.delete()
 
     # @commands.command(aliases=["rs", "restart"])
     # async def reset(self, ctx, generation, *, raw_input):

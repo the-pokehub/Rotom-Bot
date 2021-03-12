@@ -10,6 +10,9 @@ discord = "^1.0.1"
 flask = "^1.1.2"
 youtube-dl = "^2021.2.10"
 PyNaCl = "^1.4.0"
+googletrans = "3.1.0a0"
+better-profanity = "^0.7.0"
+google = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 

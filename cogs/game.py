@@ -96,7 +96,6 @@ class Game(commands.Cog):
 
         answer = random.randint(1, highest)
         guesses = 1
-        print(answer)
 
         await ctx.send(
             "Guess a number between 1 and {} or 0 to quit: ".format(highest))
@@ -181,14 +180,6 @@ class Game(commands.Cog):
         count = 0
 
         line = ""
-        # for x in range(len(board)):
-        #     if x == 2 or x == 5 or x == 8:
-        #         line += " " + board[x]
-        #         await ctx.send(line)
-        #         line = ""
-
-        #     else:
-        #         line += " " + board[x]
 
         num = random.randint(1, 2)
         turn: discord.Member = ctx.author
@@ -207,7 +198,7 @@ class Game(commands.Cog):
             elif turn == p2:
                 mark = ":regional_indicator_o:"
 
-            await ctx.send(f"{turn.mention}'s Turn.")
+            msg2 = await ctx.send(f"{turn.mention}'s Turn.")
 
             def check(ms):
                 return ms.author == turn and ms.channel == ctx.channel
@@ -224,18 +215,40 @@ class Game(commands.Cog):
                         await ctx.send(f"{turn.mention} fortified.")
                         if turn == p1:
                             await ctx.send(f"{p2.mention} wins...")
+                            return
                         else:
                             await ctx.send(f"{p1.mention} wins...")
+                            return
 
                     elif pos.isnumeric():
                         position = int(pos)
-                        break
 
                     elif pos.casefold() in pos_dict:
                         position = pos_dict[pos.lower()]
+
+                    else:
+                        continue
+
+                    if 0 < position < 10 and board[position -
+                                            1] == ":white_large_square:":
+                        board[position - 1] = mark
+                        count += 1
+                        await place.delete()
+                        await msg2.delete()
                         break
 
                     else:
+                        try:
+                            await msg3.delete()
+                        except discord.errors.NotFound:
+                            pass
+                        except UnboundLocalError:
+                            pass
+
+                        msg3 = await ctx.send(
+                            "Be sure to choose a number between 1 and 9 and an unmarked tile."
+                        )
+
                         continue
 
                 except asyncio.TimeoutError:
@@ -246,14 +259,14 @@ class Game(commands.Cog):
                         await ctx.send(f"{p1.mention} wins...")
                     return
 
-            if 0 < position < 10 and board[position -
-                                            1] == ":white_large_square:":
-                board[position - 1] = mark
-                count += 1
-            else:
-                await ctx.send(
-                    "Be sure to choose a number between 1 and 9 and an unmarked tile."
-                )
+            
+            try:
+                await msg3.delete()
+            except discord.errors.NotFound:
+                pass
+            except UnboundLocalError:
+                pass
+                
 
             board_list = []
             for x in range(len(board)):
@@ -267,7 +280,11 @@ class Game(commands.Cog):
                     line += board[x]
 
             new_board = "\n".join(board_list)
-            await ctx.send(new_board)
+
+            if count == 1:
+                msg = await ctx.send(new_board)
+            else:
+                await msg.edit(content=new_board)
 
             check_winner(winningConditions, mark)
 
@@ -283,6 +300,80 @@ class Game(commands.Cog):
                 turn = p2
             elif turn == p2:
                 turn = p1
+
+    @commands.command(aliases=["rps", "rock-paper-scissors"])
+    async def rock_paper_scissors(self, ctx):
+
+        t = ["rock", "paper", "scissors"]
+
+        computer_action = random.choice(t)
+        computer_action = computer_action.lower()
+
+        def check(ms):
+            return ms.author == ctx.author and ms.channel == ctx.channel
+
+        msg = await ctx.send("What's Your choice?\nRock(r), Paper(p) or Scissors(s)...")
+
+        # emoji1 = "🪨"
+        # emoji2 = "🧻"
+        # emoji3 = "✂"
+
+        # await msg.add_reaction(emoji1)
+        # await msg.add_reaction(emoji2)
+        # await msg.add_reaction(emoji3)
+
+        while True:
+
+            try:
+                player = await self.client.wait_for("message",
+                                                   check=check,
+                                                   timeout=30.0)
+
+                user_action = player.content.lower()
+
+                if user_action == "r":
+                    user_action = "rock"
+                elif user_action == "p":
+                    user_action = "paper"
+                elif user_action == "s":
+                    user_action = "scissors"
+                else:
+                    user_action = user_action
+
+                if user_action == computer_action:
+                    await ctx.send(f"Both players selected {user_action.capitalize()}. It's a tie!")
+                    return
+
+                if user_action == "rock":
+                    await ctx.send(f"I choosed {computer_action}")
+                    if computer_action == "scissors":
+                        await ctx.send("Rock smashes Scissors! You win!")
+                        return
+                    else:
+                        await ctx.send("Paper covers Rock! You lose.")
+                        return
+
+                elif user_action == "paper":
+                    await ctx.send(f"I choosed {computer_action}")
+                    if computer_action == "rock":
+                        await ctx.send("Paper covers Rock! You win!")
+                        return
+                    else:
+                        await ctx.send("Scissors cuts Paper! You lose.")
+                        return
+
+                elif user_action == "scissors":
+                    await ctx.send(f"I choosed {computer_action}")
+                    if computer_action == "paper":
+                        await ctx.send("Scissors cuts Paper! You win!")
+                        return
+                    else:
+                        await ctx.send("Rock smashes Scissors! You lose.")
+                        return
+
+            except asyncio.TimeoutError:
+                await ctx.send("Response Timeout.\nReturning...")
+                return
 
 
 def setup(client):
