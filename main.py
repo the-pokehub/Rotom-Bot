@@ -2,18 +2,15 @@ import discord
 from discord.ext import commands, tasks
 import os
 import keep_alive
-import json
 from itertools import cycle
-from better_profanity import profanity
+from replit import db
 
 
-with open("mod.json", "r") as mod_data:
-    save = json.load(mod_data)
+save = db["mod"]
 
 
 def get_prefix(client, message):
-    with open("prefixes.json", "r") as f:
-        prefixes = json.load(f)
+    prefixes = db["prefixes"]
 
     return prefixes[str(message.guild.id)]
 
@@ -36,7 +33,6 @@ client = commands.Bot(
 @client.event
 async def on_ready():
     change_presence.start()
-    json_entry.start()
 
     print(f"Bot is Ready.\nLogged in as {client.user.name}\n---------------------")
 
@@ -70,11 +66,33 @@ async def on_message(message):
 
             await mem.add_roles(role)
 
+    if message.channel.id == 818452656670375978:
+        msg = message.content
 
-    if message.channel.id == 809594017947975690:
-        if "I'm MEE6 the Discord Bot!" in message.content:
-            await message.channel.send("Hello")
-        
+        if "gen" in msg:
+
+            gen6 = db["tour"]["gen6"]
+            gen7 = db["tour"]["gen7"]
+
+            n = msg.split("gen")
+
+            if len(n) > 3:
+                pass
+            else:
+                if "6" in n[1]:
+                    gen6.append(msg.author.mention)
+                if "7" in n[1]:
+                    gen7.append(msg.author.mention)
+
+                if len(n) == 3:
+                    if "6" in n[2]:
+                        gen6.append(msg.author.mention)
+                    if "7" in n[2]:
+                        gen7.append(msg.author.mention)
+
+            db["tour"]["gen6"] = gen6
+            db["tour"]["gen7"] = gen7
+    
 
     # if ":gengar:" in message.content:
     #     emoji = "🪥"
@@ -150,37 +168,29 @@ async def on_message(message):
 
 @client.event
 async def on_guild_join(guild):
-    with open("prefixes.json", "r") as f:
-        prefixes = json.load(f)
 
+    prefixes = db["prefixes"]
     prefixes[str(guild.id)] = "."
+    db["prefixes"] = prefixes
 
-    with open("prefixes.json", "w") as f:
-        json.dump(prefixes, f, indent=4)
 
 
 @client.event
 async def on_guild_leave(guild):
-    with open("prefixes.json", "r") as f:
-        prefixes = json.load(f)
 
+    prefixes = db["prefixes"]
     prefixes.pop(str(guild.id))
+    db["prefixes"] = prefixes
 
-    with open("prefixes.json", "w") as f:
-        json.dump(prefixes, f, indent=4)
 
 
 @client.command()
 @commands.has_permissions(manage_guild=True)
 async def change_prefix(ctx, new_prefix):
-    with open("prefixes.json", "r") as f:
-        prefixes = json.load(f)
 
+    prefixes = db["prefixes"]
     prefixes[(str(ctx.guild.id))] = new_prefix
-
-    with open("prefixes.json", "w") as f:
-        json.dump(prefixes, f, indent=4)
-
+    db["prefixes"] = prefixes
     await ctx.send(f"Server Prefix has been change to {new_prefix}")
 
 
@@ -206,16 +216,6 @@ async def reload(ctx):
 @tasks.loop(seconds=10)
 async def change_presence():
     await client.change_presence(activity=next(presence))
-
-
-@tasks.loop(seconds=5)
-async def json_entry():
-
-    for filename in os.listdir():
-        if filename.endswith(".json"):
-            file = open(filename, "r")
-            file.read()
-            file.close()
 
 
 keep_alive.keep_alive()

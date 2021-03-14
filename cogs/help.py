@@ -1,12 +1,11 @@
 import discord
 from discord.ext import commands
-import json
+from replit import db
 
 
 def server_prefix(msg):
-    with open("prefixes.json", "r") as f:
-        prefixes = json.load(f)
-        s_prefix = prefixes[str(msg.guild.id)]
+    prefixes = db["prefixes"]
+    s_prefix = prefixes[str(msg.guild.id)]
 
     return s_prefix
 

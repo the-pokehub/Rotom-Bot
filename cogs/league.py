@@ -3,15 +3,14 @@ import discord
 from discord.ext import commands
 import asyncio
 import os
+from replit import db
 
-with open("mod.json", "r") as mod_data:
-    save = json.load(mod_data)
+save = db["mod"]
 
 
 def server_prefix(msg):
-    with open("prefixes.json", "r") as f:
-        prefixes = json.load(f)
-        s_prefix = prefixes[str(msg.guild.id)]
+    prefixes = db["prefixes"]
+    s_prefix = prefixes[str(msg.guild.id)]
 
     return s_prefix
 
@@ -53,13 +52,13 @@ class League(commands.Cog):
             return
 
         if generation == "6":
-            data_file = "gen6.json"
+            data_file = "gen6"
             badges_dict = badges_dict6
-            prof_file = "league_prof6.json"
+            prof_file = "league_prof6"
         elif generation == "7":
-            data_file = "gen7.json"
+            data_file = "gen7"
             badges_dict = badges_dict7
-            prof_file = "league_prof7.json"
+            prof_file = "league_prof7"
         else:
             await ctx.send(
                 f"Enter a valid Generation(6/7)\nUse `{prefix}help ab` to know more."
@@ -78,32 +77,31 @@ class League(commands.Cog):
             return
 
         async def ab():
-            with open(data_file, "r") as badge_data:
-                data1 = json.load(badge_data)
+            data1 = db[data_file]
 
-                if str(member.id) not in data1:
-                    await ctx.send(
-                        f"{member} is not registered for this generation.")
-                    return
+            if str(member.id) not in data1:
+                await ctx.send(
+                    f"{member} is not registered for this generation.")
+                return
 
-                if data1[str(member.id)]["Registered"] == empty_list:
-                    await ctx.send(
-                        f"{member} is not registered for this generation.")
-                    return
+            if data1[str(member.id)]["Registered"] == empty_list:
+                await ctx.send(
+                    f"{member} is not registered for this generation.")
+                return
 
-                for a in data1[str(member.id)]["Badges"]:
-                    obtained.append(a)
+            for a in data1[str(member.id)]["Badges"]:
+                obtained.append(a)
 
-                if badges_dict[badge] in obtained:
-                    await ctx.send(f"{member} already has the badge.")
-                    return
+            if badges_dict[badge] in obtained:
+                await ctx.send(f"{member} already has the badge.")
+                return
 
-                b = badges_dict[badge]
-                obtained.append(b)
+            b = badges_dict[badge]
+            obtained.append(b)
 
-                data1[str(member.id)]["Badges"] = obtained
-                with open(data_file, "w") as badge_data1:
-                    json.dump(data1, badge_data1, indent=4)
+            data1[str(member.id)]["Badges"] = obtained
+
+            db[data_file] = data1
 
             await ctx.send(f"{member}'s profile has been updated.")
             await channel.send(
@@ -115,8 +113,7 @@ class League(commands.Cog):
 
         if role1 in member.roles:
             try:
-                with open(prof_file, "r") as bot_data:
-                    data = json.load(bot_data)
+                data = db[prof_file]
 
                 for badges in data["gym-leaders"][str(member.id)]["Badges"]:
                     obtained.append(badges)
@@ -130,8 +127,7 @@ class League(commands.Cog):
 
                 data["gym-leaders"][str(member.id)]["Badges"] = obtained
 
-                with open(prof_file, "w") as bot_data:
-                    json.dump(data, bot_data, indent=4)
+                db[prof_file] = data
 
             except KeyError:
                 await ab()
@@ -139,8 +135,7 @@ class League(commands.Cog):
         elif role2 in member.roles:
 
             try:
-                with open(prof_file, "r") as bot_data:
-                    data = json.load(bot_data)
+                data = db[prof_file]
 
                 for badges in data["elites"][str(member.id)]["Badges"]:
                     obtained.append(badges)
@@ -153,8 +148,8 @@ class League(commands.Cog):
                 obtained.append(new_badge)
 
                 data["elites"][str(member.id)]["Badges"] = obtained
-                with open(prof_file, "w") as bot_data:
-                    json.dump(data, bot_data, indent=4)
+
+                db[prof_file] = data
 
             except KeyError:
                 await ab()
@@ -176,11 +171,11 @@ class League(commands.Cog):
             return
 
         if generation == "6":
-            data_file = "gen6.json"
-            prof_file = "league_prof6.json"
+            data_file = "gen6"
+            prof_file = "league_prof6"
         elif generation == "7":
-            data_file = "gen7.json"
-            prof_file = "league_prof7.json"
+            data_file = "gen7"
+            prof_file = "league_prof7"
         else:
             await ctx.send(
                 f"Enter a valid Generation(6/7)\nUse `{prefix}help as` to know more."
@@ -197,8 +192,7 @@ class League(commands.Cog):
         async def a_s():
             won = 0
 
-            with open(data_file, "r") as bot_data:
-                data = json.load(bot_data)
+            data = db[data_file]
 
             if str(member.id) not in data:
                 await ctx.send(
@@ -223,8 +217,7 @@ class League(commands.Cog):
 
             data[str(member.id)]["Elite_Streak"] = obtained
 
-            with open(data_file, "w") as bot_data:
-                json.dump(data, bot_data, indent=4)
+            db[data_file] = data
 
             await ctx.send(f"{member}'s Profile has been Updated")
             await channel.send(
@@ -235,8 +228,7 @@ class League(commands.Cog):
 
         if role1 in member.roles:
             try:
-                with open(prof_file, "r") as prof_data:
-                    data1 = json.load(prof_data)
+                data1 = db[prof_file]
 
                 if data1['gym-leaders'][str(member.id)]:
                     pass
@@ -249,8 +241,7 @@ class League(commands.Cog):
 
         elif role2 in member.roles:
             try:
-                with open(prof_file, "r") as prof_data:
-                    data1 = json.load(prof_data)
+                data1 = db[prof_file]
 
                 if data1['elites'][str(member.id)]:
                     pass
@@ -273,11 +264,11 @@ class League(commands.Cog):
             return
 
         if generation == "6":
-            data_file = "gen6.json"
-            prof_file = "league_prof6.json"
+            data_file = "gen6"
+            prof_file = "league_prof6"
         elif generation == "7":
-            data_file = "gen7.json"
-            prof_file = "league_prof7.json"
+            data_file = "gen7"
+            prof_file = "league_prof7"
 
         else:
             await ctx.send(
@@ -305,8 +296,8 @@ class League(commands.Cog):
             streak_list = []
             titles2 = []
             empty_list = []
-            with open(data_file, "r") as bot_data2:
-                data2 = json.load(bot_data2)
+
+            data2 = db[data_file]
 
             if str(member.id) not in data2:
                 await ctx.send(
@@ -344,12 +335,10 @@ class League(commands.Cog):
                         name=f"{badge_name2[1].capitalize()} Badge",
                         value=badges2,
                         inline=True)
-
-            with open(data_file, "r") as bot_data2:
-                data2 = json.load(bot_data2)
-                for streaks in data2[str(member.id)]["Elite_Streak"]:
-                    streak += 1
-                    streak_list.append(streaks)
+            
+            for streaks in data2[str(member.id)]["Elite_Streak"]:
+                streak += 1
+                streak_list.append(streaks)
 
             if streak >= 1:
                 final_streak = " ".join(streak_list)
@@ -387,8 +376,7 @@ class League(commands.Cog):
 
         if role1 in member.roles:  # gym-leaders
             try:
-                with open(prof_file, "r") as bot_data:
-                    data = json.load(bot_data)
+                data = db[prof_file]
 
                 if {data['gym-leaders'][str(member.id)]['Badge']}:
                     pass
@@ -449,8 +437,7 @@ class League(commands.Cog):
             except KeyError:
                 if role2 in member.roles:
                     try:
-                        with open(prof_file, "r") as bot_data:
-                            data = json.load(bot_data)
+                        data = db[prof_file]
 
                         if data['gym-leaders'][str(member.id)]:
                             pass
@@ -460,8 +447,7 @@ class League(commands.Cog):
 
                 elif role3 in member.roles:
                     try:
-                        with open(prof_file, "r") as bot_data:
-                            data = json.load(bot_data)
+                        data = db[prof_file]
 
                         if data['champion'][str(member.id)]:
                             pass
@@ -475,8 +461,7 @@ class League(commands.Cog):
 
             try:
 
-                with open(prof_file, "r") as bot_data:
-                    data = json.load(bot_data)
+                data = db[prof_file]
 
                 embed.set_thumbnail(url=member.avatar_url)
 
@@ -528,8 +513,7 @@ class League(commands.Cog):
             except KeyError:
                 if role1 in member.roles:
                     try:
-                        with open(prof_file, "r") as bot_data:
-                            data = json.load(bot_data)
+                        data = db[prof_file]
 
                         if data['elites'][str(member.id)]:
                             pass
@@ -539,8 +523,7 @@ class League(commands.Cog):
 
                 elif role3 in member.roles:
                     try:
-                        with open(prof_file, "r") as bot_data:
-                            data = json.load(bot_data)
+                        data = db[prof_file]
 
                         if data['champion'][str(member.id)]:
                             pass
@@ -554,8 +537,7 @@ class League(commands.Cog):
 
             try:
 
-                with open(prof_file, "r") as bot_data:
-                    data = json.load(bot_data)
+                data = db[prof_file]
 
                 if data['champion'][str(member.id)]:
                     pass
@@ -618,11 +600,11 @@ class League(commands.Cog):
         prefix = server_prefix(ctx)
 
         if generation == "6":
-            data_file = "gen6.json"
-            prof_file = "league_prof6.json"
+            data_file = "gen6"
+            prof_file = "league_prof6"
         elif generation == "7":
-            data_file = "gen7.json"
-            prof_file = "league_prof7.json"
+            data_file = "gen7"
+            prof_file = "league_prof7"
         else:
             await ctx.send(
                 f"Enter a valid Generation(6/7)\nUse `{prefix}help nc` to know more."
@@ -634,23 +616,20 @@ class League(commands.Cog):
         prev_champ = ""
         empty_list = []
 
-        with open(prof_file, "r") as champ_data:
-            data1 = json.load(champ_data)
+        data1 = db[prof_file]
 
-        json_champ = data1["champion"]
+        db_champ = data1["champion"]
 
-        for mem in json_champ:
+        for mem in db_champ:
             prev_champ = await ctx.guild.fetch_member(int(mem))
 
-        with open(data_file, "r") as bot_data:
-            data2 = json.load(bot_data)
+        data2 = db[data_file]
 
         data2[str(prev_champ.id)]["Elite_Streak"] = empty_list
 
-        with open(data_file, "w") as bot_data:
-            json.dump(data2, bot_data, indent=4)
+        db[data_file] = data2
 
-        json_champ.pop(str(prev_champ.id))
+        db_champ.pop(str(prev_champ.id))
 
         data1["champion"][str(member.id)] = {
             "Season": f"{current_title}",
@@ -659,11 +638,9 @@ class League(commands.Cog):
             "Achievements": []
         }
 
-        with open(prof_file, "w") as champ_data:
-            json.dump(data1, champ_data, indent=4)
+        db[prof_file] = data1
 
-        with open(data_file, "r") as bot_data:
-            data2 = json.load(bot_data)
+        data2 = db[data_file]
 
         for achievements in data2[str(member.id)]["Achievements"]:
             past_titles.append(achievements)
@@ -672,27 +649,22 @@ class League(commands.Cog):
 
         data2[str(member.id)]["Achievements"] = past_titles
         data1["champion"][str(member.id)]["Achievements"] = past_titles
-
-        with open(data_file, "w") as bot_data:
-            json.dump(data2, bot_data, indent=4)
-
-        with open(prof_file, "w") as champ_data:
-            json.dump(data1, champ_data, indent=4)
+        
+        db[data_file] = data2
+        db[prof_file] = data1
 
         role = discord.utils.get(ctx.guild.roles, name="champion")
         await member.add_roles(role)
         role = discord.utils.get(ctx.guild.roles, name="master-trainers")
         await member.add_roles(role)
 
-        with open("hall_of_fame.json", "r") as bot_data:
-            data = json.load(bot_data)
+        data = db["hall_of_fame"]
 
         winners = list(data[current_title][f"Gen {generation}"])
         winners.append(str(member.mention))
         data[current_title][f"Gen {generation}"] = winners
 
-        with open("hall_of_fame.json", "w") as bot_data:
-            json.dump(data, bot_data, indent=4)
+        db["hall_of_fame"] = data
 
         await ctx.send(
             f"{member.mention} is the new Generation {generation} Champion")
@@ -711,11 +683,11 @@ class League(commands.Cog):
             return
 
         if generation == "6":
-            data_file = "gen6.json"
-            prof_file = "league_prof6.json"
+            data_file = "gen6"
+            prof_file = "league_prof6"
         elif generation == "7":
-            data_file = "gen7.json"
-            prof_file = "league_prof7.json"
+            data_file = "gen7"
+            prof_file = "league_prof7"
         else:
             await ctx.send(
                 f"Enter a valid Generation(6/7)\nUse `{prefix}help res` to know more."
@@ -730,8 +702,7 @@ class League(commands.Cog):
             endured2 = 0
             champ2 = ""
 
-            with open(data_file, "r") as bot_data:
-                data = json.load(bot_data)
+            data = db[data_file]
 
             if str(member.id) not in data:
                 await ctx.send(
@@ -747,8 +718,7 @@ class League(commands.Cog):
 
             data[str(member.id)]["Elite_Streak"] = empty_list
 
-            with open(data_file, "w") as bot_data:
-                json.dump(data, bot_data, indent=4)
+            db[data_file] = data
 
             await ctx.send(f"{member.mention}'s Elite Streak has been reseted."
                            )
@@ -757,20 +727,18 @@ class League(commands.Cog):
 
             if streak == 4:
 
-                with open(prof_file, "r") as champ_data:
-                    data1 = json.load(champ_data)
+                data1 = db[prof_file]
 
-                json_champ = data1["champion"]
+                db_champ = data1["champion"]
 
-                for mem in json_champ:
+                for mem in db_champ:
                     champ2 = await ctx.guild.fetch_member(int(mem))
                     endured2 = int(data1["champion"][str(mem)]["Saved"])
 
                 endured2 += 1
                 data1["champion"][str(champ2.id)]["Saved"] = endured2
 
-                with open(prof_file, "w") as champ_data:
-                    json.dump(data1, champ_data, indent=4)
+                db[prof_file] = data1
 
                 await channel.send(
                     f"{champ2.mention} has endured {endured2} match/es now.")
@@ -782,8 +750,7 @@ class League(commands.Cog):
         if role1 in member.roles:
 
             try:
-                with open(prof_file, "r") as champ_data1:
-                    data2 = json.load(champ_data1)
+                data2 = db[prof_file]
 
                 if data2['gym-leaders'][str(member.id)]:
                     pass
@@ -796,8 +763,7 @@ class League(commands.Cog):
 
         elif role2 in member.roles:
             try:
-                with open(prof_file, "r") as champ_data1:
-                    data2 = json.load(champ_data1)
+                data2 = db[prof_file]
 
                 if data2['elites'][str(member.id)]:
                     pass
@@ -818,13 +784,13 @@ class League(commands.Cog):
         prefix = server_prefix(ctx)
 
         if generation == "6":
-            data_file = "gen6.json"
+            data_file = "gen6"
             dex = "mons6.txt"
-            prof_file = "league_prof6.json"
+            prof_file = "league_prof6"
         elif generation == "7":
-            data_file = "gen7.json"
+            data_file = "gen7"
             dex = "mons7.txt"
-            prof_file = "league_prof7.json"
+            prof_file = "league_prof7"
         else:
             await ctx.send(
                 f"Enter a valid Generation(6/7)\nUse `{prefix}help et` to know more."
@@ -844,8 +810,7 @@ class League(commands.Cog):
 
         async def et():
 
-            with open(data_file, "r") as bot_data:
-                data = json.load(bot_data)
+            data = db[data_file]
 
             if data[str(member.id)]["Elite_Streak"] != empty_list:
                 await ctx.send("You cannot register your elite team when you have streak.")
@@ -906,8 +871,7 @@ class League(commands.Cog):
             submitted = ", ".join(elite_pool)
             data[str(member.id)]["Elite_Pool"] = list(elite_pool)
 
-            with open(data_file, "w") as bot_data:
-                json.dump(data, bot_data, indent=4)
+            db[data_file] = data
 
             await ctx.send(
                 f"Generation {generation} Elite Pool of {member.mention} has been submitted.\nSubmitted: {submitted}"
@@ -920,8 +884,7 @@ class League(commands.Cog):
         if role1 in member.roles:
 
             try:
-                with open(prof_file, "r") as champ_data1:
-                    data2 = json.load(champ_data1)
+                data2 = db[prof_file]
 
                 if data2['gym-leaders'][str(member.id)]:
                     pass
@@ -934,8 +897,7 @@ class League(commands.Cog):
 
         elif role2 in member.roles:
             try:
-                with open(prof_file, "r") as champ_data1:
-                    data2 = json.load(champ_data1)
+                data2 = db[prof_file]
 
                 if data2['elites'][str(member.id)]:
                     pass
@@ -961,11 +923,11 @@ class League(commands.Cog):
             member = ctx.author
 
         if generation == "6":
-            data_file = "gen6.json"
-            prof_file = "league_prof6.json"
+            data_file = "gen6"
+            prof_file = "league_prof6"
         elif generation == "7":
-            data_file = "gen7.json"
-            prof_file = "league_prof7.json"
+            data_file = "gen7"
+            prof_file = "league_prof7"
         else:
             await ctx.send(
                 f"Enter a valid Generation(6/7)\nUse `{prefix}help epl` to know more."
@@ -977,8 +939,7 @@ class League(commands.Cog):
 
         async def ep():
 
-            with open(data_file, "r") as bot_data:
-                data = json.load(bot_data)
+            data = db[data_file]
 
             if str(member.id) not in data:
                 await ctx.send(
@@ -1007,8 +968,7 @@ class League(commands.Cog):
         if role1 in member.roles:
 
             try:
-                with open(prof_file, "r") as champ_data1:
-                    data2 = json.load(champ_data1)
+                data2 = db[prof_file]
 
                 if data2['gym-leaders'][str(member.id)]:
                     pass
@@ -1021,8 +981,7 @@ class League(commands.Cog):
 
         elif role2 in member.roles:
             try:
-                with open(prof_file, "r") as champ_data1:
-                    data2 = json.load(champ_data1)
+                data2 = db[prof_file]
 
                 if data2['elites'][str(member.id)]:
                     pass
@@ -1036,115 +995,113 @@ class League(commands.Cog):
         else:
             await ep()
 
-    # @commands.command(aliases=["r", "registration"])
-    # async def register(self, ctx, generation, *, raw_input):
+    @commands.command(aliases=["r", "registration"])
+    async def register(self, ctx, generation, *, raw_input):
 
-    #     prefix = server_prefix(ctx)
+        prefix = server_prefix(ctx)
 
-    #     if ctx.channel.name == "📝challengers-registration":
-    #         pass
-    #     else:
-    #         return
+        if ctx.channel.name == "📝challengers-registration":
+            pass
+        else:
+            return
 
-    #     illegal_found = 0
-    #     illegal_mon = []
-    #     pool_of_12 = set()
-    #     perfect_mons = set()
-    #     pokemon = set()
-    #     empty_list = []
-    #     user = ctx.author
-    #     channel = self.client.get_channel(802027595302174730)
+        illegal_found = 0
+        illegal_mon = []
+        pool_of_12 = set()
+        perfect_mons = set()
+        pokemon = set()
+        empty_list = []
+        user = ctx.author
+        channel = self.client.get_channel(802027595302174730)
 
-    #     if generation == "6":
-    #         illegal = "illegal6.txt"
-    #         data_file = "gen6.json"
-    #         dex = "mons6.txt"
-    #     elif generation == "7":
-    #         illegal = "illegal7.txt"
-    #         data_file = "gen7.json"
-    #         dex = "mons7.txt"
-    #     else:
-    #         await user.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help r` to know more.")
-    #         return
+        if generation == "6":
+            illegal = "illegal6.txt"
+            data_file = "gen6"
+            dex = "mons6.txt"
+        elif generation == "7":
+            illegal = "illegal7.txt"
+            data_file = "gen7"
+            dex = "mons7.txt"
+        else:
+            await user.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help r` to know more.")
+            return
 
-    #     raw_input = raw_input.replace(" ", "")
+        raw_input = raw_input.replace(" ", "")
 
-    #     raw_pokemon = set(raw_input.split(","))
+        raw_pokemon = set(raw_input.split(","))
 
-    #     for mons in raw_pokemon:
-    #         pokemon.add(mons.capitalize())
+        for mons in raw_pokemon:
+            pokemon.add(mons.capitalize())
 
-    #     with open(illegal, "r") as banned:
-    #         illegal_mons = banned.read().split("\n")
+        with open(illegal, "r") as banned:
+            illegal_mons = banned.read().split("\n")
 
-    #     with open(data_file, "r") as bot_data:
-    #         data = json.load(bot_data)
+        data = db[data_file]
 
-    #     if str(ctx.author.id) not in data:
-    #         data[str(ctx.author.id)] = {"Registered": list(), "Badges": list(), "Elite_Streak": list(),
-    #                                     "Reset_Token": 1, "Achievements": list()}
+        if str(ctx.author.id) not in data:
+            data[str(ctx.author.id)] = {"Registered": list(), "Badges": list(), "Elite_Streak": list(),
+                                        "Reset_Token": 1, "Achievements": list()}
 
-    #         with open(data_file, "w") as bot_data:
-    #             json.dump(data, bot_data, indent=4)
+            db[data_file] = data
 
-    #     if data[str(ctx.author.id)]["Registered"] != empty_list:
-    #         await user.send("You have already registered for this generation.")
-    #         return
+        if data[str(ctx.author.id)]["Registered"] != empty_list:
+            await user.send("You have already registered for this generation.")
+            return
 
-    #     with open(dex, "r") as file:
-    #         pokedex = file.read().split("\n")
+        with open(dex, "r") as file:
+            pokedex = file.read().split("\n")
 
-    #     for a in pokemon:
-    #         for b in pokedex:
-    #             if a.casefold() == b.casefold():
-    #                 pool_of_12.add(a.capitalize())
+        for a in pokemon:
+            for b in pokedex:
+                if a.casefold() == b.casefold():
+                    pool_of_12.add(a.capitalize())
 
-    #     not_valid = list(pokemon.difference(pool_of_12))
-    #     wrong = ", ".join(not_valid)
+        not_valid = list(pokemon.difference(pool_of_12))
+        wrong = ", ".join(not_valid)
 
-    #     if len(pokemon) != len(pool_of_12):
-    #         await user.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
-    #         return
+        if len(pokemon) != len(pool_of_12):
+            await user.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
+            return
 
-    #     for pmon in pool_of_12:
-    #         for mons in illegal_mons:
-    #             if pmon.casefold() == mons.casefold():
-    #                 illegal_mon.append(pmon.capitalize())
-    #                 illegal_found += 1
-    #             else:
-    #                 perfect_mons.add(pmon.capitalize())
+        for pmon in pool_of_12:
+            for mons in illegal_mons:
+                if pmon.casefold() == mons.casefold():
+                    illegal_mon.append(pmon.capitalize())
+                    illegal_found += 1
+                else:
+                    perfect_mons.add(pmon.capitalize())
 
-    #     if illegal_found >= 1:
-    #         not_legal = ", ".join(illegal_mon)
-    #         await user.send(
-    #             f"Your team is not valid because it contains {not_legal} which is/are in higher tier than OU")
-    #         return
+        if illegal_found >= 1:
+            not_legal = ", ".join(illegal_mon)
+            await user.send(
+                f"Your team is not valid because it contains {not_legal} which is/are in higher tier than OU")
+            return
 
-    #     if len(perfect_mons) < 12:
-    #         await user.send("You Pool contains less than 12 Pokémon")
-    #         return
-    #     elif len(perfect_mons) > 12:
-    #         await user.send("You Pool contains more than 12 Pokémon")
-    #         return
+        if len(perfect_mons) < 12:
+            await user.send("You Pool contains less than 12 Pokémon")
+            return
+        elif len(perfect_mons) > 12:
+            await user.send("You Pool contains more than 12 Pokémon")
+            return
 
-    #     submitted = "\n".join(perfect_mons)
+        submitted = "\n".join(perfect_mons)
 
-    #     data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
-    #     with open(data_file, "w") as bot_data:
-    #         json.dump(data, bot_data, indent=4)
+        data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
 
-    #     msg = await ctx.send(
-    #         f"{ctx.author.mention}'s Generation {generation} Pool has been submitted...\nSubmitted:\n{submitted}")
+        db[data_file] = data
 
-    #     await user.send(f"Your Generation {generation} Pool have been Submitted.\n{submitted}")
+        msg = await ctx.send(
+            f"{ctx.author.mention}'s Generation {generation} Pool has been submitted...\nSubmitted:\n{submitted}")
 
-    #     await channel.send(f"{ctx.author.mention}'s' Generation {generation} Pool have been Submitted.\n{submitted}")
+        await user.send(f"Your Generation {generation} Pool have been Submitted.\n{submitted}")
 
-    #     role = discord.utils.get(ctx.guild.roles, name="challengers")
-    #     await ctx.author.add_roles(role)
+        await channel.send(f"{ctx.author.mention}'s' Generation {generation} Pool have been Submitted.\n{submitted}")
 
-    #     await asyncio.sleep(3)
-    #     await msg.delete()
+        role = discord.utils.get(ctx.guild.roles, name="challengers")
+        await ctx.author.add_roles(role)
+
+        await asyncio.sleep(3)
+        await msg.delete()
 
     # @commands.command(aliases=["rs", "restart"])
     # async def reset(self, ctx, generation, *, raw_input):
@@ -1163,11 +1120,11 @@ class League(commands.Cog):
 
     #     if generation == "6":
     #         illegal = "illegal6.txt"
-    #         data_file = "gen6.json"
+    #         data_file = "gen6"
     #         dex = "mons6.txt"
     #     elif generation == "7":
     #         illegal = "illegal7.txt"
-    #         data_file = "gen7.json"
+    #         data_file = "gen7"
     #         dex = "mons7.txt"
     #     else:
     #         await user.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help rs` to know more.")
@@ -1180,8 +1137,7 @@ class League(commands.Cog):
     #     with open(illegal, "r") as banned:
     #         illegal_mons = banned.read().split("\n")
 
-    #     with open(data_file, "r") as bot_data:
-    #         data = json.load(bot_data)
+    #     data = db[data_file]
 
     #     if str(ctx.author.id) not in data:
     #         await user.send("You haven't registered for this generation yet.")
@@ -1195,6 +1151,7 @@ class League(commands.Cog):
 
     #     with open(dex, "r") as file:
     #         pokedex = file.read().split("\n")
+
     #     for a in pokemon:
     #         for b in pokedex:
     #             if a.casefold() == b.casefold():
@@ -1227,8 +1184,7 @@ class League(commands.Cog):
     #         await user.send("You Pool contains more than 12 Pokémon")
     #     else:
 
-    #         with open(data_file, "r") as bot_data:
-    #             data = json.load(bot_data)
+    #         data = db[data_file]
 
     #         prev_pool = set(data[str(ctx.author.id)]["Registered"])
     #         submitted = ", ".join(perfect_mons)
@@ -1246,17 +1202,16 @@ class League(commands.Cog):
     #             await user.send(f"Your league reset is successful and your new pool has been submitted.\n{submitted}")
     #             await ctx.send(f"{ctx.author.mention} has restarted league.\nNew Pool:{submitted}")
 
-    #             with open(data_file, "r") as bot_data:
-    #                 data = json.load(bot_data)
+    #             data = db[data_file]
 
     #             data[str(ctx.author.id)] = {"Registered": list(), "Badges": list(), "Elite_Streak": list(),
     #                                         "Reset_Token": available_reset, "Achievements": list()}
-    #             with open(data_file, "w") as bot_data:
-    #                 json.dump(data, bot_data, indent=4)
+
+    #             db[data_file] = data
 
     #             data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
-    #             with open(data_file, "w") as bot_data:
-    #                 json.dump(data, bot_data, indent=4)
+
+    #             db[data_file] = data
 
     # @commands.command(aliases=["ct"])
     # async def check_team(self, ctx, generation, member: discord.Member, *, raw_input):
@@ -1269,10 +1224,10 @@ class League(commands.Cog):
     #     empty_list = []
 
     #     if generation == "6":
-    #         data_file = "gen6.json"
+    #         data_file = "gen6"
     #         dex = "mons6.txt"
     #     elif generation == "7":
-    #         data_file = "gen7.json"
+    #         data_file = "gen7"
     #         dex = "mons7.txt"
     #     else:
     #         await ctx.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help ct` to know more.")
@@ -1282,8 +1237,7 @@ class League(commands.Cog):
     #     for mons in raw_pokemon:
     #         pokemon.add(mons.capitalize())
 
-    #     with open(data_file, "r") as bot_data:
-    #         data = json.load(bot_data)
+    #     data = db[data_file]
 
     #     if str(ctx.author.id) not in data:
     #         await ctx.send(f"{member} has not registered for the current generation")
@@ -1299,6 +1253,7 @@ class League(commands.Cog):
 
     #     with open(dex, "r") as file:
     #         pokedex = file.read().split("\n")
+
     #         for a in pokemon:
     #             for b in pokedex:
     #                 if a.casefold() == b.casefold():
@@ -1335,8 +1290,7 @@ class League(commands.Cog):
         else:
             return
 
-        with open("mod.json", "r") as bot_data:
-            data = json.load(bot_data)
+        data = db["mod"]
 
         if data["start"] == "yes":
             await ctx.send("Swapping Pokémon has been closed")
@@ -1350,18 +1304,17 @@ class League(commands.Cog):
 
         if generation == "6":
             illegal = "illegal6.txt"
-            data_file = "gen6.json"
+            data_file = "gen6"
             dex = "mons6.txt"
         elif generation == "7":
             illegal = "illegal7.txt"
-            data_file = "gen7.json"
+            data_file = "gen7"
             dex = "mons7.txt"
         else:
             await ctx.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help swap` to know more.")
             return
 
-        with open(data_file, "r") as bot_data:
-            data = json.load(bot_data)
+        data = db[data_file]
 
         if str(ctx.author.id) not in data:
             await user.send("You are not registered for the current generation.")
@@ -1406,13 +1359,12 @@ class League(commands.Cog):
         pool.remove(prev_mon.capitalize())
         pool.append(new_mon.capitalize())
         data[str(ctx.author.id)]["Registered"] = pool
-        with open(data_file, "w") as bot_data:
-            json.dump(data, bot_data, indent=4)
+
+        db[data_file] = data
 
         msg = await ctx.send(f"{new_mon.capitalize()} has been swapped with {prev_mon.capitalize()}")
 
-        with open(data_file, "r") as bot_data:
-            data = json.load(bot_data)
+        data = db[data_file]
 
         submitted = data[str(ctx.author.id)]["Registered"]
         new_pool = ", ".join(submitted)
@@ -1440,15 +1392,14 @@ class League(commands.Cog):
             pass
 
         if generation == "6":
-            data_file = "gen6.json"
+            data_file = "gen6"
         elif generation == "7":
-            data_file = "gen7.json"
+            data_file = "gen7"
         else:
             await ctx.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help pool` to know more.")
             return
 
-        with open(data_file, "r") as bot_data:
-            data = json.load(bot_data)
+        data = db[data_file]
 
         if str(member.id) not in data:
             await ctx.send(f"{member} is not registered for the current generation.")
@@ -1506,8 +1457,7 @@ class League(commands.Cog):
 
         em.set_thumbnail(url=ctx.guild.icon_url)
 
-        with open("hall_of_fame.json", "r") as bot_data:
-            data = json.load(bot_data)
+        data = db["hall_of_fame"]
 
         for league in data:
             em.add_field(name=league,
@@ -1529,12 +1479,11 @@ class League(commands.Cog):
     @commands.has_any_role("moderator", "admin")
     async def swap_close(self, ctx):
 
-        with open("mod.json", "r") as bot_data:
-            data = json.load(bot_data)
+        data = db["mod"]
 
         data["start"] = "yes"
-        with open("mod.json", "w") as bot_data:
-            json.dump(data, bot_data, indent=4)
+
+        db["mod"] = data
 
         await ctx.send("Pokémon Swap has been closed now")
 
@@ -1542,8 +1491,7 @@ class League(commands.Cog):
     @commands.has_any_role("moderator", "admin")
     async def restart_league(self, ctx, *, title):
 
-        with open("gen6.json", "r") as bot_data:
-            data = json.load(bot_data)
+        data = db["gen6"]
 
         for items in data:
             achievements = data[items]["Achievements"]
@@ -1554,14 +1502,12 @@ class League(commands.Cog):
                 "Reset_Token": 1,
                 "Achievements": list()
             }
-            with open("gen6.json", "w") as bot_data:
-                json.dump(data, bot_data, indent=4)
-            data[items]["Achievements"] = achievements
-            with open("gen6.json", "w") as bot_data:
-                json.dump(data, bot_data, indent=4)
 
-        with open("gen7.json", "r") as bot_data:
-            data = json.load(bot_data)
+            db["gen6"] = data
+            data[items]["Achievements"] = achievements
+            db["gen6"] = data
+
+        data = db["gen7"]
 
         for items in data:
             achievements = data[items]["Achievements"]
@@ -1572,23 +1518,16 @@ class League(commands.Cog):
                 "Reset_Token": 1,
                 "Achievements": list()
             }
-            with open("gen7.json", "w") as bot_data:
-                json.dump(data, bot_data, indent=4)
+
+            db["gen7"] = data
             data[items]["Achievements"] = achievements
-            with open("gen7.json", "w") as bot_data:
-                json.dump(data, bot_data, indent=4)
+            db["gen7"] = data
 
-        with open("mod.json", "r") as bot_data:
-            data = json.load(bot_data)
-
+        data = db["mod"]
         data["start"] = "no"
-
-        with open("mod.json", "w") as bot_data:
-            json.dump(data, bot_data, indent=4)
-
-        data["current_league"] = title
-        with open("mod.json", "w") as bot_data:
-            json.dump(data, bot_data, indent=4)
+        db["mod"] = data
+        data["current_league"] = title 
+        db["mod"] = data
 
         for filename in os.listdir("./cogs"):
             if filename.endswith(".py"):

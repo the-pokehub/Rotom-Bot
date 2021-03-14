@@ -4,6 +4,9 @@ import googletrans
 from googletrans import Translator
 from better_profanity import profanity
 from googlesearch import search
+from PyDictionary import PyDictionary
+
+dictionary=PyDictionary()
 
 translator = Translator()
 
@@ -114,6 +117,43 @@ class Misc(commands.Cog):
             for i in results:
                 await ctx.send(i)
             return
+
+    @commands.command()
+    async def invite(self, ctx):
+        
+        em = discord.Embed(title="Here's the link to invite the bot 😉", description="https://discord.com/api/oauth2/authorize?client_id=783598148039868426&permissions=8&scope=bot", colour=discord.Colour.green())
+
+        await ctx.send(embed=em)
+
+    @commands.command(aliases=["meaning", "dictionary"])
+    async def dict(self, ctx, *, word):
+
+        mean = dictionary.meaning(word, disable_errors=True)
+
+
+        if mean:
+            em = discord.Embed(title=f"Meaning of {word.capitalize()}", colour=discord.Colour.green())
+
+            em.set_thumbnail(url="https://cdn.discordapp.com/attachments/819090822884491274/820149994572218368/dictionary.jpg")
+
+            for i in mean:
+                em.add_field(name=i, value="\n".join(mean[i]), inline=False)
+
+            syono = dictionary.synonym(word)
+            ayono = dictionary.antonym(word)
+
+            if syono:
+                em.add_field(name="Synonyms:", value=", ".join(syono))
+
+            if ayono:
+                em.add_field(name="Antonyms:", value=", ".join(ayono))
+
+        else:
+            em = discord.Embed(title="❌Error Nothing Found!", colour=discord.Colour.green())
+
+
+
+        await ctx.send(embed=em)
 
         
 def setup(client):

@@ -2,6 +2,11 @@ import discord
 from discord.ext import commands
 import asyncio
 from better_profanity import profanity
+from replit import db
+import json
+import os
+
+file = ""
 
 
 class Mod(commands.Cog):
@@ -109,8 +114,8 @@ class Mod(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
-    async def history(self, ctx, member: discord.Member):
-        async for msg in member.history(limit=1):
+    async def history(self, ctx, member: discord.Member, limit=1):
+        async for msg in member.history(limit=limit):
             await ctx.send(msg.content)
 
     @commands.command()
@@ -188,6 +193,51 @@ class Mod(commands.Cog):
         await member.remove_roles(role)
         await ctx.send(f"{member.mention} has been unmuted!")
         return
+
+    @commands.command()
+    @commands.has_permissions(manage_guild=True)
+    async def tour(self, ctx):
+
+        gen6 = db["tour"]["gen6"]
+        gen7 = db["tour"]["gen7"]
+
+        await ctx.send(f"Gen VI: {gen6}\nGen VII: {gen7}")
+        await ctx.send(f"Total Gen VI = {len(gen6)}, Gen VII = {len(gen7)}")
+
+    @commands.command()
+    @commands.is_owner()
+    async def manage(self, ctx, filename):
+        global file
+
+        file = filename
+
+        try:
+            data = db[filename]
+            
+            with open("manage.json", "w") as bot_data:
+                json.dump(data, bot_data)
+            
+            await ctx.send(f"{filename} has been transferred")
+            
+        except KeyError:
+            await ctx.send(f"No DataBase named {filename} found")
+
+    @commands.command()
+    @commands.is_owner()
+    async def rewrite(self, ctx):
+
+        global file
+
+        filename = file
+
+        with open("manage.json", "r") as bot_data:
+            data = json.load(bot_data)
+
+        db[filename] = data
+
+        file = ""
+
+        await ctx.send(f"{filename} has been rewriten")
 
 
 def setup(client):
