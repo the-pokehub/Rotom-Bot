@@ -1,4 +1,3 @@
-import json
 import discord
 from discord.ext import commands
 import asyncio
@@ -32,6 +31,13 @@ elite_streak = {
 class League(commands.Cog):
     def __init__(self, client):
         self.client = client
+
+    # def cog_check(self, ctx: commands.Context):
+    #     if not ctx.guild:
+    #         raise commands.NoPrivateMessage('This command can\'t be used in DM channels.')
+        
+    #     if ctx.guild.id != 676777139776913408:
+    #         return
 
     @commands.command(aliases=["ab"])
     @commands.has_any_role("gym-leaders", "admin", "moderator")
@@ -1473,7 +1479,43 @@ class League(commands.Cog):
                              value=f"{value}\u200b\n",
                              inline=True)
 
-        await ctx.send(embed=em)
+        message = await ctx.send(embed=em)
+
+        # contents = ["This is page 1!", "This is page 2!", "This is page 3!", "This is page 4!"]
+        # pages = 4
+        # cur_page = 1
+        # # message = await ctx.send(f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
+        # # getting the message object for editing and reacting
+
+        # await message.add_reaction("◀️")
+        # await message.add_reaction("▶️")
+
+        # def check(reaction, user):
+        #     return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
+
+        # while True:
+        #     try:
+        #         reaction, user = await self.client.wait_for("reaction_add", timeout=60, check=check)
+        #         # waiting for a reaction to be added - times out after x seconds, 60 in this
+        #         # example
+
+        #         if str(reaction.emoji) == "▶️" and cur_page != pages:
+        #             cur_page += 1
+        #             await message.edit(content=f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
+        #             await message.remove_reaction(reaction, user)
+
+        #         elif str(reaction.emoji) == "◀️" and cur_page > 1:
+        #             cur_page -= 1
+        #             await message.edit(content=f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
+        #             await message.remove_reaction(reaction, user)
+
+        #         else:
+        #             await message.remove_reaction(reaction, user)
+        #             # removes reactions if the user tries to go forward on the last page or
+        #             # backwards on the first page
+        #     except asyncio.TimeoutError:
+        #         pass
+        #         # ending the loop if user doesn't react after x seconds
 
     @commands.command(aliases=["sc"])
     @commands.has_any_role("moderator", "admin")

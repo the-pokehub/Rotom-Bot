@@ -3,11 +3,15 @@ import functools
 import itertools
 import math
 import random
+import os
 
 import discord
 import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
+from lyricsgenius import Genius
+
+genius = Genius(os.environ.get("GENIUS_TOKEN"))
 
 
 class VoiceError(Exception):
@@ -277,23 +281,22 @@ class Music(commands.Cog):
     async def cog_before_invoke(self, ctx: commands.Context):
         ctx.voice_state = self.get_voice_state(ctx)
 
-    async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
-        await ctx.send('An error occurred: {}'.format(str(error)))
+    # async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
+    #     await ctx.send('An error occurred: {}'.format(str(error)))
 
-    @commands.command(name='join', invoke_without_subcommand=True)
-    async def _join(self, ctx: commands.Context):
-        """Joins a voice channel."""
+    # @commands.command(name='join', invoke_without_subcommand=True)
+    # async def _join(self, ctx: commands.Context):
+    #     """Joins a voice channel."""
 
-        destination = ctx.author.voice.channel
-        if ctx.voice_state.voice:
-            await ctx.voice_state.voice.move_to(destination)
-            return
+    #     destination = ctx.author.voice.channel
+    #     if ctx.voice_state.voice:
+    #         await ctx.voice_state.voice.move_to(destination)
+    #         return
 
-        ctx.voice_state.voice = await destination.connect()
+    #     ctx.voice_state.voice = await destination.connect()
 
-    @commands.command(name='summon')
-    @commands.has_permissions(manage_guild=True)
-    async def _summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
+    @commands.command(name='summon', aliases=["join"])
+    async def _join(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         """Summons the bot to a voice channel.
 
         If no channel was specified, it joins your channel.
@@ -308,34 +311,41 @@ class Music(commands.Cog):
             return
 
         ctx.voice_state.voice = await destination.connect()
+        await ctx.send(f"Joined {destination}")
 
     @commands.command(name='leave', aliases=['disconnect', 'dc'])
-    @commands.has_permissions(manage_guild=True)
     async def _leave(self, ctx: commands.Context):
         """Clears the queue and leaves the voice channel."""
 
         if not ctx.voice_state.voice:
             return await ctx.send('Not connected to any voice channel.')
+        
+        if not ctx.author.voice:
+            return await ctx.send("You are not connected to any voice channel.")
+
+        channel = ctx.author.voice.channel
+        if self.bot.user not in channel.members:
+            return await ctx.send("You are not connected to the voice channel the bot currently is joined into.")
 
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
         await ctx.message.add_reaction("👋")
 
 
-    @commands.command(name='volume')
-    async def _volume(self, ctx: commands.Context, *, volume: int):
-        """Sets the volume of the player."""
+    # @commands.command(name='volume')
+    # async def _volume(self, ctx: commands.Context, *, volume: int):
+    #     """Sets the volume of the player."""
 
-        if not ctx.voice_state.is_playing:
-            return await ctx.send('Nothing being played at the moment.')
+    #     if not ctx.voice_state.is_playing:
+    #         return await ctx.send('Nothing being played at the moment.')
 
-        if 0 <= volume <= 100:
+    #     if 0 <= volume <= 100:
 
-            ctx.voice_state.volume = volume / 100
-            await ctx.send('Volume of the player set to {}%'.format(volume))
+    #         ctx.voice_state.volume = volume / 100
+    #         await ctx.send('Volume of the player set to {}%'.format(volume))
 
-        else:
-            return await ctx.send('Volume must be between 0 and 100')
+    #     else:
+    #         return await ctx.send('Volume must be between 0 and 100')
 
     @commands.command(name='now', aliases=['current', 'playing', "np"])
     async def _now(self, ctx: commands.Context):
@@ -344,7 +354,6 @@ class Music(commands.Cog):
         await ctx.send(embed=ctx.voice_state.current.create_embed())
 
     @commands.command(name='pause')
-    @commands.has_permissions(manage_guild=True)
     async def _pause(self, ctx: commands.Context):
         """Pauses the currently playing song."""
 
@@ -353,7 +362,6 @@ class Music(commands.Cog):
             await ctx.message.add_reaction('⏯')
 
     @commands.command(name='resume')
-    @commands.has_permissions(manage_guild=True)
     async def _resume(self, ctx: commands.Context):
         """Resumes a currently paused song."""
 
@@ -362,7 +370,6 @@ class Music(commands.Cog):
             await ctx.message.add_reaction('⏯')
 
     @commands.command(name='stop')
-    @commands.has_permissions(manage_guild=True)
     async def _stop(self, ctx: commands.Context):
         """Stops playing song and clears the queue."""
 
@@ -481,6 +488,43 @@ class Music(commands.Cog):
 
                 await ctx.voice_state.songs.put(song)
                 await ctx.send('Enqueued {}'.format(str(source)))
+
+    @commands.command()
+    async def lyrics(self, ctx, * , song=None):
+
+        if song is None:
+            if not ctx.voice_state.is_playing:
+                return await ctx.send('Not playing any music right now...')
+            else:
+                embed = ctx.voice_state.current.create_embed()
+                des = embed.description.lower()
+                des = des.replace("`","")
+                des = des.replace("css","")
+                des = des.replace("\n","")
+                des = des.replace("lyrics","")
+                des = des.split("ft")
+                if type(des) == list:
+                    des = des[0]
+
+                print(des)
+                song = des
+
+        songs = genius.search_songs(song)
+        for req in songs['hits']:
+            url = req['result']['url']
+            title = req["result"]["title"]
+            song_lyrics = genius.lyrics(song_url=url)
+            # print(song_lyrics)
+            em = discord.Embed(title=title, description=song_lyrics)
+            await ctx.send(embed=em)
+            # await ctx.send(title)
+            break
+
+    # @commands.Cog.listener()
+    # async def on_disconnect(self):
+    #     if self.bot.voice_state.is_playing and self.bot.voice_state.voice.is_playing():
+    #         self.bot.voice_state.voice.pause()
+
 
     @_join.before_invoke
     @_play.before_invoke

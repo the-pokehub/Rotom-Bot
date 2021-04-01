@@ -1,10 +1,8 @@
 import discord
 from discord.ext import commands
 import asyncio
-from better_profanity import profanity
 from replit import db
 import json
-import os
 
 file = ""
 
@@ -49,7 +47,7 @@ class Mod(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member, *, reason):
+    async def ban(self, ctx, member: discord.Member, *, reason=None):
 
         if ctx.author == member:
             await ctx.send("You cannot ban yourself.")
@@ -95,9 +93,9 @@ class Mod(commands.Cog):
                 await ctx.send(f'Unbanned {user.mention}')
                 return
 
-    @commands.command()
+    @commands.command(aliases=['clear'])
     @commands.has_permissions(manage_messages=True)
-    async def clear(self, ctx, amount=5):
+    async def purge(self, ctx, amount=5):
         await ctx.channel.purge(limit=amount + 1)
         msg = await ctx.send(f"I have deleted {amount} messages.")
         await asyncio.sleep(3)
@@ -113,14 +111,14 @@ class Mod(commands.Cog):
             await ctx.send(f"ID: {ji.id}, Emoji: `{ji}`")
 
     @commands.command()
-    @commands.has_permissions(manage_guild=True)
+    @commands.is_owner()
     async def history(self, ctx, member: discord.Member, limit=1):
         async for msg in member.history(limit=limit):
             await ctx.send(msg.content)
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
-    async def unmute(self, ctx, member:discord.Member):
+    async def unmute(self, ctx, member: discord.Member):
 
         role = discord.utils.get(ctx.guild.roles, name="Muted")
 
@@ -132,12 +130,20 @@ class Mod(commands.Cog):
             await member.remove_roles(role)
             await ctx.send(f"{member.mention} has been unmuted!")
 
-
     @commands.command()
     @commands.has_permissions(manage_guild=True)
-    async def mute(self, ctx, member:discord.Member, time=None):
+    async def mute(self, ctx, member: discord.Member, *, time=None):
 
         role = discord.utils.get(ctx.guild.roles, name="Muted")
+
+        if not role:
+            perms = discord.Permissions(send_messages=False, add_reactions=False)
+            await ctx.guild.create_role(name="Muted", permissions=perms)
+
+            role = discord.utils.get(ctx.guild.roles, name="Muted")
+
+        for channels in ctx.guild.channels:
+            await channels.set_permissions(role, send_messages=False, add_reactions=False)
 
         if role in member.roles:
             await ctx.send(f"{member.mention} is already Muted!")
@@ -149,7 +155,8 @@ class Mod(commands.Cog):
             return
 
         else:
-            if "s" in time:
+            time = time.lower()
+            if "s" in time or "sec" in time or "seconds" in time or "second" in time:
                 int_time = ''.join(filter(lambda i: i.isdigit(), time))
                 wait = int(int_time) * 1
 
@@ -158,7 +165,7 @@ class Mod(commands.Cog):
 
                 await asyncio.sleep(wait)
 
-            elif "m" in time:
+            elif "m" in time or "min" in time or "minute" in time or "minutes" in time:
                 int_time = ''.join(filter(lambda i: i.isdigit(), time))
                 wait = int(int_time) * 60
 
@@ -167,7 +174,7 @@ class Mod(commands.Cog):
 
                 await asyncio.sleep(wait)
 
-            elif "h" in time:
+            elif "h" in time or "hour" in time or "hours" in time or "hr" in time or "hrs" in time:
                 int_time = ''.join(filter(lambda i: i.isdigit(), time))
                 wait = int(int_time) * 60 * 60
 
@@ -176,7 +183,7 @@ class Mod(commands.Cog):
 
                 await asyncio.sleep(wait)
 
-            elif "d" in time:
+            elif "d" in time or "day" in time or "days" in time:
                 int_time = ''.join(filter(lambda i: i.isdigit(), time))
                 wait = int(int_time) * 60 * 60 * 24
 
@@ -184,60 +191,33 @@ class Mod(commands.Cog):
                 await ctx.send(f"{member.mention} has been muted for {int_time} days!")
 
                 await asyncio.sleep(wait)
-            
+
             else:
                 await member.add_roles(role)
                 await ctx.send(f"{member.mention} has been muted!")
                 return
-        
+
         await member.remove_roles(role)
         await ctx.send(f"{member.mention} has been unmuted!")
         return
 
-    @commands.command()
+    # @commands.command()
+    # @commands.has_permissions(manage_guild=True)
+    # async def tour(self, ctx):
+
+    #     gen6 = db["tour"]["gen6"]
+    #     gen7 = db["tour"]["gen7"]
+
+    #     await ctx.send(f"Gen VI: {gen6}\nGen VII: {gen7}")
+    #     await ctx.send(f"Total Gen VI = {len(gen6)}, Gen VII = {len(gen7)}")
+
+    @commands.command(aliases=["change-prefix", "prefix"])
     @commands.has_permissions(manage_guild=True)
-    async def tour(self, ctx):
-
-        gen6 = db["tour"]["gen6"]
-        gen7 = db["tour"]["gen7"]
-
-        await ctx.send(f"Gen VI: {gen6}\nGen VII: {gen7}")
-        await ctx.send(f"Total Gen VI = {len(gen6)}, Gen VII = {len(gen7)}")
-
-    @commands.command()
-    @commands.is_owner()
-    async def manage(self, ctx, filename):
-        global file
-
-        file = filename
-
-        try:
-            data = db[filename]
-            
-            with open("manage.json", "w") as bot_data:
-                json.dump(data, bot_data)
-            
-            await ctx.send(f"{filename} has been transferred")
-            
-        except KeyError:
-            await ctx.send(f"No DataBase named {filename} found")
-
-    @commands.command()
-    @commands.is_owner()
-    async def rewrite(self, ctx):
-
-        global file
-
-        filename = file
-
-        with open("manage.json", "r") as bot_data:
-            data = json.load(bot_data)
-
-        db[filename] = data
-
-        file = ""
-
-        await ctx.send(f"{filename} has been rewriten")
+    async def change_prefix(self, ctx, new_prefix):
+        prefixes = db["prefixes"]
+        prefixes[(str(ctx.guild.id))] = new_prefix
+        db["prefixes"] = prefixes
+        await ctx.send(f"Server Prefix has been change to {new_prefix}")
 
 
 def setup(client):

@@ -4,7 +4,11 @@ import os
 import keep_alive
 from itertools import cycle
 from replit import db
+from better_profanity import profanity
+import asyncio
+import datetime
 
+profanity.load_censor_words_from_file("swear_words.txt")
 
 save = db["mod"]
 
@@ -12,7 +16,7 @@ save = db["mod"]
 def get_prefix(client, message):
     prefixes = db["prefixes"]
 
-    return prefixes[str(message.guild.id)]
+    return str(prefixes[str(message.guild.id)])
 
 
 prefix = get_prefix
@@ -48,103 +52,81 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    
     if message.author == client.user:
         return
 
-    if isinstance(message.channel, discord.DMChannel):
-        await message.channel.send(
-            "Use command in Server...\nhttps://discord.gg/n5zdSC6Ftb")
-        return
+    if profanity.contains_profanity(message.content):
+        if message.author.id == 549415697726439434:
+            return 
+            
+        if message.guild.id != 676777139776913408:
+            return
 
+        if message.author.bot:
+            return
+
+        try:
+            await message.delete()
+        except discord.errors.NotFound:
+            pass
+
+        embed = discord.Embed(description=f"**{message.author.mention} you are not allowed to say that.**",
+                              colour=discord.Colour.red())
+
+        msg = await message.channel.send(embed=embed)
+
+        em = discord.Embed(title="Deleted Message",
+                           description=f"From {message.author.mention} in <#{message.channel.id}>",
+                           colour=discord.Colour.red())
+
+        em.add_field(name="Message", value=message.content)
+        em.timestamp = datetime.datetime.utcnow()
+
+        channel = client.get_channel(780981187317465119)
+        await channel.send(embed=em)
+
+        await asyncio.sleep(10)
+        try:
+            await msg.delete()
+        except discord.errors.NotFound:
+            pass
 
     if message.channel.id == 775388498919948299:
         if "you just advanced to level 15!" in message.content:
             member_id = ''.join(filter(lambda i: i.isdigit(), message.content))
 
-            mem = await message.guild.fetch_member(int(member_id[:-2]))            
+            mem = await message.guild.fetch_member(int(member_id[:-2]))
             role = discord.utils.get(message.guild.roles, name="advanced-trainers")
 
             await mem.add_roles(role)
 
-    if message.channel.id == 818452656670375978:
-        msg = message.content
+    # if message.channel.id == 818452656670375978:
+    #     msg = message.content.lower()
 
-        if "gen" in msg:
+    #     if "gen" in msg:
 
-            gen6 = db["tour"]["gen6"]
-            gen7 = db["tour"]["gen7"]
+    #         gen6 = db["tour"]["gen6"]
+    #         gen7 = db["tour"]["gen7"]
 
-            n = msg.split("gen")
+    #         n = msg.split("gen")
 
-            if len(n) > 3:
-                pass
-            else:
-                if "6" in n[1]:
-                    gen6.append(msg.author.mention)
-                if "7" in n[1]:
-                    gen7.append(msg.author.mention)
+    #         if len(n) > 3:
+    #             pass
+    #         else:
+    #             if "6" in n[1]:
+    #                 gen6.append(message.author.mention)
+    #             if "7" in n[1]:
+    #                 gen7.append(message.author.mention)
 
-                if len(n) == 3:
-                    if "6" in n[2]:
-                        gen6.append(msg.author.mention)
-                    if "7" in n[2]:
-                        gen7.append(msg.author.mention)
+    #             if len(n) == 3:
+    #                 if "6" in n[2]:
+    #                     gen6.append(message.author.mention)
+    #                 if "7" in n[2]:
+    #                     gen7.append(message.author.mention)
 
-            db["tour"]["gen6"] = gen6
-            db["tour"]["gen7"] = gen7
-    
-
-    # if ":gengar:" in message.content:
-    #     emoji = "🪥"
-    #     try:
-    #         await message.add_reaction(emoji)
-    #     except discord.errors.NotFound:
-    #         pass
-
-    # if ":hehe:" in message.content:
-    #     emoji = "🪥"
-    #     try:
-    #         await message.add_reaction(emoji)
-    #     except discord.errors.NotFound:
-    #         pass
-    
-    # if ":sutta:" in message.content:
-    #     # emoji = "🚭"
-    #     try:
-    #         # await message.add_reaction(emoji)
-    #         await message.delete()
-    #     except discord.errors.NotFound:
-    #         pass
-
-    # if ":pepe_smoke:" in message.content:
-    #     # emoji = "🚭"
-    #     try:
-    #         # await message.add_reaction(emoji)
-    #         await message.delete()
-    #     except discord.errors.NotFound:
-    #         pass
-
-    # if "🚬" in message.content:
-    #     # emoji = "🚭"
-    #     try:
-    #         # await message.add_reaction(emoji)
-    #         await message.delete()
-    #     except discord.errors.NotFound:
-    #         pass
-
-    # if ":sed:" in message.content:
-    #     emoji = "🚰"
-    #     try:
-    #         await message.add_reaction(emoji)
-    #     except discord.errors.NotFound:
-    #         pass
-
-    # if ":is:" in message.content:
-    #     emoji = "♥"
-    #     try:
-    #         await message.add_reaction(emoji)
-    #     except discord.errors.NotFound:
-    #         pass
+    #         db["tour"]["gen6"] = gen6
+    #         db["tour"]["gen7"] = gen7
 
     # if message.author.id == 763666468222664744:
     #     emoji = "🐐"
@@ -152,46 +134,39 @@ async def on_message(message):
     #         await message.add_reaction(emoji)
     #     except discord.errors.NotFound:
     #         pass
-    
+
     # if message.channel.name == "💭opinions-and-requests":
     #     emoji1 = "<a:thumbs_up:796407963459780628>"
     #     emoji2 = "<a:thumbs_down:796407964033351800>"
-    #     await message.add_reaction(emoji1)
-    #     await message.add_reaction(emoji2)
+    #     try:
+    #         await message.add_reaction(emoji1)
+    #         await message.add_reaction(emoji2)
+    #     except discord.errors.NotFound:
+    #         pass
 
-    # if message.channel.name == "📝registration":
-    #     channel = message.channel
-    #     await channel.purge(limit=1)
+    # try:
+    #     if message.mentions[0] == client.user:
+    #         prefixes = db["prefixes"]
+    #         server_prefix = str(prefixes[str(message.guild.id)])
+    #         await message.channel.send(f"My prefix for this server is `{server_prefix}`")
+    # except IndexError:
+    #     pass
 
     await client.process_commands(message)
 
 
 @client.event
 async def on_guild_join(guild):
-
     prefixes = db["prefixes"]
     prefixes[str(guild.id)] = "."
     db["prefixes"] = prefixes
 
 
-
 @client.event
 async def on_guild_leave(guild):
-
     prefixes = db["prefixes"]
     prefixes.pop(str(guild.id))
     db["prefixes"] = prefixes
-
-
-
-@client.command()
-@commands.has_permissions(manage_guild=True)
-async def change_prefix(ctx, new_prefix):
-
-    prefixes = db["prefixes"]
-    prefixes[(str(ctx.guild.id))] = new_prefix
-    db["prefixes"] = prefixes
-    await ctx.send(f"Server Prefix has been change to {new_prefix}")
 
 
 @client.event
@@ -199,7 +174,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         pass
     else:
-        await ctx.send(f"{str(error).capitalize()}")
+        await ctx.send('An error occurred: {}'.format(str(error)))
 
 
 @client.command()
