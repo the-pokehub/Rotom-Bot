@@ -46,5 +46,12 @@ class Mod(commands.Cog):
 
         await ctx.send(f"{filename} has been rewritten")
 
+    @commands.command()
+    @commands.is_owner()
+    async def key(self, ctx): 
+        
+        keys = db.keys()   
+        await ctx.send(keys)
+
 def setup(client):
     client.add_cog(Mod(client))
