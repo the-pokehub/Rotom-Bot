@@ -471,36 +471,37 @@ class Game(commands.Cog):
         computer_action = random.choice(t)
         computer_action = computer_action.lower()
 
-        def check(ms):
-            return ms.author == ctx.author and ms.channel == ctx.channel
+        msg = await ctx.send("What's Your choice?\nRock(🪨), Paper(🧻) or Scissors(✂)")
 
-        msg = await ctx.send("What's Your choice?\nRock(r), Paper(p) or Scissors(s)...")
+        emoji1 = "🪨"
+        emoji2 = "🧻"
+        emoji3 = "✂"
 
-        # emoji1 = "🪨"
-        # emoji2 = "🧻"
-        # emoji3 = "✂"
+        await msg.add_reaction(emoji1)
+        await msg.add_reaction(emoji2)
+        await msg.add_reaction(emoji3)
 
-        # await msg.add_reaction(emoji1)
-        # await msg.add_reaction(emoji2)
-        # await msg.add_reaction(emoji3)
+        def check(reaction, user):
+                return user == ctx.author and str(reaction.emoji) in ["🪨", "🧻", "✂"]
 
         while True:
 
             try:
-                player = await self.client.wait_for("message",
+                reaction, user = await self.client.wait_for("reaction_add",
                                                    check=check,
-                                                   timeout=30.0)
+                                                   timeout=60)
 
-                user_action = player.content.lower()
-
-                if user_action == "r":
+                if str(reaction.emoji) == "🪨":
                     user_action = "rock"
-                elif user_action == "p":
+
+                elif str(reaction.emoji) == "🧻":
                     user_action = "paper"
-                elif user_action == "s":
+
+                elif str(reaction.emoji) == "✂":
                     user_action = "scissors"
+
                 else:
-                    user_action = user_action
+                    pass
 
                 if user_action == computer_action:
                     await ctx.send(f"Both players selected {user_action.capitalize()}. It's a tie!")

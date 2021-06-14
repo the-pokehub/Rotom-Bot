@@ -8,10 +8,10 @@ save = db["mod"]
 
 
 def server_prefix(msg):
-    prefixes = db["prefixes"]
-    s_prefix = prefixes[str(msg.guild.id)]
+	prefixes = db["prefixes"]
+	s_prefix = prefixes[str(msg.guild.id)]
 
-    return s_prefix
+	return s_prefix
 
 
 current_title = str(save["current_league"])
@@ -29,1555 +29,1596 @@ elite_streak = {
 
 
 class League(commands.Cog):
-    def __init__(self, client):
-        self.client = client
-
-    # def cog_check(self, ctx: commands.Context):
-    #     if not ctx.guild:
-    #         raise commands.NoPrivateMessage('This command can\'t be used in DM channels.')
-        
-    #     if ctx.guild.id != 676777139776913408:
-    #         return
+	def __init__(self, client):
+		self.client = client
 
-    @commands.command(aliases=["ab"])
-    @commands.has_any_role("gym-leaders", "admin", "moderator")
-    async def add_badge(self, ctx, generation, member: discord.Member, badge):
+	# def cog_check(self, ctx: commands.Context):
+	#     if not ctx.guild:
+	#         raise commands.NoPrivateMessage('This command can\'t be used in DM channels.')
 
-        prefix = server_prefix(ctx)
+	#     if ctx.guild.id != 676777139776913408:
+	#         return
 
-        obtained = []
-        valid_badges = []
-        empty_list = []
-        channel = self.client.get_channel(802027595302174730)
+	@commands.command(aliases=["ab"])
+	@commands.has_any_role("gym-leaders", "admin", "moderator")
+	async def add_badge(self, ctx, generation, member: discord.Member, badge):
 
-        if ctx.channel.name == "📝registration":
-            return
+		prefix = server_prefix(ctx)
 
-        if member == ctx.author:
-            await ctx.send("You cannot give yourself a badge...")
-            return
+		obtained = []
+		valid_badges = []
+		empty_list = []
+		channel = self.client.get_channel(802027595302174730)
 
-        if generation == "6":
-            data_file = "gen6"
-            badges_dict = badges_dict6
-            prof_file = "league_prof6"
-        elif generation == "7":
-            data_file = "gen7"
-            badges_dict = badges_dict7
-            prof_file = "league_prof7"
-        else:
-            await ctx.send(
-                f"Enter a valid Generation(6/7)\nUse `{prefix}help ab` to know more."
-            )
-            return
+		if ctx.channel.name == "📝registration":
+			return
 
-        for key in badges_dict.keys():
-            valid_badges.append(key.capitalize())
+		if member == ctx.author:
+			await ctx.send("You cannot give yourself a badge...")
+			return
 
-        badge_str = ", ".join(valid_badges)
+		if generation == "6":
+			data_file = "gen6"
+			badges_dict = badges_dict6
+			prof_file = "league_prof6"
+		elif generation == "7":
+			data_file = "gen7"
+			badges_dict = badges_dict7
+			prof_file = "league_prof7"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help ab` to know more."
+			)
+			return
 
-        if badge not in badges_dict:
-            await ctx.send(
-                f"{badge.capitalize()} Badge is not available\nAvailable Badges:\n{badge_str}"
-            )
-            return
+		for key in badges_dict.keys():
+			valid_badges.append(key.capitalize())
 
-        async def ab():
-            data1 = db[data_file]
+		badge_str = ", ".join(valid_badges)
 
-            if str(member.id) not in data1:
-                await ctx.send(
-                    f"{member} is not registered for this generation.")
-                return
+		if badge not in badges_dict:
+			await ctx.send(
+			    f"{badge.capitalize()} Badge is not available\nAvailable Badges:\n{badge_str}"
+			)
+			return
 
-            if data1[str(member.id)]["Registered"] == empty_list:
-                await ctx.send(
-                    f"{member} is not registered for this generation.")
-                return
+		async def ab():
+			data1 = db[data_file]
 
-            for a in data1[str(member.id)]["Badges"]:
-                obtained.append(a)
+			if str(member.id) not in data1:
+				await ctx.send(
+				    f"{member} is not registered for this generation.")
+				return
 
-            if badges_dict[badge] in obtained:
-                await ctx.send(f"{member} already has the badge.")
-                return
+			if data1[str(member.id)]["Registered"] == empty_list:
+				await ctx.send(
+				    f"{member} is not registered for this generation.")
+				return
 
-            b = badges_dict[badge]
-            obtained.append(b)
+			for a in data1[str(member.id)]["Badges"]:
+				obtained.append(a)
 
-            data1[str(member.id)]["Badges"] = obtained
+			if badges_dict[badge] in obtained:
+				await ctx.send(f"{member} already has the badge.")
+				return
 
-            db[data_file] = data1
+			b = badges_dict[badge]
+			obtained.append(b)
 
-            await ctx.send(f"{member}'s profile has been updated.")
-            await channel.send(
-                f"{member.mention} won {badges_dict[badge]} Badge")
-            return
+			data1[str(member.id)]["Badges"] = obtained
 
-        role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
-        role2 = discord.utils.get(ctx.guild.roles, name="elites")
+			db[data_file] = data1
 
-        if role1 in member.roles:
-            try:
-                data = db[prof_file]
+			await ctx.send(f"{member}'s profile has been updated.")
+			await channel.send(
+			    f"{member.mention} won {badges_dict[badge]} Badge")
+			return
 
-                for badges in data["gym-leaders"][str(member.id)]["Badges"]:
-                    obtained.append(badges)
+		role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
+		role2 = discord.utils.get(ctx.guild.roles, name="elites")
 
-                if badges_dict[badge] in obtained:
-                    await ctx.send(f"{member} already has the badge.")
-                    return
+		if role1 in member.roles:
+			try:
+				data = db[prof_file]
 
-                new_badge = badges_dict[badge]
-                obtained.append(new_badge)
+				for badges in data["gym-leaders"][str(member.id)]["Badges"]:
+					obtained.append(badges)
 
-                data["gym-leaders"][str(member.id)]["Badges"] = obtained
+				if badges_dict[badge] in obtained:
+					await ctx.send(f"{member} already has the badge.")
+					return
 
-                db[prof_file] = data
+				new_badge = badges_dict[badge]
+				obtained.append(new_badge)
 
-            except KeyError:
-                await ab()
+				data["gym-leaders"][str(member.id)]["Badges"] = obtained
 
-        elif role2 in member.roles:
+				db[prof_file] = data
 
-            try:
-                data = db[prof_file]
+			except KeyError:
+				await ab()
 
-                for badges in data["elites"][str(member.id)]["Badges"]:
-                    obtained.append(badges)
+		elif role2 in member.roles:
 
-                if badges_dict[badge] in obtained:
-                    await ctx.send(f"{member} already has the badge.")
-                    return
+			try:
+				data = db[prof_file]
 
-                new_badge = badges_dict[badge]
-                obtained.append(new_badge)
+				for badges in data["elites"][str(member.id)]["Badges"]:
+					obtained.append(badges)
 
-                data["elites"][str(member.id)]["Badges"] = obtained
+				if badges_dict[badge] in obtained:
+					await ctx.send(f"{member} already has the badge.")
+					return
 
-                db[prof_file] = data
+				new_badge = badges_dict[badge]
+				obtained.append(new_badge)
 
-            except KeyError:
-                await ab()
+				data["elites"][str(member.id)]["Badges"] = obtained
 
-        else:
-            await ab()
+				db[prof_file] = data
 
-    @commands.command(aliases=["as"])
-    @commands.has_any_role("elites", "admin", "moderator")
-    async def add_streak(self, ctx, generation, *, member: discord.Member):
+			except KeyError:
+				await ab()
 
-        prefix = server_prefix(ctx)
+		else:
+			await ab()
 
-        if ctx.channel.name == "📝registration":
-            return
+	@commands.command(aliases=["as"])
+	@commands.has_any_role("elites", "admin", "moderator")
+	async def add_streak(self, ctx, generation, *, member: discord.Member):
 
-        if member == ctx.author:
-            await ctx.send("You cannot add yourself an elite streak...")
-            return
+		prefix = server_prefix(ctx)
 
-        if generation == "6":
-            data_file = "gen6"
-            prof_file = "league_prof6"
-        elif generation == "7":
-            data_file = "gen7"
-            prof_file = "league_prof7"
-        else:
-            await ctx.send(
-                f"Enter a valid Generation(6/7)\nUse `{prefix}help as` to know more."
-            )
-            return
+		if ctx.channel.name == "📝registration":
+			return
 
-        obtained = []
-        empty_list = []
-        channel = self.client.get_channel(802027595302174730)
+		if member == ctx.author:
+			await ctx.send("You cannot add yourself an elite streak...")
+			return
 
-        role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
-        role2 = discord.utils.get(ctx.guild.roles, name="elites")
+		if generation == "6":
+			data_file = "gen6"
+			prof_file = "league_prof6"
+		elif generation == "7":
+			data_file = "gen7"
+			prof_file = "league_prof7"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help as` to know more."
+			)
+			return
 
-        async def a_s():
-            won = 0
+		obtained = []
+		empty_list = []
+		channel = self.client.get_channel(802027595302174730)
 
-            data = db[data_file]
+		role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
+		role2 = discord.utils.get(ctx.guild.roles, name="elites")
 
-            if str(member.id) not in data:
-                await ctx.send(
-                    f"{member} is not registered for this generation.")
-                return
+		async def a_s():
+			won = 0
 
-            if data[str(member.id)]["Registered"] == empty_list:
-                await ctx.send(
-                    f"{member} is not registered for this generation.")
-                return
+			data = db[data_file]
 
-            for streaks in data[str(member.id)]["Elite_Streak"]:
-                won += 1
-                obtained.append(streaks)
+			if str(member.id) not in data:
+				await ctx.send(
+				    f"{member} is not registered for this generation.")
+				return
 
-            if won == 4:
-                await ctx.send(f"{member} has already completed elite streak.")
-                return
+			if data[str(member.id)]["Registered"] == empty_list:
+				await ctx.send(
+				    f"{member} is not registered for this generation.")
+				return
 
-            if won <= 4:
-                obtained.append(elite_streak[str(won)])
+			for streaks in data[str(member.id)]["Elite_Streak"]:
+				won += 1
+				obtained.append(streaks)
 
-            data[str(member.id)]["Elite_Streak"] = obtained
+			if won == 4:
+				await ctx.send(f"{member} has already completed elite streak.")
+				return
 
-            db[data_file] = data
+			if won <= 4:
+				obtained.append(elite_streak[str(won)])
 
-            await ctx.send(f"{member}'s Profile has been Updated")
-            await channel.send(
-                f"{member.mention}'s Generation {generation} Elite Streak increased to {elite_streak[str(won)]}"
-            )
+			data[str(member.id)]["Elite_Streak"] = obtained
 
-            return
+			db[data_file] = data
 
-        if role1 in member.roles:
-            try:
-                data1 = db[prof_file]
+			await ctx.send(f"{member}'s Profile has been Updated")
+			await channel.send(
+			    f"{member.mention}'s Generation {generation} Elite Streak increased to {elite_streak[str(won)]}"
+			)
 
-                if data1['gym-leaders'][str(member.id)]:
-                    pass
+			return
 
-                await ctx.send("Gym-Leaders cannot challenge Elites")
-                return
+		if role1 in member.roles:
+			try:
+				data1 = db[prof_file]
 
-            except KeyError:
-                await a_s()
+				if data1['gym-leaders'][str(member.id)]:
+					pass
 
-        elif role2 in member.roles:
-            try:
-                data1 = db[prof_file]
+				await ctx.send("Gym-Leaders cannot challenge Elites")
+				return
 
-                if data1['elites'][str(member.id)]:
-                    pass
+			except KeyError:
+				await a_s()
 
-                await ctx.send("Elites cannot challenge Elites")
-                return
+		elif role2 in member.roles:
+			try:
+				data1 = db[prof_file]
 
-            except KeyError:
-                await a_s()
+				if data1['elites'][str(member.id)]:
+					pass
 
-        else:
-            await a_s()
+				await ctx.send("Elites cannot challenge Elites")
+				return
 
-    @commands.command(aliases=["p", "summary"])
-    async def profile(self, ctx, generation, *, member: discord.Member = None):
+			except KeyError:
+				await a_s()
 
-        prefix = server_prefix(ctx)
+		else:
+			await a_s()
 
-        if ctx.channel.name == "📝registration":
-            return
+	@commands.command(aliases=["p", "summary"])
+	async def profile(self, ctx, generation, *, member: discord.Member = None):
 
-        if generation == "6":
-            data_file = "gen6"
-            prof_file = "league_prof6"
-        elif generation == "7":
-            data_file = "gen7"
-            prof_file = "league_prof7"
+		prefix = server_prefix(ctx)
 
-        else:
-            await ctx.send(
-                f"Enter a valid Generation(6/7)\nUse `{prefix}help profile` to know more."
-            )
-            return
+		if ctx.channel.name == "📝registration":
+			return
 
-        if member is None:
-            member = ctx.author
-        else:
-            pass
+		if generation == "6":
+			data_file = "gen6"
+			prof_file = "league_prof6"
+		elif generation == "7":
+			data_file = "gen7"
+			prof_file = "league_prof7"
 
-        total = 0
-        badges_list = []
-        titles = []
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help profile` to know more."
+			)
+			return
 
-        embed = discord.Embed(
-            title=f"**{current_title}**\n{member.name}'s Generation {generation} Profile",
-            colour=discord.Colour.green())
+		if member is None:
+			member = ctx.author
+		else:
+			pass
 
-        async def pf():
-            total2 = 0
-            badges_list2 = []
-            streak = 0
-            streak_list = []
-            titles2 = []
-            empty_list = []
+		total = 0
+		badges_list = []
+		titles = []
 
-            data2 = db[data_file]
+		embed = discord.Embed(
+		    title=
+		    f"**{current_title}**\n{member.name}'s Generation {generation} Profile",
+		    colour=discord.Colour.green())
 
-            if str(member.id) not in data2:
-                await ctx.send(
-                    f"{member} is not registered for the current generation.")
-                return
+		async def pf():
+			total2 = 0
+			badges_list2 = []
+			streak = 0
+			streak_list = []
+			titles2 = []
+			empty_list = []
 
-            if data2[str(member.id)]["Registered"] == empty_list:
-                await ctx.send(
-                    f"{member} is not registered for the current generation.")
-                return
+			data2 = db[data_file]
 
-            embed.set_thumbnail(url=member.avatar_url)
+			if str(member.id) not in data2:
+				await ctx.send(
+				    f"{member} is not registered for the current generation.")
+				return
 
-            if data2[str(member.id)]["Reset_Token"] == 0:
-                emoji = "<:reset:794439173871239219>"
-            else:
-                emoji = ""
+			if data2[str(member.id)]["Registered"] == empty_list:
+				await ctx.send(
+				    f"{member} is not registered for the current generation.")
+				return
 
-            for badges2 in data2[str(member.id)]["Badges"]:
-                total2 += 1
-                badges_list2.append(badges2)
+			embed.set_thumbnail(url=member.avatar_url)
 
-            if total2 == 0:
-                embed.add_field(name=f"**{emoji} Gym Badges:** {total2}",
-                                value="\u200b\n",
-                                inline=False)
-            else:
-                embed.add_field(name=f"**{emoji} Gym Badges:** {total2}",
-                                value="**Obtained:**",
-                                inline=False)
+			if data2[str(member.id)]["Reset_Token"] == 0:
+				emoji = "<:reset:794439173871239219>"
+			else:
+				emoji = ""
 
-                for badges2 in data2[str(member.id)]["Badges"]:
-                    badge_name2 = badges2.split(":")
-                    embed.add_field(
-                        name=f"{badge_name2[1].capitalize()} Badge",
-                        value=badges2,
-                        inline=True)
-            
-            for streaks in data2[str(member.id)]["Elite_Streak"]:
-                streak += 1
-                streak_list.append(streaks)
+			for badges2 in data2[str(member.id)]["Badges"]:
+				total2 += 1
+				badges_list2.append(badges2)
 
-            if streak >= 1:
-                final_streak = " ".join(streak_list)
-                streak_name_list = streak_list[-1]
-                streak_name = streak_name_list.split(":")
-                embed.add_field(
-                    name=f"**{emoji} Elite Beaten: {streak}**",
-                    value=f"{streak_name[1].capitalize()} Rank\n{final_streak}",
-                    inline=False)
+			if total2 == 0:
+				embed.add_field(name=f"**{emoji} Gym Badges:** {total2}",
+				                value="\u200b\n",
+				                inline=False)
+			else:
+				embed.add_field(name=f"**{emoji} Gym Badges:** {total2}",
+				                value="**Obtained:**",
+				                inline=False)
 
-            else:
-                embed.add_field(name=f"**{emoji} Elite Beaten: {streak}**",
-                                value="\u200b\n",
-                                inline=False)
+				for badges2 in data2[str(member.id)]["Badges"]:
+					badge_name2 = badges2.split(":")
+					embed.add_field(
+					    name=f"{badge_name2[1].capitalize()} Badge",
+					    value=badges2,
+					    inline=True)
 
-            # tokens = data[str(member.id)]["Reset_Token"]
-            # embed.add_field(name=f"Reset Tokens: {tokens}", value="\u200b\n", inline=False)
+			for streaks in data2[str(member.id)]["Elite_Streak"]:
+				streak += 1
+				streak_list.append(streaks)
 
-            for achievements2 in data2[str(member.id)]["Achievements"]:
-                titles2.append(achievements2)
+			if streak >= 1:
+				final_streak = " ".join(streak_list)
+				streak_name_list = streak_list[-1]
+				streak_name = streak_name_list.split(":")
+				embed.add_field(
+				    name=f"**{emoji} Elite Beaten: {streak}**",
+				    value=f"{streak_name[1].capitalize()} Rank\n{final_streak}",
+				    inline=False)
 
-            titles_str2 = ", ".join(titles2)
+			else:
+				embed.add_field(name=f"**{emoji} Elite Beaten: {streak}**",
+				                value="\u200b\n",
+				                inline=False)
 
-            if len(titles2) >= 1:
-                embed.add_field(name="**Achievements:**",
-                                value=f"{titles_str2}",
-                                inline=False)
+			# tokens = data[str(member.id)]["Reset_Token"]
+			# embed.add_field(name=f"Reset Tokens: {tokens}", value="\u200b\n", inline=False)
 
-            await ctx.send(embed=embed)
+			for achievements2 in data2[str(member.id)]["Achievements"]:
+				titles2.append(achievements2)
 
-        role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
-        role2 = discord.utils.get(ctx.guild.roles, name="elites")
-        role3 = discord.utils.get(ctx.guild.roles, name="champion")
-        role4 = discord.utils.get(ctx.guild.roles, name="challengers")
+			titles_str2 = ", ".join(titles2)
 
-        if role1 in member.roles:  # gym-leaders
-            try:
-                data = db[prof_file]
+			if len(titles2) >= 1:
+				embed.add_field(name="**Achievements:**",
+				                value=f"{titles_str2}",
+				                inline=False)
 
-                if {data['gym-leaders'][str(member.id)]['Badge']}:
-                    pass
+			await ctx.send(embed=embed)
 
-                name = str({data['gym-leaders'][str(member.id)]['Badge']})
+		role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
+		role2 = discord.utils.get(ctx.guild.roles, name="elites")
+		role3 = discord.utils.get(ctx.guild.roles, name="champion")
+		role4 = discord.utils.get(ctx.guild.roles, name="challengers")
 
-                embed.set_thumbnail(url=member.avatar_url)
+		if role1 in member.roles:  # gym-leaders
+			try:
+				data = db[prof_file]
 
-                embed.add_field(name="**Status:**",
-                                value="<@&761488015829762048>",
-                                inline=False)
+				if {data['gym-leaders'][str(member.id)]['Badge']}:
+					pass
 
-                badge_name = name.split(":")
+				name = str({data['gym-leaders'][str(member.id)]['Badge']})
 
-                embed.add_field(
-                    name="**Type:**",
-                    value=f"**{data['gym-leaders'][str(member.id)]['Type']}**",
-                    inline=True)
-                embed.add_field(
-                    name=f"**Badge:** {badge_name[1].capitalize()} Badge",
-                    value=f"{data['gym-leaders'][str(member.id)]['Badge']}",
-                    inline=True)
+				embed.set_thumbnail(url=member.avatar_url)
 
-                for badges in data["gym-leaders"][str(member.id)]["Badges"]:
-                    total += 1
-                    badges_list.append(badges)
+				embed.add_field(name="**Status:**",
+				                value="<@&761488015829762048>",
+				                inline=False)
 
-                if total == 0:
-                    embed.add_field(name=f"**Gym Badges:** {total}",
-                                    value="\u200b\n",
-                                    inline=False)
-                else:
-                    embed.add_field(name=f"**Gym Badges:** {total}",
-                                    value="**Obtained:**",
-                                    inline=False)
+				badge_name = name.split(":")
 
-                    for badges in data["gym-leaders"][str(
-                            member.id)]["Badges"]:
-                        badge_name = badges.split(":")
-                        embed.add_field(
-                            name=f"{badge_name[1].capitalize()} Badge",
-                            value=badges,
-                            inline=True)
+				embed.add_field(
+				    name="**Type:**",
+				    value=f"**{data['gym-leaders'][str(member.id)]['Type']}**",
+				    inline=True)
+				embed.add_field(
+				    name=f"**Badge:** {badge_name[1].capitalize()} Badge",
+				    value=f"{data['gym-leaders'][str(member.id)]['Badge']}",
+				    inline=True)
 
-                for achievements in data['gym-leaders'][str(
-                        member.id)]["Achievements"]:
-                    titles.append(achievements)
+				for badges in data["gym-leaders"][str(member.id)]["Badges"]:
+					total += 1
+					badges_list.append(badges)
 
-                titles_str = ", ".join(titles)
+				if total == 0:
+					embed.add_field(name=f"**Gym Badges:** {total}",
+					                value="\u200b\n",
+					                inline=False)
+				else:
+					embed.add_field(name=f"**Gym Badges:** {total}",
+					                value="**Obtained:**",
+					                inline=False)
 
-                if len(titles) >= 1:
-                    embed.add_field(name="**Achievements:**",
-                                    value=f"{titles_str}",
-                                    inline=False)
+					for badges in data["gym-leaders"][str(
+					    member.id)]["Badges"]:
+						badge_name = badges.split(":")
+						embed.add_field(
+						    name=f"{badge_name[1].capitalize()} Badge",
+						    value=badges,
+						    inline=True)
 
-                await ctx.send(embed=embed)
+				for achievements in data['gym-leaders'][str(
+				    member.id)]["Achievements"]:
+					titles.append(achievements)
 
-            except KeyError:
-                if role2 in member.roles:
-                    try:
-                        data = db[prof_file]
+				titles_str = ", ".join(titles)
 
-                        if data['gym-leaders'][str(member.id)]:
-                            pass
+				if len(titles) >= 1:
+					embed.add_field(name="**Achievements:**",
+					                value=f"{titles_str}",
+					                inline=False)
 
-                    except KeyError:
-                        await pf()
+				await ctx.send(embed=embed)
 
-                elif role3 in member.roles:
-                    try:
-                        data = db[prof_file]
+			except KeyError:
+				if role2 in member.roles:
+					try:
+						data = db[prof_file]
 
-                        if data['champion'][str(member.id)]:
-                            pass
+						if data['gym-leaders'][str(member.id)]:
+							pass
 
-                    except KeyError:
-                        await pf()
-                else:
-                    await pf()
+					except KeyError:
+						await pf()
 
-        if role2 in member.roles:  # elites
+				elif role3 in member.roles:
+					try:
+						data = db[prof_file]
 
-            try:
+						if data['champion'][str(member.id)]:
+							pass
 
-                data = db[prof_file]
+					except KeyError:
+						await pf()
+				else:
+					await pf()
 
-                embed.set_thumbnail(url=member.avatar_url)
+		if role2 in member.roles:  # elites
 
-                if data['elites'][str(member.id)]:
-                    pass
+			try:
 
-                embed.add_field(name="**Status:**",
-                                value="<@&761487391147950111>",
-                                inline=False)
+				data = db[prof_file]
 
-                embed.add_field(
-                    name="**Type:**",
-                    value=f"**{data['elites'][str(member.id)]['Type']}**",
-                    inline=True)
+				embed.set_thumbnail(url=member.avatar_url)
 
-                for badges in data["elites"][str(member.id)]["Badges"]:
-                    total += 1
-                    badges_list.append(badges)
+				if data['elites'][str(member.id)]:
+					pass
 
-                if total == 0:
-                    embed.add_field(name=f"**Gym Badges:** {total}",
-                                    value="\u200b\n",
-                                    inline=False)
-                else:
-                    embed.add_field(name=f"**Gym Badges:** {total}",
-                                    value="**Obtained:**",
-                                    inline=False)
+				embed.add_field(name="**Status:**",
+				                value="<@&761487391147950111>",
+				                inline=False)
 
-                    for badges in data['elites'][str(member.id)]["Badges"]:
-                        badge_name = badges.split(":")
-                        embed.add_field(
-                            name=f"{badge_name[1].capitalize()} Badge",
-                            value=badges,
-                            inline=True)
+				embed.add_field(
+				    name="**Type:**",
+				    value=f"**{data['elites'][str(member.id)]['Type']}**",
+				    inline=True)
 
-                for achievements in data["elites"][str(
-                        member.id)]["Achievements"]:
-                    titles.append(achievements)
+				for badges in data["elites"][str(member.id)]["Badges"]:
+					total += 1
+					badges_list.append(badges)
 
-                titles_str = ", ".join(titles)
+				if total == 0:
+					embed.add_field(name=f"**Gym Badges:** {total}",
+					                value="\u200b\n",
+					                inline=False)
+				else:
+					embed.add_field(name=f"**Gym Badges:** {total}",
+					                value="**Obtained:**",
+					                inline=False)
 
-                if len(titles) >= 1:
-                    embed.add_field(name="**Achievements:**",
-                                    value=f"{titles_str}",
-                                    inline=False)
+					for badges in data['elites'][str(member.id)]["Badges"]:
+						badge_name = badges.split(":")
+						embed.add_field(
+						    name=f"{badge_name[1].capitalize()} Badge",
+						    value=badges,
+						    inline=True)
 
-                await ctx.send(embed=embed)
+				for achievements in data["elites"][str(
+				    member.id)]["Achievements"]:
+					titles.append(achievements)
 
-            except KeyError:
-                if role1 in member.roles:
-                    try:
-                        data = db[prof_file]
+				titles_str = ", ".join(titles)
 
-                        if data['elites'][str(member.id)]:
-                            pass
+				if len(titles) >= 1:
+					embed.add_field(name="**Achievements:**",
+					                value=f"{titles_str}",
+					                inline=False)
 
-                    except KeyError:
-                        await pf()
+				await ctx.send(embed=embed)
 
-                elif role3 in member.roles:
-                    try:
-                        data = db[prof_file]
+			except KeyError:
+				if role1 in member.roles:
+					try:
+						data = db[prof_file]
 
-                        if data['champion'][str(member.id)]:
-                            pass
+						if data['elites'][str(member.id)]:
+							pass
 
-                    except KeyError:
-                        await pf()
-                else:
-                    await pf()
+					except KeyError:
+						await pf()
 
-        if role3 in member.roles:  # champion
+				elif role3 in member.roles:
+					try:
+						data = db[prof_file]
 
-            try:
+						if data['champion'][str(member.id)]:
+							pass
 
-                data = db[prof_file]
+					except KeyError:
+						await pf()
+				else:
+					await pf()
 
-                if data['champion'][str(member.id)]:
-                    pass
+		if role3 in member.roles:  # champion
 
-                embed.set_thumbnail(url=member.avatar_url)
+			try:
 
-                embed.add_field(name="**Status:**",
-                                value="<@&767742527818039317>",
-                                inline=False)
+				data = db[prof_file]
 
-                embed.add_field(
-                    name="**Champion Season:**",
-                    value=f"{data['champion'][str(member.id)]['Season']}",
-                    inline=False)
+				if data['champion'][str(member.id)]:
+					pass
 
-                embed.add_field(
-                    name="**Challenges Endured:**",
-                    value=f"{data['champion'][str(member.id)]['Saved']}",
-                    inline=False)
+				embed.set_thumbnail(url=member.avatar_url)
 
-                for achievements in data["champion"][str(
-                        member.id)]["Achievements"]:
-                    titles.append(achievements)
+				embed.add_field(name="**Status:**",
+				                value="<@&767742527818039317>",
+				                inline=False)
 
-                titles_str = ", ".join(titles)
+				embed.add_field(
+				    name="**Champion Season:**",
+				    value=f"{data['champion'][str(member.id)]['Season']}",
+				    inline=False)
 
-                if len(titles) >= 1:
-                    embed.add_field(name="**Achievements:**",
-                                    value=f"{titles_str}",
-                                    inline=False)
+				embed.add_field(
+				    name="**Challenges Endured:**",
+				    value=f"{data['champion'][str(member.id)]['Saved']}",
+				    inline=False)
 
-                if data['champion'][str(member.id)]['Image'] != "":
+				for achievements in data["champion"][str(
+				    member.id)]["Achievements"]:
+					titles.append(achievements)
 
-                    embed.add_field(name="**Champion Team:**", value="\u200b")
-                    embed.set_image(
-                        url=f"{data['champion'][str(member.id)]['Image']}")
+				titles_str = ", ".join(titles)
 
-                await ctx.send(embed=embed)
+				if len(titles) >= 1:
+					embed.add_field(name="**Achievements:**",
+					                value=f"{titles_str}",
+					                inline=False)
 
-            except KeyError:
-                await pf()
+				if data['champion'][str(member.id)]['Image'] != "":
 
-        if role4 in member.roles:  # else all
-            if role1 in member.roles:
-                pass
+					embed.add_field(name="**Champion Team:**", value="\u200b")
+					embed.set_image(
+					    url=f"{data['champion'][str(member.id)]['Image']}")
 
-            elif role2 in member.roles:
-                pass
+				await ctx.send(embed=embed)
 
-            elif role3 in member.roles:
-                pass
+			except KeyError:
+				await pf()
 
-            else:
-                await pf()
+		if role4 in member.roles:  # else all
+			if role1 in member.roles:
+				pass
 
-    @commands.command(aliases=["champ", "nc"])
-    @commands.has_any_role("champion", "admin", "moderator")
-    async def champion(self, ctx, generation, member: discord.Member):
+			elif role2 in member.roles:
+				pass
 
-        prefix = server_prefix(ctx)
+			elif role3 in member.roles:
+				pass
 
-        if generation == "6":
-            data_file = "gen6"
-            prof_file = "league_prof6"
-        elif generation == "7":
-            data_file = "gen7"
-            prof_file = "league_prof7"
-        else:
-            await ctx.send(
-                f"Enter a valid Generation(6/7)\nUse `{prefix}help nc` to know more."
-            )
-            return
+			else:
+				await pf()
 
-        past_titles = []
-        channel = self.client.get_channel(802027595302174730)
-        prev_champ = ""
-        empty_list = []
+	@commands.command(aliases=["champ", "nc"])
+	@commands.has_any_role("champion", "admin", "moderator")
+	async def champion(self, ctx, generation, member: discord.Member):
 
-        data1 = db[prof_file]
+		prefix = server_prefix(ctx)
 
-        db_champ = data1["champion"]
+		if generation == "6":
+			data_file = "gen6"
+			prof_file = "league_prof6"
+		elif generation == "7":
+			data_file = "gen7"
+			prof_file = "league_prof7"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help nc` to know more."
+			)
+			return
 
-        for mem in db_champ:
-            prev_champ = await ctx.guild.fetch_member(int(mem))
+		past_titles = []
+		channel = self.client.get_channel(802027595302174730)
+		prev_champ = ""
+		empty_list = []
 
-        data2 = db[data_file]
+		data1 = db[prof_file]
 
-        data2[str(prev_champ.id)]["Elite_Streak"] = empty_list
+		db_champ = data1["champion"]
 
-        db[data_file] = data2
+		for mem in db_champ:
+			prev_champ = await ctx.guild.fetch_member(int(mem))
 
-        db_champ.pop(str(prev_champ.id))
+		data2 = db[data_file]
 
-        data1["champion"][str(member.id)] = {
-            "Season": f"{current_title}",
-            "Saved": 0,
-            "Image": "",
-            "Achievements": []
-        }
+		data2[str(prev_champ.id)]["Elite_Streak"] = empty_list
 
-        db[prof_file] = data1
+		db[data_file] = data2
 
-        data2 = db[data_file]
+		db_champ.pop(str(prev_champ.id))
 
-        for achievements in data2[str(member.id)]["Achievements"]:
-            past_titles.append(achievements)
+		data1["champion"][str(member.id)] = {
+		    "Season": f"{current_title}",
+		    "Saved": 0,
+		    "Image": "",
+		    "Achievements": []
+		}
 
-        past_titles.append(current_title)
+		db[prof_file] = data1
 
-        data2[str(member.id)]["Achievements"] = past_titles
-        data1["champion"][str(member.id)]["Achievements"] = past_titles
-        
-        db[data_file] = data2
-        db[prof_file] = data1
+		data2 = db[data_file]
 
-        role = discord.utils.get(ctx.guild.roles, name="champion")
-        await member.add_roles(role)
-        role = discord.utils.get(ctx.guild.roles, name="master-trainers")
-        await member.add_roles(role)
+		for achievements in data2[str(member.id)]["Achievements"]:
+			past_titles.append(achievements)
 
-        data = db["hall_of_fame"]
+		past_titles.append(current_title)
 
-        winners = list(data[current_title][f"Gen {generation}"])
-        winners.append(str(member.mention))
-        data[current_title][f"Gen {generation}"] = winners
+		data2[str(member.id)]["Achievements"] = past_titles
+		data1["champion"][str(member.id)]["Achievements"] = past_titles
 
-        db["hall_of_fame"] = data
+		db[data_file] = data2
+		db[prof_file] = data1
 
-        await ctx.send(
-            f"{member.mention} is the new Generation {generation} Champion")
-        await channel.send(
-            f"Congratulations {member.mention}!\nYou are the new champion of Generation {generation} until someone defeats you in a champion battle."
-        )
-        await ctx.send(f"{prev_champ.mention}'s Elite streak has now been resetted.")
+		role = discord.utils.get(ctx.guild.roles, name="champion")
+		await member.add_roles(role)
+		role = discord.utils.get(ctx.guild.roles, name="master-trainers")
+		await member.add_roles(role)
 
-    @commands.command(aliases=["res"])
-    @commands.has_any_role("elites", "champion", "admin", "moderator")
-    async def reset_streak(self, ctx, generation, member: discord.Member):
+		data = db["hall_of_fame"]
 
-        prefix = server_prefix(ctx)
+		winners = list(data[current_title][f"Gen {generation}"])
+		winners.append(str(member.mention))
+		data[current_title][f"Gen {generation}"] = winners
 
-        if ctx.channel.name == "📝registration":
-            return
+		db["hall_of_fame"] = data
 
-        if generation == "6":
-            data_file = "gen6"
-            prof_file = "league_prof6"
-        elif generation == "7":
-            data_file = "gen7"
-            prof_file = "league_prof7"
-        else:
-            await ctx.send(
-                f"Enter a valid Generation(6/7)\nUse `{prefix}help res` to know more."
-            )
-            return
+		await ctx.send(
+		    f"{member.mention} is the new Generation {generation} Champion")
+		await channel.send(
+		    f"Congratulations {member.mention}!\nYou are the new champion of Generation {generation} until someone defeats you in a champion battle."
+		)
+		await ctx.send(
+		    f"{prev_champ.mention}'s Elite streak has now been resetted.")
 
-        empty_list = []
-        channel = self.client.get_channel(802027595302174730)
+	@commands.command(aliases=["res"])
+	@commands.has_any_role("elites", "champion", "admin", "moderator")
+	async def reset_streak(self, ctx, generation, member: discord.Member):
 
-        async def res():
+		prefix = server_prefix(ctx)
 
-            endured2 = 0
-            champ2 = ""
+		if ctx.channel.name == "📝registration":
+			return
 
-            data = db[data_file]
+		if generation == "6":
+			data_file = "gen6"
+			prof_file = "league_prof6"
+		elif generation == "7":
+			data_file = "gen7"
+			prof_file = "league_prof7"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help res` to know more."
+			)
+			return
 
-            if str(member.id) not in data:
-                await ctx.send(
-                    f"{member} is not registered for this generation.")
-                return
+		empty_list = []
+		channel = self.client.get_channel(802027595302174730)
 
-            if data[str(member.id)]["Registered"] == empty_list:
-                await ctx.send(
-                    f"{member} is not registered for this generation.")
-                return
+		async def res():
 
-            streak = len(data[str(member.id)]["Elite_Streak"])
+			endured2 = 0
+			champ2 = ""
 
-            data[str(member.id)]["Elite_Streak"] = empty_list
+			data = db[data_file]
 
-            db[data_file] = data
+			if str(member.id) not in data:
+				await ctx.send(
+				    f"{member} is not registered for this generation.")
+				return
 
-            await ctx.send(f"{member.mention}'s Elite Streak has been reseted."
-                           )
-            await channel.send(
-                f"{member.mention}'s Generation {generation} Elite Streak has been reseted.")
+			if data[str(member.id)]["Registered"] == empty_list:
+				await ctx.send(
+				    f"{member} is not registered for this generation.")
+				return
 
-            if streak == 4:
+			streak = len(data[str(member.id)]["Elite_Streak"])
 
-                data1 = db[prof_file]
+			data[str(member.id)]["Elite_Streak"] = empty_list
 
-                db_champ = data1["champion"]
+			db[data_file] = data
 
-                for mem in db_champ:
-                    champ2 = await ctx.guild.fetch_member(int(mem))
-                    endured2 = int(data1["champion"][str(mem)]["Saved"])
+			await ctx.send(f"{member.mention}'s Elite Streak has been reseted."
+			               )
+			await channel.send(
+			    f"{member.mention}'s Generation {generation} Elite Streak has been reseted."
+			)
 
-                endured2 += 1
-                data1["champion"][str(champ2.id)]["Saved"] = endured2
+			if streak == 4:
 
-                db[prof_file] = data1
+				data1 = db[prof_file]
 
-                await channel.send(
-                    f"{champ2.mention} has endured {endured2} match/es now.")
-            return
+				db_champ = data1["champion"]
 
-        role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
-        role2 = discord.utils.get(ctx.guild.roles, name="elites")
+				for mem in db_champ:
+					champ2 = await ctx.guild.fetch_member(int(mem))
+					endured2 = int(data1["champion"][str(mem)]["Saved"])
 
-        if role1 in member.roles:
+				endured2 += 1
+				data1["champion"][str(champ2.id)]["Saved"] = endured2
 
-            try:
-                data2 = db[prof_file]
+				db[prof_file] = data1
 
-                if data2['gym-leaders'][str(member.id)]:
-                    pass
+				await channel.send(
+				    f"{champ2.mention} has endured {endured2} match/es now.")
+			return
 
-                await ctx.send("Gym-Leaders cannot get elite streak")
-                return
+		role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
+		role2 = discord.utils.get(ctx.guild.roles, name="elites")
 
-            except KeyError:
-                await res()
+		if role1 in member.roles:
 
-        elif role2 in member.roles:
-            try:
-                data2 = db[prof_file]
+			try:
+				data2 = db[prof_file]
 
-                if data2['elites'][str(member.id)]:
-                    pass
+				if data2['gym-leaders'][str(member.id)]:
+					pass
 
-                await ctx.send("Elites cannot get elite streak")
-                return
+				await ctx.send("Gym-Leaders cannot get elite streak")
+				return
 
-            except KeyError:
-                await res()
+			except KeyError:
+				await res()
 
-        else:
-            await res()
+		elif role2 in member.roles:
+			try:
+				data2 = db[prof_file]
 
-    @commands.command(aliases=["et", "ep"])
-    @commands.has_any_role("challengers", "elites", "admin", "moderator")
-    async def elite_team(self, ctx, generation, member: discord.Member, *, team):
+				if data2['elites'][str(member.id)]:
+					pass
 
-        prefix = server_prefix(ctx)
+				await ctx.send("Elites cannot get elite streak")
+				return
 
-        if generation == "6":
-            data_file = "gen6"
-            dex = "mons6.txt"
-            prof_file = "league_prof6"
-        elif generation == "7":
-            data_file = "gen7"
-            dex = "mons7.txt"
-            prof_file = "league_prof7"
-        else:
-            await ctx.send(
-                f"Enter a valid Generation(6/7)\nUse `{prefix}help et` to know more."
-            )
-            return
+			except KeyError:
+				await res()
 
-        empty_list = []
-        team = team.replace(" ", "")
-        team = team.split(",")
-        pokemon = set()
-        pool_of_6 = set()
-        elite_pool = set()
-        channel = self.client.get_channel(802027595302174730)
+		else:
+			await res()
 
-        role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
-        role2 = discord.utils.get(ctx.guild.roles, name="elites")
+	@commands.command(aliases=["et", "ep"])
+	@commands.has_any_role("challengers", "elites", "admin", "moderator")
+	async def elite_team(self, ctx, generation, member: discord.Member, *,
+	                     team):
 
-        async def et():
+		prefix = server_prefix(ctx)
 
-            data = db[data_file]
+		if generation == "6":
+			data_file = "gen6"
+			dex = "mons6.txt"
+			prof_file = "league_prof6"
+		elif generation == "7":
+			data_file = "gen7"
+			dex = "mons7.txt"
+			prof_file = "league_prof7"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help et` to know more."
+			)
+			return
 
-            if data[str(member.id)]["Elite_Streak"] != empty_list:
-                await ctx.send("You cannot register your elite team when you have streak.")
-                return
+		empty_list = []
+		team = team.replace(" ", "")
+		team = team.split(",")
+		pokemon = set()
+		pool_of_6 = set()
+		elite_pool = set()
+		channel = self.client.get_channel(802027595302174730)
 
-            for a in team:
-                pokemon.add(a.capitalize())
+		role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
+		role2 = discord.utils.get(ctx.guild.roles, name="elites")
 
-            if str(member.id) not in data:
-                await ctx.send(
-                    f"{member} is not registered for this generation.")
-                return
+		async def et():
 
-            if data[str(member.id)]["Registered"] == empty_list:
-                await ctx.send(
-                    f"{member} is not registered for this generation.")
-                return
+			data = db[data_file]
 
-            registered = data[str(member.id)]["Registered"]
+			if data[str(member.id)]["Elite_Streak"] != empty_list:
+				await ctx.send(
+				    "You cannot register your elite team when you have streak."
+				)
+				return
 
-            with open(dex, "r") as file:
-                pokedex = file.read().split("\n")
+			for a in team:
+				pokemon.add(a.capitalize())
 
-            for a in pokemon:
-                for b in pokedex:
-                    if a.casefold() == b.casefold():
-                        pool_of_6.add(a.capitalize())
+			if str(member.id) not in data:
+				await ctx.send(
+				    f"{member} is not registered for this generation.")
+				return
 
-            not_valid = list(pokemon.difference(pool_of_6))
-            wrong = ", ".join(not_valid)
+			if data[str(member.id)]["Registered"] == empty_list:
+				await ctx.send(
+				    f"{member} is not registered for this generation.")
+				return
 
-            if len(pokemon) != len(pool_of_6):
-                await ctx.send(
-                    f"{wrong} is/are not valid.\nWeather you have spelt wrong or entered wrong Pokémon"
-                )
-                return
+			registered = data[str(member.id)]["Registered"]
 
-            for a in pokemon:
-                for b in registered:
-                    if a.casefold() == b.casefold():
-                        elite_pool.add(a.capitalize())
+			with open(dex, "r") as file:
+				pokedex = file.read().split("\n")
 
-            not_valid = list(pokemon.difference(elite_pool))
-            wrong = ", ".join(not_valid)
+			for a in pokemon:
+				for b in pokedex:
+					if a.casefold() == b.casefold():
+						pool_of_6.add(a.capitalize())
 
-            if len(pokemon) != len(elite_pool):
-                await ctx.send(
-                    f"{wrong} not in registered pool of {member.mention}")
-                return
+			not_valid = list(pokemon.difference(pool_of_6))
+			wrong = ", ".join(not_valid)
 
-            if len(elite_pool) < 6:
-                await ctx.send("Team contains less than 6 Pokémon")
-                return
-            elif len(elite_pool) > 6:
-                await ctx.send("Team contains more than 6 Pokémon")
-                return
+			if len(pokemon) != len(pool_of_6):
+				await ctx.send(
+				    f"{wrong} is/are not valid.\nWeather you have spelt wrong or entered wrong Pokémon"
+				)
+				return
 
-            submitted = ", ".join(elite_pool)
-            data[str(member.id)]["Elite_Pool"] = list(elite_pool)
+			for a in pokemon:
+				for b in registered:
+					if a.casefold() == b.casefold():
+						elite_pool.add(a.capitalize())
 
-            db[data_file] = data
+			not_valid = list(pokemon.difference(elite_pool))
+			wrong = ", ".join(not_valid)
 
-            await ctx.send(
-                f"Generation {generation} Elite Pool of {member.mention} has been submitted.\nSubmitted: {submitted}"
-            )
-            await channel.send(
-                f"Generation {generation} Elite Pool of {member.mention} has been submitted.\nSubmitted: {submitted}"
-            )
-            return
+			if len(pokemon) != len(elite_pool):
+				await ctx.send(
+				    f"{wrong} not in registered pool of {member.mention}")
+				return
 
-        if role1 in member.roles:
+			if len(elite_pool) < 6:
+				await ctx.send("Team contains less than 6 Pokémon")
+				return
+			elif len(elite_pool) > 6:
+				await ctx.send("Team contains more than 6 Pokémon")
+				return
 
-            try:
-                data2 = db[prof_file]
+			submitted = ", ".join(elite_pool)
+			data[str(member.id)]["Elite_Pool"] = list(elite_pool)
 
-                if data2['gym-leaders'][str(member.id)]:
-                    pass
+			db[data_file] = data
 
-                await ctx.send("Gym-Leaders cannot challenge Elites")
-                return
+			await ctx.send(
+			    f"Generation {generation} Elite Pool of {member.mention} has been submitted.\nSubmitted: {submitted}"
+			)
+			await channel.send(
+			    f"Generation {generation} Elite Pool of {member.mention} has been submitted.\nSubmitted: {submitted}"
+			)
+			return
 
-            except KeyError:
-                await et()
+		if role1 in member.roles:
 
-        elif role2 in member.roles:
-            try:
-                data2 = db[prof_file]
+			try:
+				data2 = db[prof_file]
 
-                if data2['elites'][str(member.id)]:
-                    pass
+				if data2['gym-leaders'][str(member.id)]:
+					pass
 
-                await ctx.send("Elites cannot challenge Elites")
-                return
+				await ctx.send("Gym-Leaders cannot challenge Elites")
+				return
 
-            except KeyError:
-                await et()
+			except KeyError:
+				await et()
 
-        else:
-            await et()
+		elif role2 in member.roles:
+			try:
+				data2 = db[prof_file]
 
-    @commands.command(aliases=["epl", "epk"])
-    async def elite_pool(self, ctx, generation, member: discord.Member = None):
+				if data2['elites'][str(member.id)]:
+					pass
 
-        prefix = server_prefix(ctx)
+				await ctx.send("Elites cannot challenge Elites")
+				return
 
-        if member is None:
-            member = ctx.author
+			except KeyError:
+				await et()
 
-        if member is None:
-            member = ctx.author
+		else:
+			await et()
 
-        if generation == "6":
-            data_file = "gen6"
-            prof_file = "league_prof6"
-        elif generation == "7":
-            data_file = "gen7"
-            prof_file = "league_prof7"
-        else:
-            await ctx.send(
-                f"Enter a valid Generation(6/7)\nUse `{prefix}help epl` to know more."
-            )
-            return
+	@commands.command(aliases=["epl", "epk"])
+	async def elite_pool(self, ctx, generation, member: discord.Member = None):
 
-        role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
-        role2 = discord.utils.get(ctx.guild.roles, name="elites")
+		prefix = server_prefix(ctx)
 
-        async def ep():
+		if member is None:
+			member = ctx.author
 
-            data = db[data_file]
+		if member is None:
+			member = ctx.author
 
-            if str(member.id) not in data:
-                await ctx.send(
-                    f"{member} is not registered for the current generation.")
-                return
+		if generation == "6":
+			data_file = "gen6"
+			prof_file = "league_prof6"
+		elif generation == "7":
+			data_file = "gen7"
+			prof_file = "league_prof7"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help epl` to know more."
+			)
+			return
 
-            if "Elite_Pool" not in data[str(member.id)]:
-                await ctx.send(
-                    f"{member}'s Elite Team of the current generation has not submitted yet."
-                )
-                return
-            else:
-                pass
+		role1 = discord.utils.get(ctx.guild.roles, name="gym-leaders")
+		role2 = discord.utils.get(ctx.guild.roles, name="elites")
 
-            registered = data[str(member.id)]["Elite_Pool"]
-            registered_str = "\n".join(registered)
+		async def ep():
 
-            em = discord.Embed(
-                title=f"{member}'s Generation {generation} Elite Pool:",
-                description=f"**{registered_str}**",
-                colour=discord.Colour.green())
+			data = db[data_file]
 
-            await ctx.send(embed=em)
-            return
+			if str(member.id) not in data:
+				await ctx.send(
+				    f"{member} is not registered for the current generation.")
+				return
 
-        if role1 in member.roles:
+			if "Elite_Pool" not in data[str(member.id)]:
+				await ctx.send(
+				    f"{member}'s Elite Team of the current generation has not submitted yet."
+				)
+				return
+			else:
+				pass
 
-            try:
-                data2 = db[prof_file]
+			registered = data[str(member.id)]["Elite_Pool"]
+			registered_str = "\n".join(registered)
 
-                if data2['gym-leaders'][str(member.id)]:
-                    pass
+			em = discord.Embed(
+			    title=f"{member}'s Generation {generation} Elite Pool:",
+			    description=f"**{registered_str}**",
+			    colour=discord.Colour.green())
 
-                await ctx.send("Gym-Leaders cannot challenge Elites")
-                return
+			await ctx.send(embed=em)
+			return
 
-            except KeyError:
-                await ep()
+		if role1 in member.roles:
 
-        elif role2 in member.roles:
-            try:
-                data2 = db[prof_file]
+			try:
+				data2 = db[prof_file]
 
-                if data2['elites'][str(member.id)]:
-                    pass
+				if data2['gym-leaders'][str(member.id)]:
+					pass
 
-                await ctx.send("Elites cannot challenge Elites")
-                return
+				await ctx.send("Gym-Leaders cannot challenge Elites")
+				return
 
-            except KeyError:
-                await ep()
+			except KeyError:
+				await ep()
 
-        else:
-            await ep()
+		elif role2 in member.roles:
+			try:
+				data2 = db[prof_file]
 
-    @commands.command(aliases=["r", "registration"])
-    async def register(self, ctx, generation, *, raw_input):
+				if data2['elites'][str(member.id)]:
+					pass
 
-        prefix = server_prefix(ctx)
+				await ctx.send("Elites cannot challenge Elites")
+				return
 
-        if ctx.channel.name == "📝challengers-registration":
-            pass
-        else:
-            return
+			except KeyError:
+				await ep()
 
-        illegal_found = 0
-        illegal_mon = []
-        pool_of_12 = set()
-        perfect_mons = set()
-        pokemon = set()
-        empty_list = []
-        user = ctx.author
-        channel = self.client.get_channel(802027595302174730)
+		else:
+			await ep()
 
-        if generation == "6":
-            illegal = "illegal6.txt"
-            data_file = "gen6"
-            dex = "mons6.txt"
-        elif generation == "7":
-            illegal = "illegal7.txt"
-            data_file = "gen7"
-            dex = "mons7.txt"
-        else:
-            await user.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help r` to know more.")
-            return
+	@commands.command(aliases=["r", "registration"])
+	async def register(self, ctx, generation, *, raw_input):
 
-        raw_input = raw_input.replace(" ", "")
+		prefix = server_prefix(ctx)
 
-        raw_pokemon = set(raw_input.split(","))
+		if ctx.channel.name == "📝challengers-registration":
+			pass
+		else:
+			return
 
-        for mons in raw_pokemon:
-            pokemon.add(mons.capitalize())
+		illegal_found = 0
+		illegal_mon = []
+		pool_of_12 = set()
+		perfect_mons = set()
+		pokemon = set()
+		empty_list = []
+		user = ctx.author
+		channel = self.client.get_channel(802027595302174730)
 
-        with open(illegal, "r") as banned:
-            illegal_mons = banned.read().split("\n")
+		if generation == "6":
+			illegal = "illegal6.txt"
+			data_file = "gen6"
+			dex = "mons6.txt"
+		elif generation == "7":
+			illegal = "illegal7.txt"
+			data_file = "gen7"
+			dex = "mons7.txt"
+		else:
+			await user.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help r` to know more."
+			)
+			return
 
-        data = db[data_file]
+		raw_input = raw_input.replace(" ", "")
 
-        if str(ctx.author.id) not in data:
-            data[str(ctx.author.id)] = {"Registered": list(), "Badges": list(), "Elite_Streak": list(),
-                                        "Reset_Token": 1, "Achievements": list()}
+		raw_pokemon = set(raw_input.split(","))
 
-            db[data_file] = data
+		for mons in raw_pokemon:
+			pokemon.add(mons.capitalize())
 
-        if data[str(ctx.author.id)]["Registered"] != empty_list:
-            await user.send("You have already registered for this generation.")
-            return
+		with open(illegal, "r") as banned:
+			illegal_mons = banned.read().split("\n")
 
-        with open(dex, "r") as file:
-            pokedex = file.read().split("\n")
+		data = db[data_file]
 
-        for a in pokemon:
-            for b in pokedex:
-                if a.casefold() == b.casefold():
-                    pool_of_12.add(a.capitalize())
+		if str(ctx.author.id) not in data:
+			data[str(ctx.author.id)] = {
+			    "Registered": list(),
+			    "Badges": list(),
+			    "Elite_Streak": list(),
+			    "Reset_Token": 1,
+			    "Achievements": list()
+			}
 
-        not_valid = list(pokemon.difference(pool_of_12))
-        wrong = ", ".join(not_valid)
+			db[data_file] = data
 
-        if len(pokemon) != len(pool_of_12):
-            await user.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
-            return
+		if data[str(ctx.author.id)]["Registered"] != empty_list:
+			await user.send("You have already registered for this generation.")
+			return
 
-        for pmon in pool_of_12:
-            for mons in illegal_mons:
-                if pmon.casefold() == mons.casefold():
-                    illegal_mon.append(pmon.capitalize())
-                    illegal_found += 1
-                else:
-                    perfect_mons.add(pmon.capitalize())
+		with open(dex, "r") as file:
+			pokedex = file.read().split("\n")
 
-        if illegal_found >= 1:
-            not_legal = ", ".join(illegal_mon)
-            await user.send(
-                f"Your team is not valid because it contains {not_legal} which is/are in higher tier than OU")
-            return
+		for a in pokemon:
+			for b in pokedex:
+				if a.casefold() == b.casefold():
+					pool_of_12.add(a.capitalize())
 
-        if len(perfect_mons) < 12:
-            await user.send("You Pool contains less than 12 Pokémon")
-            return
-        elif len(perfect_mons) > 12:
-            await user.send("You Pool contains more than 12 Pokémon")
-            return
+		not_valid = list(pokemon.difference(pool_of_12))
+		wrong = ", ".join(not_valid)
 
-        submitted = "\n".join(perfect_mons)
+		if len(pokemon) != len(pool_of_12):
+			await user.send(
+			    f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon"
+			)
+			return
 
-        data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
+		for pmon in pool_of_12:
+			for mons in illegal_mons:
+				if pmon.casefold() == mons.casefold():
+					illegal_mon.append(pmon.capitalize())
+					illegal_found += 1
+				else:
+					perfect_mons.add(pmon.capitalize())
 
-        db[data_file] = data
+		if illegal_found >= 1:
+			not_legal = ", ".join(illegal_mon)
+			await user.send(
+			    f"Your team is not valid because it contains {not_legal} which is/are in higher tier than OU"
+			)
+			return
 
-        msg = await ctx.send(
-            f"{ctx.author.mention}'s Generation {generation} Pool has been submitted...\nSubmitted:\n{submitted}")
+		if len(perfect_mons) < 12:
+			await user.send("You Pool contains less than 12 Pokémon")
+			return
+		elif len(perfect_mons) > 12:
+			await user.send("You Pool contains more than 12 Pokémon")
+			return
 
-        await user.send(f"Your Generation {generation} Pool have been Submitted.\n{submitted}")
+		submitted = "\n".join(perfect_mons)
 
-        await channel.send(f"{ctx.author.mention}'s' Generation {generation} Pool have been Submitted.\n{submitted}")
+		data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
 
-        role = discord.utils.get(ctx.guild.roles, name="challengers")
-        await ctx.author.add_roles(role)
+		db[data_file] = data
 
-        await asyncio.sleep(3)
-        await msg.delete()
+		msg = await ctx.send(
+		    f"{ctx.author.mention}'s Generation {generation} Pool has been submitted...\nSubmitted:\n{submitted}"
+		)
 
-    # @commands.command(aliases=["rs", "restart"])
-    # async def reset(self, ctx, generation, *, raw_input):
+		await user.send(
+		    f"Your Generation {generation} Pool have been Submitted.\n{submitted}"
+		)
 
-    #     if ctx.channel.name == "📝registration":
-    #         pass
-    #     else:
-    #         return
+		await channel.send(
+		    f"{ctx.author.mention}'s' Generation {generation} Pool have been Submitted.\n{submitted}"
+		)
 
-    #     illegal_found = 0
-    #     illegal_mon = []
-    #     pool_of_12 = set()
-    #     perfect_mons = set()
-    #     pokemon = set()
-    #     user = ctx.author
+		role = discord.utils.get(ctx.guild.roles, name="challengers")
+		await ctx.author.add_roles(role)
 
-    #     if generation == "6":
-    #         illegal = "illegal6.txt"
-    #         data_file = "gen6"
-    #         dex = "mons6.txt"
-    #     elif generation == "7":
-    #         illegal = "illegal7.txt"
-    #         data_file = "gen7"
-    #         dex = "mons7.txt"
-    #     else:
-    #         await user.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help rs` to know more.")
-    #         return
+		await asyncio.sleep(3)
+		await msg.delete()
 
-    #     raw_pokemon = set(raw_input.split(", "))
-    #     for mons in raw_pokemon:
-    #         pokemon.add(mons.capitalize())
+	# @commands.command(aliases=["rs", "restart"])
+	# async def reset(self, ctx, generation, *, raw_input):
 
-    #     with open(illegal, "r") as banned:
-    #         illegal_mons = banned.read().split("\n")
+	#     if ctx.channel.name == "📝registration":
+	#         pass
+	#     else:
+	#         return
 
-    #     data = db[data_file]
+	#     illegal_found = 0
+	#     illegal_mon = []
+	#     pool_of_12 = set()
+	#     perfect_mons = set()
+	#     pokemon = set()
+	#     user = ctx.author
 
-    #     if str(ctx.author.id) not in data:
-    #         await user.send("You haven't registered for this generation yet.")
-    #         return
+	#     if generation == "6":
+	#         illegal = "illegal6.txt"
+	#         data_file = "gen6"
+	#         dex = "mons6.txt"
+	#     elif generation == "7":
+	#         illegal = "illegal7.txt"
+	#         data_file = "gen7"
+	#         dex = "mons7.txt"
+	#     else:
+	#         await user.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help rs` to know more.")
+	#         return
 
-    #     available_reset = data[str(ctx.author.id)]["Reset_Token"] - 1
+	#     raw_pokemon = set(raw_input.split(", "))
+	#     for mons in raw_pokemon:
+	#         pokemon.add(mons.capitalize())
 
-    #     if data[str(ctx.author.id)]["Reset_Token"] == 0:
-    #         await user.send("You have already claimed all your reset tokens of this generation.")
-    #         return
+	#     with open(illegal, "r") as banned:
+	#         illegal_mons = banned.read().split("\n")
 
-    #     with open(dex, "r") as file:
-    #         pokedex = file.read().split("\n")
+	#     data = db[data_file]
 
-    #     for a in pokemon:
-    #         for b in pokedex:
-    #             if a.casefold() == b.casefold():
-    #                 pool_of_12.add(a.capitalize())
+	#     if str(ctx.author.id) not in data:
+	#         await user.send("You haven't registered for this generation yet.")
+	#         return
 
-    #     not_valid = list(pokemon.difference(pool_of_12))
-    #     wrong = ", ".join(not_valid)
+	#     available_reset = data[str(ctx.author.id)]["Reset_Token"] - 1
 
-    #     if len(pokemon) != len(pool_of_12):
-    #         await user.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
-    #         return
+	#     if data[str(ctx.author.id)]["Reset_Token"] == 0:
+	#         await user.send("You have already claimed all your reset tokens of this generation.")
+	#         return
 
-    #     for pmon in pool_of_12:
-    #         for mons in illegal_mons:
-    #             if pmon.casefold() == mons.casefold():
-    #                 illegal_mon.append(pmon.capitalize())
-    #                 illegal_found += 1
-    #             else:
-    #                 perfect_mons.add(pmon.capitalize())
+	#     with open(dex, "r") as file:
+	#         pokedex = file.read().split("\n")
 
-    #     if illegal_found >= 1:
-    #         not_legal = ", ".join(illegal_mon)
-    #         await user.send(
-    #             f"Your team is not valid because it contains {not_legal} which is/are in higher tier than OU")
-    #         return
+	#     for a in pokemon:
+	#         for b in pokedex:
+	#             if a.casefold() == b.casefold():
+	#                 pool_of_12.add(a.capitalize())
 
-    #     if len(perfect_mons) < 12:
-    #         await user.send("You Pool contains less than 12 Pokémon")
-    #     elif len(perfect_mons) > 12:
-    #         await user.send("You Pool contains more than 12 Pokémon")
-    #     else:
+	#     not_valid = list(pokemon.difference(pool_of_12))
+	#     wrong = ", ".join(not_valid)
 
-    #         data = db[data_file]
+	#     if len(pokemon) != len(pool_of_12):
+	#         await user.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
+	#         return
 
-    #         prev_pool = set(data[str(ctx.author.id)]["Registered"])
-    #         submitted = ", ".join(perfect_mons)
-    #         set_submitted = set(perfect_mons)
+	#     for pmon in pool_of_12:
+	#         for mons in illegal_mons:
+	#             if pmon.casefold() == mons.casefold():
+	#                 illegal_mon.append(pmon.capitalize())
+	#                 illegal_found += 1
+	#             else:
+	#                 perfect_mons.add(pmon.capitalize())
 
-    #         difference_pool = set_submitted.difference(prev_pool)
+	#     if illegal_found >= 1:
+	#         not_legal = ", ".join(illegal_mon)
+	#         await user.send(
+	#             f"Your team is not valid because it contains {not_legal} which is/are in higher tier than OU")
+	#         return
 
-    #         if len(difference_pool) == 0:
-    #             await user.send("Your previous pool has no variation with the new pool.")
-    #             return
-    #         elif len(difference_pool) > 6:
-    #             await user.send("Your new pool contains more than 6 changes.")
-    #             return
-    #         else:
-    #             await user.send(f"Your league reset is successful and your new pool has been submitted.\n{submitted}")
-    #             await ctx.send(f"{ctx.author.mention} has restarted league.\nNew Pool:{submitted}")
+	#     if len(perfect_mons) < 12:
+	#         await user.send("You Pool contains less than 12 Pokémon")
+	#     elif len(perfect_mons) > 12:
+	#         await user.send("You Pool contains more than 12 Pokémon")
+	#     else:
 
-    #             data = db[data_file]
+	#         data = db[data_file]
 
-    #             data[str(ctx.author.id)] = {"Registered": list(), "Badges": list(), "Elite_Streak": list(),
-    #                                         "Reset_Token": available_reset, "Achievements": list()}
+	#         prev_pool = set(data[str(ctx.author.id)]["Registered"])
+	#         submitted = ", ".join(perfect_mons)
+	#         set_submitted = set(perfect_mons)
 
-    #             db[data_file] = data
+	#         difference_pool = set_submitted.difference(prev_pool)
 
-    #             data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
+	#         if len(difference_pool) == 0:
+	#             await user.send("Your previous pool has no variation with the new pool.")
+	#             return
+	#         elif len(difference_pool) > 6:
+	#             await user.send("Your new pool contains more than 6 changes.")
+	#             return
+	#         else:
+	#             await user.send(f"Your league reset is successful and your new pool has been submitted.\n{submitted}")
+	#             await ctx.send(f"{ctx.author.mention} has restarted league.\nNew Pool:{submitted}")
 
-    #             db[data_file] = data
+	#             data = db[data_file]
 
-    # @commands.command(aliases=["ct"])
-    # async def check_team(self, ctx, generation, member: discord.Member, *, raw_input):
+	#             data[str(ctx.author.id)] = {"Registered": list(), "Badges": list(), "Elite_Streak": list(),
+	#                                         "Reset_Token": available_reset, "Achievements": list()}
 
-    #     if ctx.channel.name == "📝registration":
-    #         return
+	#             db[data_file] = data
 
-    #     pool_check = set()
-    #     pokemon = set()
-    #     empty_list = []
+	#             data[str(ctx.author.id)]["Registered"] = list(perfect_mons)
 
-    #     if generation == "6":
-    #         data_file = "gen6"
-    #         dex = "mons6.txt"
-    #     elif generation == "7":
-    #         data_file = "gen7"
-    #         dex = "mons7.txt"
-    #     else:
-    #         await ctx.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help ct` to know more.")
-    #         return
+	#             db[data_file] = data
 
-    #     raw_pokemon = set(raw_input.split(", "))
-    #     for mons in raw_pokemon:
-    #         pokemon.add(mons.capitalize())
+	# @commands.command(aliases=["ct"])
+	# async def check_team(self, ctx, generation, member: discord.Member, *, raw_input):
 
-    #     data = db[data_file]
+	#     if ctx.channel.name == "📝registration":
+	#         return
 
-    #     if str(ctx.author.id) not in data:
-    #         await ctx.send(f"{member} has not registered for the current generation")
-    #         return
-    #     else:
-    #         if data[str(member.id)]["Registered"] == empty_list:
-    #             await ctx.send(f"{member} has not registered for the current generation")
-    #             return
-    #         else:
-    #             pass
+	#     pool_check = set()
+	#     pokemon = set()
+	#     empty_list = []
 
-    #     registered_pool = set(data[str(member.id)]["Registered"])
+	#     if generation == "6":
+	#         data_file = "gen6"
+	#         dex = "mons6.txt"
+	#     elif generation == "7":
+	#         data_file = "gen7"
+	#         dex = "mons7.txt"
+	#     else:
+	#         await ctx.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help ct` to know more.")
+	#         return
 
-    #     with open(dex, "r") as file:
-    #         pokedex = file.read().split("\n")
+	#     raw_pokemon = set(raw_input.split(", "))
+	#     for mons in raw_pokemon:
+	#         pokemon.add(mons.capitalize())
 
-    #         for a in pokemon:
-    #             for b in pokedex:
-    #                 if a.casefold() == b.casefold():
-    #                     pool_check.add(a.capitalize())
+	#     data = db[data_file]
 
-    #         if len(pool_check) != 6:
-    #             await ctx.send(f"A team must contain 6 Pokémon. It contains {len(pool_check)} Pokémon.")
-    #             return
-    #         else:
-    #             pass
+	#     if str(ctx.author.id) not in data:
+	#         await ctx.send(f"{member} has not registered for the current generation")
+	#         return
+	#     else:
+	#         if data[str(member.id)]["Registered"] == empty_list:
+	#             await ctx.send(f"{member} has not registered for the current generation")
+	#             return
+	#         else:
+	#             pass
 
-    #         not_valid = list(pokemon.difference(pool_check))
-    #         wrong = ", ".join(not_valid)
+	#     registered_pool = set(data[str(member.id)]["Registered"])
 
-    #         if len(pokemon) != len(pool_check):
-    #             await ctx.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
-    #             return
+	#     with open(dex, "r") as file:
+	#         pokedex = file.read().split("\n")
 
-    #     xyz = pool_check.difference(registered_pool)
+	#         for a in pokemon:
+	#             for b in pokedex:
+	#                 if a.casefold() == b.casefold():
+	#                     pool_check.add(a.capitalize())
 
-    #     if len(xyz) == 0:
-    #         await ctx.send(f"{member}'s team is valid.")
-    #     else:
-    #         wrong = ", ".join(xyz)
-    #         await ctx.send(f"{member}'s team is not valid as it contains {wrong} which is/are not in his registered pool.")
+	#         if len(pool_check) != 6:
+	#             await ctx.send(f"A team must contain 6 Pokémon. It contains {len(pool_check)} Pokémon.")
+	#             return
+	#         else:
+	#             pass
 
-    @commands.command(aliases=["s", "sp", "swap_pokemon", "swap_pool", "change"])
-    async def swap(self, ctx, generation, prev_mon, new_mon):
+	#         not_valid = list(pokemon.difference(pool_check))
+	#         wrong = ", ".join(not_valid)
 
-        prefix = server_prefix(ctx)
+	#         if len(pokemon) != len(pool_check):
+	#             await ctx.send(f"{wrong} is/are not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
+	#             return
 
-        if ctx.channel.name == "📝challengers-registration":
-            pass
-        else:
-            return
+	#     xyz = pool_check.difference(registered_pool)
 
-        data = db["mod"]
+	#     if len(xyz) == 0:
+	#         await ctx.send(f"{member}'s team is valid.")
+	#     else:
+	#         wrong = ", ".join(xyz)
+	#         await ctx.send(f"{member}'s team is not valid as it contains {wrong} which is/are not in his registered pool.")
 
-        if data["start"] == "yes":
-            await ctx.send("Swapping Pokémon has been closed")
-            return
+	@commands.command(
+	    aliases=["s", "sp", "swap_pokemon", "swap_pool", "change"])
+	async def swap(self, ctx, generation, prev_mon, new_mon):
 
-        swap_mon = ""
-        illegal_mon = ""
-        empty_list = []
-        user = ctx.author
-        channel = self.client.get_channel(802027595302174730)
+		prefix = server_prefix(ctx)
 
-        if generation == "6":
-            illegal = "illegal6.txt"
-            data_file = "gen6"
-            dex = "mons6.txt"
-        elif generation == "7":
-            illegal = "illegal7.txt"
-            data_file = "gen7"
-            dex = "mons7.txt"
-        else:
-            await ctx.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help swap` to know more.")
-            return
+		if ctx.channel.name == "📝challengers-registration":
+			pass
+		else:
+			return
 
-        data = db[data_file]
+		data = db["mod"]
 
-        if str(ctx.author.id) not in data:
-            await user.send("You are not registered for the current generation.")
-            return
+		if data["start"] == "yes":
+			await ctx.send("Swapping Pokémon has been closed")
+			return
 
-        if data[str(ctx.author.id)]["Registered"] == empty_list:
-            await user.send("You are not registered for the current generation.")
-            return
+		swap_mon = ""
+		illegal_mon = ""
+		empty_list = []
+		user = ctx.author
+		channel = self.client.get_channel(802027595302174730)
 
-        pool = list(data[str(ctx.author.id)]["Registered"])
+		if generation == "6":
+			illegal = "illegal6.txt"
+			data_file = "gen6"
+			dex = "mons6.txt"
+		elif generation == "7":
+			illegal = "illegal7.txt"
+			data_file = "gen7"
+			dex = "mons7.txt"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help swap` to know more."
+			)
+			return
 
-        if prev_mon.capitalize() not in pool:
-            await user.send(f"{prev_mon.capitalize()} not in your registered pool.")
-            return
-        else:
-            pass
+		data = db[data_file]
 
-        with open(dex, "r") as file:
-            pokedex = file.read().split("\n")
-        for b in pokedex:
-            if b.casefold() == new_mon.casefold():
-                swap_mon = "valid"
-                break
+		if str(ctx.author.id) not in data:
+			await user.send(
+			    "You are not registered for the current generation.")
+			return
 
-        if swap_mon != "valid":
-            await user.send(
-                f"{new_mon.capitalize()} is not valid.\nWhether you have spelt wrong or entered wrong Pokémon")
-            return
+		if data[str(ctx.author.id)]["Registered"] == empty_list:
+			await user.send(
+			    "You are not registered for the current generation.")
+			return
 
-        with open(illegal, "r") as banned:
-            illegal_mons = banned.read().split("\n")
+		pool = list(data[str(ctx.author.id)]["Registered"])
 
-        for mons in illegal_mons:
-            if mons.casefold() == new_mon.casefold():
-                illegal_mon = "yes"
-                break
+		if prev_mon.capitalize() not in pool:
+			await user.send(
+			    f"{prev_mon.capitalize()} not in your registered pool.")
+			return
+		else:
+			pass
 
-        if illegal_mon == "yes":
-            await user.send(f"{new_mon.capitalize()} cannot be swapped as it is in higher tier than OU.")
-            return
+		with open(dex, "r") as file:
+			pokedex = file.read().split("\n")
+		for b in pokedex:
+			if b.casefold() == new_mon.casefold():
+				swap_mon = "valid"
+				break
 
-        pool.remove(prev_mon.capitalize())
-        pool.append(new_mon.capitalize())
-        data[str(ctx.author.id)]["Registered"] = pool
+		if swap_mon != "valid":
+			await user.send(
+			    f"{new_mon.capitalize()} is not valid.\nWhether you have spelt wrong or entered wrong Pokémon"
+			)
+			return
 
-        db[data_file] = data
+		with open(illegal, "r") as banned:
+			illegal_mons = banned.read().split("\n")
 
-        msg = await ctx.send(f"{new_mon.capitalize()} has been swapped with {prev_mon.capitalize()}")
+		for mons in illegal_mons:
+			if mons.casefold() == new_mon.casefold():
+				illegal_mon = "yes"
+				break
 
-        data = db[data_file]
+		if illegal_mon == "yes":
+			await user.send(
+			    f"{new_mon.capitalize()} cannot be swapped as it is in higher tier than OU."
+			)
+			return
 
-        submitted = data[str(ctx.author.id)]["Registered"]
-        new_pool = ", ".join(submitted)
+		pool.remove(prev_mon.capitalize())
+		pool.append(new_mon.capitalize())
+		data[str(ctx.author.id)]["Registered"] = pool
 
-        await channel.send(f"{ctx.author.mention}'s Generation {generation} New Pool:\n{new_pool}")
+		db[data_file] = data
 
-        await user.send(f"Your new pool:\n{new_pool}")
+		msg = await ctx.send(
+		    f"{new_mon.capitalize()} has been swapped with {prev_mon.capitalize()}"
+		)
 
-        await asyncio.sleep(3)
-        await msg.delete()
+		data = db[data_file]
 
-    @commands.command(aliases=["pl", "pokemon"])
-    async def pool(self, ctx, generation, *, member: discord.Member = None):
+		submitted = data[str(ctx.author.id)]["Registered"]
+		new_pool = ", ".join(submitted)
 
-        prefix = server_prefix(ctx)
+		await channel.send(
+		    f"{ctx.author.mention}'s Generation {generation} New Pool:\n{new_pool}"
+		)
 
-        if ctx.channel.name == "📝registration":
-            return
+		await user.send(f"Your new pool:\n{new_pool}")
 
-        empty_list = []
+		await asyncio.sleep(3)
+		await msg.delete()
 
-        if member is None:
-            member = ctx.author
-        else:
-            pass
+	@commands.command(aliases=["pl", "pokemon"])
+	async def pool(self, ctx, generation, *, member: discord.Member = None):
 
-        if generation == "6":
-            data_file = "gen6"
-        elif generation == "7":
-            data_file = "gen7"
-        else:
-            await ctx.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help pool` to know more.")
-            return
+		prefix = server_prefix(ctx)
 
-        data = db[data_file]
+		if ctx.channel.name == "📝registration":
+			return
 
-        if str(member.id) not in data:
-            await ctx.send(f"{member} is not registered for the current generation.")
-            return
-        else:
-            if data[str(member.id)]["Registered"] == empty_list:
-                await ctx.send(f"{member} has not registered for the current generation")
-                return
-            else:
-                pass
+		empty_list = []
 
-        registered = list(data[str(member.id)]["Registered"])
-        registered_str = "\n".join(registered)
+		if member is None:
+			member = ctx.author
+		else:
+			pass
 
-        em = discord.Embed(title=f"{member}'s Generation {generation} Pool:", description=f"**{registered_str}**",
-                           colour=discord.Colour.green())
+		if generation == "6":
+			data_file = "gen6"
+		elif generation == "7":
+			data_file = "gen7"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help pool` to know more."
+			)
+			return
 
-        await ctx.send(embed=em)
+		data = db[data_file]
 
-    @commands.command()
-    async def check(self, ctx, generation, *, mon):
+		if str(member.id) not in data:
+			await ctx.send(
+			    f"{member} is not registered for the current generation.")
+			return
+		else:
+			if data[str(member.id)]["Registered"] == empty_list:
+				await ctx.send(
+				    f"{member} has not registered for the current generation")
+				return
+			else:
+				pass
 
-        prefix = server_prefix(ctx)
+		registered = list(data[str(member.id)]["Registered"])
+		registered_str = "\n".join(registered)
 
-        valid = False
+		em = discord.Embed(title=f"{member}'s Generation {generation} Pool:",
+		                   description=f"**{registered_str}**",
+		                   colour=discord.Colour.green())
 
-        if generation == "6":
-            dex = "mons6.txt"
-        elif generation == "7":
-            dex = "mons7.txt"
-        else:
-            await ctx.send(f"Enter a valid Generation(6/7)\nUse `{prefix}help swap` to know more.")
-            return
+		await ctx.send(embed=em)
 
-        with open(dex, "r") as file:
-            pokedex = file.read().split("\n")
-        for a in pokedex:
-            if a.casefold() == mon.casefold():
-                await ctx.send(f"{mon} is valid.")
-                valid = True
+	@commands.command()
+	async def check(self, ctx, generation, *, mon):
 
-        if valid is False:
-            await ctx.send(f"{mon} is not valid.")
+		prefix = server_prefix(ctx)
 
-    @commands.command(aliases=["hof"])
-    async def hall_of_fame(self, ctx):
+		valid = False
 
-        if ctx.channel.name == "📝registration":
-            return
+		if generation == "6":
+			dex = "mons6.txt"
+		elif generation == "7":
+			dex = "mons7.txt"
+		else:
+			await ctx.send(
+			    f"Enter a valid Generation(6/7)\nUse `{prefix}help swap` to know more."
+			)
+			return
 
-        empty_list = []
+		with open(dex, "r") as file:
+			pokedex = file.read().split("\n")
+		for a in pokedex:
+			if a.casefold() == mon.casefold():
+				await ctx.send(f"{mon} is valid.")
+				valid = True
 
-        em = discord.Embed(title="**Hall Of Fame**",
-                           colour=discord.Colour.green())
+		if valid is False:
+			await ctx.send(f"{mon} is not valid.")
 
-        em.set_thumbnail(url=ctx.guild.icon_url)
+	@commands.command(aliases=["hof"])
+	async def hall_of_fame(self, ctx):
 
-        data = db["hall_of_fame"]
+		if ctx.channel.name == "📝registration":
+			return
 
-        for league in data:
-            em.add_field(name=league,
-                         value=f"**Champions of {league}:**",
-                         inline=False)
-            for generation in data[league]:
-                if data[league][generation] == empty_list:
-                    value = "None"
-                else:
-                    winner = data[league][generation]
-                    value = "\n".join(winner)
-                em.add_field(name=generation,
-                             value=f"{value}\u200b\n",
-                             inline=True)
+		empty_list = []
 
-        message = await ctx.send(embed=em)
+		em = discord.Embed(title="**Hall Of Fame**",
+		                   colour=discord.Colour.green())
 
-        # contents = ["This is page 1!", "This is page 2!", "This is page 3!", "This is page 4!"]
-        # pages = 4
-        # cur_page = 1
-        # # message = await ctx.send(f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
-        # # getting the message object for editing and reacting
+		em.set_thumbnail(url=ctx.guild.icon_url)
 
-        # await message.add_reaction("◀️")
-        # await message.add_reaction("▶️")
+		data = db["hall_of_fame"]
 
-        # def check(reaction, user):
-        #     return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
+		for league in data:
+			em.add_field(name=league,
+			             value=f"**Champions of {league}:**",
+			             inline=False)
+			for generation in data[league]:
+				if data[league][generation] == empty_list:
+					value = "None"
+				else:
+					winner = data[league][generation]
+					value = "\n".join(winner)
+				em.add_field(name=generation,
+				             value=f"{value}\u200b\n",
+				             inline=True)
 
-        # while True:
-        #     try:
-        #         reaction, user = await self.client.wait_for("reaction_add", timeout=60, check=check)
-        #         # waiting for a reaction to be added - times out after x seconds, 60 in this
-        #         # example
+		message = await ctx.send(embed=em)
 
-        #         if str(reaction.emoji) == "▶️" and cur_page != pages:
-        #             cur_page += 1
-        #             await message.edit(content=f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
-        #             await message.remove_reaction(reaction, user)
+		# contents = ["This is page 1!", "This is page 2!", "This is page 3!", "This is page 4!"]
+		# pages = 4
+		# cur_page = 1
+		# # message = await ctx.send(f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
+		# # getting the message object for editing and reacting
 
-        #         elif str(reaction.emoji) == "◀️" and cur_page > 1:
-        #             cur_page -= 1
-        #             await message.edit(content=f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
-        #             await message.remove_reaction(reaction, user)
+		# await message.add_reaction("◀️")
+		# await message.add_reaction("▶️")
 
-        #         else:
-        #             await message.remove_reaction(reaction, user)
-        #             # removes reactions if the user tries to go forward on the last page or
-        #             # backwards on the first page
-        #     except asyncio.TimeoutError:
-        #         pass
-        #         # ending the loop if user doesn't react after x seconds
+		# def check(reaction, user):
+		#     return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
 
-    @commands.command(aliases=["sc"])
-    @commands.has_any_role("moderator", "admin")
-    async def swap_close(self, ctx):
+		# while True:
+		#     try:
+		#         reaction, user = await self.client.wait_for("reaction_add", timeout=60, check=check)
+		#         # waiting for a reaction to be added - times out after x seconds, 60 in this
+		#         # example
 
-        data = db["mod"]
+		#         if str(reaction.emoji) == "▶️" and cur_page != pages:
+		#             cur_page += 1
+		#             await message.edit(content=f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
+		#             await message.remove_reaction(reaction, user)
 
-        data["start"] = "yes"
+		#         elif str(reaction.emoji) == "◀️" and cur_page > 1:
+		#             cur_page -= 1
+		#             await message.edit(content=f"Page {cur_page}/{pages}:\n{contents[cur_page-1]}")
+		#             await message.remove_reaction(reaction, user)
 
-        db["mod"] = data
+		#         else:
+		#             await message.remove_reaction(reaction, user)
+		#             # removes reactions if the user tries to go forward on the last page or
+		#             # backwards on the first page
+		#     except asyncio.TimeoutError:
+		#         pass
+		#         # ending the loop if user doesn't react after x seconds
 
-        await ctx.send("Pokémon Swap has been closed now")
+	@commands.command(aliases=["sc"])
+	@commands.has_any_role("moderator", "admin")
+	async def swap_close(self, ctx):
 
-    @commands.command(aliases=["rl"])
-    @commands.has_any_role("moderator", "admin")
-    async def restart_league(self, ctx, *, title):
+		data = db["mod"]
 
-        data = db["gen6"]
+		data["start"] = "yes"
 
-        for items in data:
-            achievements = data[items]["Achievements"]
-            data[items] = {
-                "Registered": list(),
-                "Badges": list(),
-                "Elite_Streak": list(),
-                "Reset_Token": 1,
-                "Achievements": list()
-            }
+		db["mod"] = data
 
-            db["gen6"] = data
-            data[items]["Achievements"] = achievements
-            db["gen6"] = data
+		await ctx.send("Pokémon Swap has been closed now")
 
-        data = db["gen7"]
+	@commands.command(aliases=["rl"])
+	@commands.has_any_role("moderator", "admin")
+	async def restart_league(self, ctx, *, title):
 
-        for items in data:
-            achievements = data[items]["Achievements"]
-            data[items] = {
-                "Registered": list(),
-                "Badges": list(),
-                "Elite_Streak": list(),
-                "Reset_Token": 1,
-                "Achievements": list()
-            }
+		data = db["gen6"]
 
-            db["gen7"] = data
-            data[items]["Achievements"] = achievements
-            db["gen7"] = data
+		for items in data:
+			achievements = data[items]["Achievements"]
+			data[items] = {
+			    "Registered": list(),
+			    "Badges": list(),
+			    "Elite_Streak": list(),
+			    "Reset_Token": 1,
+			    "Achievements": list()
+			}
 
-        data = db["mod"]
-        data["start"] = "no"
-        db["mod"] = data
-        data["current_league"] = title 
-        db["mod"] = data
+			db["gen6"] = data
+			data[items]["Achievements"] = achievements
+			db["gen6"] = data
 
-        for filename in os.listdir("./cogs"):
-            if filename.endswith(".py"):
-                self.client.unload_extension(f"cogs.{filename[:-3]}")
-                self.client.load_extension(f"cogs.{filename[:-3]}")
+		data = db["gen7"]
 
-        await ctx.send("League data has been reseted.")
+		for items in data:
+			achievements = data[items]["Achievements"]
+			data[items] = {
+			    "Registered": list(),
+			    "Badges": list(),
+			    "Elite_Streak": list(),
+			    "Reset_Token": 1,
+			    "Achievements": list()
+			}
+
+			db["gen7"] = data
+			data[items]["Achievements"] = achievements
+			db["gen7"] = data
+
+		data = db["mod"]
+		data["start"] = "no"
+		db["mod"] = data
+		data["current_league"] = title
+		db["mod"] = data
+
+		for filename in os.listdir("./cogs"):
+			if filename.endswith(".py"):
+				self.client.unload_extension(f"cogs.{filename[:-3]}")
+				self.client.load_extension(f"cogs.{filename[:-3]}")
+
+		await ctx.send("League data has been reseted.")
 
 
 def setup(client):
-    client.add_cog(League(client))
+	client.add_cog(League(client))

@@ -6,17 +6,18 @@ from itertools import cycle
 from replit import db
 from better_profanity import profanity
 import asyncio
+import string
 import datetime
 
-profanity.load_censor_words_from_file("swear_words.txt")
+profanity.load_censor_words_from_file("swear_words.txt", whitelist_words=["gayder"])
 
 save = db["mod"]
 
 
 def get_prefix(client, message):
-    prefixes = db["prefixes"]
+	prefixes = db["prefixes"]
 
-    return str(prefixes[str(message.guild.id)])
+	return str(prefixes[str(message.guild.id)])
 
 
 prefix = get_prefix
@@ -30,168 +31,178 @@ presence = cycle([
     discord.Activity(type=discord.ActivityType.playing, name=current_title)
 ])
 
-client = commands.Bot(
-    command_prefix=prefix, intents=intents, case_insensitive=True)
+client = commands.Bot(command_prefix=prefix,
+                      intents=intents,
+                      case_insensitive=True)
 
 
 @client.event
 async def on_ready():
-    change_presence.start()
+	change_presence.start()
 
-    print(f"Bot is Ready.\nLogged in as {client.user.name}\n---------------------")
+	print(
+	    f"Bot is Ready.\nLogged in as {client.user.name}\n---------------------"
+	)
 
-    client.remove_command("help")
+	client.remove_command("help")
 
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
-            client.load_extension(f"cogs.{filename[:-3]}")
+	for filename in os.listdir("./cogs"):
+		if filename.endswith(".py"):
+			client.load_extension(f"cogs.{filename[:-3]}")
 
-    version = discord.__version__.replace(" ", "")
-    print("discord.py Version: v" + version)
+	version = discord.__version__.replace(" ", "")
+	print("discord.py Version: v" + version)
 
 
 @client.event
 async def on_message(message):
-    
-    if message.author == client.user:
-        return
+	if message.author == client.user:
+		return
 
-    if profanity.contains_profanity(message.content):
-        if message.author.id == 549415697726439434:
-            return 
-            
-        if message.guild.id != 676777139776913408:
-            return
+	profanity_check_msg = message.content.translate(
+	    str.maketrans('', '', string.punctuation))
 
-        if message.author.bot:
-            return
+	if profanity.contains_profanity(profanity_check_msg):
+		if message.author.id == 549415697726439434:
+			return
 
-        try:
-            await message.delete()
-        except discord.errors.NotFound:
-            pass
+		if message.guild.id != 676777139776913408:
+			return
 
-        embed = discord.Embed(description=f"**{message.author.mention} you are not allowed to say that.**",
-                              colour=discord.Colour.red())
+		if message.author.bot:
+			return
 
-        msg = await message.channel.send(embed=embed)
+		try:
+			await message.delete()
+		except discord.errors.NotFound:
+			pass
 
-        em = discord.Embed(title="Deleted Message",
-                           description=f"From {message.author.mention} in <#{message.channel.id}>",
-                           colour=discord.Colour.red())
+		embed = discord.Embed(
+		    description=
+		    f"**{message.author.mention} you are not allowed to say that.**",
+		    colour=discord.Colour.red())
 
-        em.add_field(name="Message", value=message.content)
-        em.timestamp = datetime.datetime.utcnow()
+		msg = await message.channel.send(embed=embed)
 
-        channel = client.get_channel(780981187317465119)
-        await channel.send(embed=em)
+		em = discord.Embed(
+		    title="Deleted Message",
+		    description=
+		    f"From {message.author.mention} in <#{message.channel.id}>",
+		    colour=discord.Colour.red())
 
-        await asyncio.sleep(10)
-        try:
-            await msg.delete()
-        except discord.errors.NotFound:
-            pass
+		em.add_field(name="Message", value=message.content)
+		em.timestamp = datetime.datetime.utcnow()
 
-    if message.channel.id == 775388498919948299:
-        if "you just advanced to level 15!" in message.content:
-            member_id = ''.join(filter(lambda i: i.isdigit(), message.content))
+		channel = client.get_channel(836139191666343966)
+		await channel.send(embed=em)
 
-            mem = await message.guild.fetch_member(int(member_id[:-2]))
-            role = discord.utils.get(message.guild.roles, name="advanced-trainers")
+		await asyncio.sleep(10)
+		try:
+			await msg.delete()
+		except discord.errors.NotFound:
+			pass
 
-            await mem.add_roles(role)
+	if message.channel.id == 775388498919948299:
+		if "you just advanced to level 15!" in message.content:
+			member_id = ''.join(filter(lambda i: i.isdigit(), message.content))
 
-    # if message.channel.id == 818452656670375978:
-    #     msg = message.content.lower()
+			mem = await message.guild.fetch_member(int(member_id[:-2]))
+			role = discord.utils.get(message.guild.roles,
+			                         name="advanced-trainers")
 
-    #     if "gen" in msg:
+			await mem.add_roles(role)
 
-    #         gen6 = db["tour"]["gen6"]
-    #         gen7 = db["tour"]["gen7"]
+	# if message.channel.id == 818452656670375978:
+	#     msg = message.content.lower()
 
-    #         n = msg.split("gen")
+	#     if "gen" in msg:
 
-    #         if len(n) > 3:
-    #             pass
-    #         else:
-    #             if "6" in n[1]:
-    #                 gen6.append(message.author.mention)
-    #             if "7" in n[1]:
-    #                 gen7.append(message.author.mention)
+	#         gen6 = db["tour"]["gen6"]
+	#         gen7 = db["tour"]["gen7"]
 
-    #             if len(n) == 3:
-    #                 if "6" in n[2]:
-    #                     gen6.append(message.author.mention)
-    #                 if "7" in n[2]:
-    #                     gen7.append(message.author.mention)
+	#         n = msg.split("gen")
 
-    #         db["tour"]["gen6"] = gen6
-    #         db["tour"]["gen7"] = gen7
+	#         if len(n) > 3:
+	#             pass
+	#         else:
+	#             if "6" in n[1]:
+	#                 gen6.append(message.author.mention)
+	#             if "7" in n[1]:
+	#                 gen7.append(message.author.mention)
 
-    # if message.author.id == 763666468222664744:
-    #     emoji = "🐐"
-    #     try:
-    #         await message.add_reaction(emoji)
-    #     except discord.errors.NotFound:
-    #         pass
+	#             if len(n) == 3:
+	#                 if "6" in n[2]:
+	#                     gen6.append(message.author.mention)
+	#                 if "7" in n[2]:
+	#                     gen7.append(message.author.mention)
 
-    # if message.channel.name == "💭opinions-and-requests":
-    #     emoji1 = "<a:thumbs_up:796407963459780628>"
-    #     emoji2 = "<a:thumbs_down:796407964033351800>"
-    #     try:
-    #         await message.add_reaction(emoji1)
-    #         await message.add_reaction(emoji2)
-    #     except discord.errors.NotFound:
-    #         pass
+	#         db["tour"]["gen6"] = gen6
+	#         db["tour"]["gen7"] = gen7
 
-    # try:
-    #     if message.mentions[0] == client.user:
-    #         prefixes = db["prefixes"]
-    #         server_prefix = str(prefixes[str(message.guild.id)])
-    #         await message.channel.send(f"My prefix for this server is `{server_prefix}`")
-    # except IndexError:
-    #     pass
+	# if message.author.id == 763666468222664744:
+	#     emoji = "🐐"
+	#     try:
+	#         await message.add_reaction(emoji)
+	#     except discord.errors.NotFound:
+	#         pass
 
-    await client.process_commands(message)
+	# if message.channel.name == "💭opinions-and-requests":
+	#     emoji1 = "<a:thumbs_up:796407963459780628>"
+	#     emoji2 = "<a:thumbs_down:796407964033351800>"
+	#     try:
+	#         await message.add_reaction(emoji1)
+	#         await message.add_reaction(emoji2)
+	#     except discord.errors.NotFound:
+	#         pass
+
+	# try:
+	#     if message.mentions[0] == client.user:
+	#         prefixes = db["prefixes"]
+	#         server_prefix = str(prefixes[str(message.guild.id)])
+	#         await message.channel.send(f"My prefix for this server is `{server_prefix}`")
+	# except IndexError:
+	#     pass
+
+	await client.process_commands(message)
 
 
 @client.event
 async def on_guild_join(guild):
-    prefixes = db["prefixes"]
-    prefixes[str(guild.id)] = "."
-    db["prefixes"] = prefixes
+	prefixes = db["prefixes"]
+	prefixes[str(guild.id)] = "."
+	db["prefixes"] = prefixes
 
 
 @client.event
 async def on_guild_leave(guild):
-    prefixes = db["prefixes"]
-    prefixes.pop(str(guild.id))
-    db["prefixes"] = prefixes
+	prefixes = db["prefixes"]
+	prefixes.pop(str(guild.id))
+	db["prefixes"] = prefixes
 
 
 @client.event
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-        pass
-    else:
-        await ctx.send('An error occurred: {}'.format(str(error)))
+	if isinstance(error, commands.CommandNotFound):
+		pass
+	else:
+		await ctx.send('{}'.format(str(error)))
 
 
 @client.command()
 @commands.is_owner()
 async def reload(ctx):
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
-            client.unload_extension(f"cogs.{filename[:-3]}")
-            client.load_extension(f"cogs.{filename[:-3]}")
+	for filename in os.listdir("./cogs"):
+		if filename.endswith(".py"):
+			client.unload_extension(f"cogs.{filename[:-3]}")
+			client.load_extension(f"cogs.{filename[:-3]}")
 
-    await ctx.send("Extensions has been reloaded.")
+	await ctx.send("Extensions has been reloaded.")
 
 
 @tasks.loop(seconds=10)
 async def change_presence():
-    await client.change_presence(activity=next(presence))
-
+	await client.change_presence(activity=next(presence))
+	
 
 keep_alive.keep_alive()
 client.run(os.environ.get("TOKEN"))

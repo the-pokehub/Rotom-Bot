@@ -1,10 +1,13 @@
 import discord
 import googletrans
-from discord.ext import commands
+from discord.ext import tasks, commands
 from googletrans import Translator
 from better_profanity import profanity
 from googlesearch import search
 from PyDictionary import PyDictionary
+import datetime
+from bs4 import BeautifulSoup
+import requests
 
 dictionary = PyDictionary()
 
@@ -124,80 +127,113 @@ class Misc(commands.Cog):
         await ctx.send(
             "<a:dance1:807167808164331531>\n<a:dance2:807167807757746177>\n<a:dance3:807167807804014602>\n<a:dance4:807167807904940073>")
 
-    @commands.command()
-    async def say(self, ctx, *, txt=None):
+    # @commands.command()
+    # async def say(self, ctx, *, txt=None):
+    #     if txt is None:
+    #         return
 
-        if txt is None:
-            return
+    #     try:
+    #         await ctx.message.delete()
+    #     except discord.errors.NotFound:
+    #         pass
 
-        try:
-            await ctx.message.delete()
-        except discord.errors.NotFound:
-            pass
+    #     if profanity.contains_profanity(txt):
+    #         await ctx.send("You cannot use banned words!")
+    #         return
 
-        if profanity.contains_profanity(txt):
-            await ctx.send("You cannot use banned words!")
-            return
+    #     if "--" in txt:
+    #         txt = txt.split("--")
+    #         channel = self.client.get_channel(int(txt[1]))
+    #         txt = txt[0]
+    #     else:
+    #         channel = ctx.channel
 
-        if "--" in txt:
-            txt = txt.split("--")
-            channel = self.client.get_channel(int(txt[1]))
-            txt = txt[0]
-        else:
-            channel = ctx.channel
+    #     send = " "
+    #     emoj = ""
+    #     emo = False
 
-        send = " "
-        emoj = ""
-        emo = False
+    #     if ":" in txt:
+    #         txt = txt.split(":")
+    #         for name in txt:
+    #             emo = False
+    #             for emoji in ctx.guild.emojis:
+    #                 if name == emoji.name:
+    #                     t = str(emoji)
+    #                     emoj = emoji.id
+    #                     send += t
+    #                     emo = True
 
-        if ":" in txt:
-            txt = txt.split(":")
-            for name in txt:
-                emo = False
-                for emoji in ctx.guild.emojis:
-                    if name == emoji.name:
-                        t = str(emoji)
-                        emoj = emoji.id
-                        send += t
-                        emo = True
+    #             if not emo:
+    #                 if ">" in name:
+    #                     name = name.replace(">", "")
+    #                     if name.isnumeric():
+    #                         if int(name) == int(emoj):
+    #                             continue
 
-                if not emo:
-                    if ">" in name:
-                        name = name.replace(">", "")
-                        if name.isnumeric():
-                            if int(name) == int(emoj):
-                                continue
+    #                 if "<" in name[-2:]:
+    #                     if "<a" in name:
+    #                         name = name.replace("<a", "")
+    #                     else:
+    #                         name = name[:-1]
+    #                         another_name = name.replace(" ", "")
+    #                         if another_name.isnumeric():
+    #                             if int(name) == int(emoj):
+    #                                 continue
+    #                 send += name
 
-                    if "<" in name[-2:]:
-                        if "<a" in name:
-                            name = name.replace("<a", "")
-                        else:
-                            name = name[:-1]
-                            another_name = name.replace(" ","")
-                            if another_name.isnumeric():
-                                if int(name) == int(emoj):
-                                    continue
-                    send += name
-                
-        else:
-            send = txt
-                
-        await channel.send(send)
+    #     else:
+    #         send = txt
+    #     em = discord.Embed(description=send)
+
+    #     await ctx.send(embed=em)
 
     @commands.command(aliases=["search", "query"])
     async def google(self, ctx, *, query):
 
+        def gsearch(query_raw):
+
+            des = ""
+
+            r = search(query_raw, stop=10)
+            for i in r:
+                url = i
+
+                try:
+                    reqs = requests.get(url)
+                except requests.exceptions.Timeout:
+                    pass
+                except requests.exceptions.TooManyRedirects:
+                    pass
+                except requests.exceptions.RequestException:
+                    pass
+
+                soup = BeautifulSoup(reqs.text, 'html.parser')
+
+                for title in soup.find_all('title'):
+                    tit = title.get_text()
+                    if tit == "":
+                        txt = f"__{i}__\n"
+                    else:
+                        txt = f"[__{tit}__]({i})\n"
+                    des += txt
+                    break
+
+            return des
+
         async with ctx.typing():
-            results = search(query, tld="com", num=1, stop=1)
-            for i in results:
-                await ctx.send(i)
-            return
+
+            result = gsearch(query)
+
+            em = discord.Embed(title=f"Search Results for {query.capitalize()}", description=result)
+
+            await ctx.send(embed=em)
 
     @commands.command()
     async def invite(self, ctx):
 
-        em = discord.Embed(description="[**__Here's the link to invite the bot 😉__**](https://discord.com/api/oauth2/authorize?client_id=783598148039868426&permissions=8&scope=bot)",
-                           colour=discord.Colour.green())
+        em = discord.Embed(
+            description="[**__Here's the link to invite the bot 😉__**](https://discord.com/api/oauth2/authorize?client_id=783598148039868426&permissions=8&scope=bot)",
+            colour=discord.Colour.green())
 
         await ctx.send(embed=em)
 
@@ -232,10 +268,28 @@ class Misc(commands.Cog):
     @commands.command()
     async def bump(self, ctx):
 
-        em = discord.Embed(description="[**__Here's the link to bump our server 😉__**](https://discordservers.com/server/676777139776913408/bump)", colour=discord.Colour.green())
+        em = discord.Embed(
+            description="[**__Here's the link to bump our server 😉__**](https://discordservers.com/server/676777139776913408/bump)",
+            colour=discord.Colour.green())
 
         await ctx.send(embed=em)
 
+    @tasks.loop(seconds=60)
+    async def wishBirthday(ctx):
+        timenow = datetime.datetime.now()
+        timenow = str(timenow)[:-10]
+        if timenow == '2021-04-09 13:00':
+            channel = ctx.get_channel(761502109459677185)
+            await channel.send(
+                'Happy Birthday Mia! I remembered your birthday! Have a blast today! :partying_face: :partying_face: :partying_face:')
+        if timenow == '2021-04-09 23:00':
+            channel = ctx.get_channel(761502109459677185)
+            await channel.send(
+                'Happy Birthday Infernape! I remembered your birthday! Have a blast today! :partying_face: :partying_face: :partying_face:')
+        if timenow[14:] == '00':
+            print(timenow)
+
 
 def setup(client):
+    Misc.wishBirthday.start(client)
     client.add_cog(Misc(client))

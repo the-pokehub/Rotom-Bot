@@ -230,8 +230,9 @@ class Fun(commands.Cog):
             'Very doubtful']
 
         answer = random.choice(answers)
+        em = discord.Embed(description=f"Question: {question}\nMy Answer: {answer}.") 
 
-        await ctx.send(f"Question: {question}\nMy Answer: {answer}.")
+        await ctx.send(embed=em)
 
 
 
