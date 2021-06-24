@@ -232,7 +232,7 @@ class Fun(commands.Cog):
         answer = random.choice(answers)
         em = discord.Embed(description=f"Question: {question}\nMy Answer: {answer}.") 
 
-        await ctx.send(embed=em)
+        await ctx.reply(embed=em)
 
 
 

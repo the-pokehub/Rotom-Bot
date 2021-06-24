@@ -14,7 +14,6 @@ profanity.load_censor_words_from_file("swear_words.txt", whitelist_words=["gayde
 
 save = db["mod"]
 
-dbs = ["mod", "league_prof7", "gen6", "gen7", "league_prof6", "prefixes", "hall_of_fame", "tour"]
 
 
 def get_prefix(client, message):
@@ -56,11 +55,6 @@ async def on_ready():
     version = discord.__version__.replace(" ", "")
     print("discord.py Version: v" + version)
 
-    for bases in dbs:
-        file = db[bases]
-
-        with open(f"{bases}.json", "w") as data:
-            json.dump(file, data)
 
 
 @client.event
@@ -71,47 +65,61 @@ async def on_message(message):
     profanity_check_msg = message.content.translate(
         str.maketrans('', '', string.punctuation))
 
-    if profanity.contains_profanity(profanity_check_msg):
-        if message.author.id == 549415697726439434:
-            return
+    def replaceDoubleCharacters(string):
+        lastLetter, replacedString = "", ""
+        for letter in string:
+            if letter != lastLetter:
+                replacedString += letter
+            lastLetter = letter
+        return replacedString
 
-        if message.guild.id != 676777139776913408:
-            return
+    if profanity.contains_profanity(profanity_check_msg) or profanity.contains_profanity(replaceDoubleCharacters(profanity_check_msg)):
+        # if message.author.id == 549415697726439434:
+        #     return
 
-        if message.author.bot:
-            return
+        # if message.guild.id != 676777139776913408:
+        #     return
 
-        try:
-            await message.delete()
-        except discord.errors.NotFound:
-            pass
+        if not message.author.bot:
 
-        embed = discord.Embed(
-            description=
-            f"**{message.author.mention} you are not allowed to say that.**",
-            colour=discord.Colour.red())
+            try:
+                await message.delete()
+            except discord.errors.NotFound:
+                pass
 
-        msg = await message.channel.send(embed=embed)
+            embed = discord.Embed(
+                description=
+                f"**{message.author.mention} you are not allowed to say that.**",
+                colour=discord.Colour.red())
 
-        em = discord.Embed(
-            title="Deleted Message",
-            description=
-            f"From {message.author.mention} in <#{message.channel.id}>",
-            colour=discord.Colour.red())
+            msg = await message.channel.send(embed=embed)
 
-        em.add_field(name="Message", value=message.content)
-        em.timestamp = datetime.datetime.utcnow()
+            em = discord.Embed(
+                title="Deleted Message",
+                description=
+                f"From {message.author.mention} in <#{message.channel.id}>",
+                colour=discord.Colour.red())
 
-        channel = client.get_channel(836139191666343966)
-        await channel.send(embed=em)
+            em.add_field(name="Message", value=message.content)
+            em.timestamp = datetime.datetime.utcnow()
 
-        await asyncio.sleep(10)
-        try:
-            await msg.delete()
-        except discord.errors.NotFound:
-            pass
+            channel = client.get_channel(836139191666343966)
+            await channel.send(embed=em)
 
-    if message.channel.id == 775388498919948299:
+            await asyncio.sleep(10)
+            try:
+                await msg.delete()
+            except discord.errors.NotFound:
+                pass
+
+    nick_msg = profanity_check_msg.replace(" ", "")
+
+    if "iamback" in nick_msg.lower() or "iamback" in replaceDoubleCharacters(nick_msg.lower()) or "imback" in nick_msg.lower() or "imback" in replaceDoubleCharacters(nick_msg.lower()):
+        user = message.author
+        if user != message.guild.owner:    
+            await user.edit(nick="Back")
+
+    if message.channel.id == 780981187317465119:
         if "you just advanced to level 15!" in message.content:
             member_id = ''.join(filter(lambda i: i.isdigit(), message.content))
 

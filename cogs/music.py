@@ -9,9 +9,6 @@ import discord
 import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
-from lyricsgenius import Genius
-
-genius = Genius(os.environ.get("GENIUS_TOKEN"))
 
 
 class VoiceError(Exception):
@@ -489,36 +486,36 @@ class Music(commands.Cog):
                 await ctx.voice_state.songs.put(song)
                 await ctx.send('Enqueued {}'.format(str(source)))
 
-    @commands.command()
-    async def lyrics(self, ctx, * , song=None):
+    # @commands.command()
+    # async def lyrics(self, ctx, * , song=None):
 
-        if song is None:
-            if not ctx.voice_state.is_playing:
-                return await ctx.send('Not playing any music right now...')
-            else:
-                embed = ctx.voice_state.current.create_embed()
-                des = embed.description.lower()
-                des = des.replace("`","")
-                des = des.replace("css","")
-                des = des.replace("\n","")
-                des = des.replace("lyrics","")
-                des = des.split("ft")
-                if type(des) == list:
-                    des = des[0]
+    #     if song is None:
+    #         if not ctx.voice_state.is_playing:
+    #             return await ctx.send('Not playing any music right now...')
+    #         else:
+    #             embed = ctx.voice_state.current.create_embed()
+    #             des = embed.description.lower()
+    #             des = des.replace("`","")
+    #             des = des.replace("css","")
+    #             des = des.replace("\n","")
+    #             des = des.replace("lyrics","")
+    #             des = des.split("ft")
+    #             if type(des) == list:
+    #                 des = des[0]
 
-                print(des)
-                song = des
+    #             print(des)
+    #             song = des
 
-        songs = genius.search_songs(song)
-        for req in songs['hits']:
-            url = req['result']['url']
-            title = req["result"]["title"]
-            song_lyrics = genius.lyrics(song_url=url)
-            # print(song_lyrics)
-            em = discord.Embed(title=title, description=song_lyrics)
-            await ctx.send(embed=em)
-            # await ctx.send(title)
-            break
+    #     songs = genius.search_songs(song)
+    #     for req in songs['hits']:
+    #         url = req['result']['url']
+    #         title = req["result"]["title"]
+    #         song_lyrics = genius.lyrics(song_url=url)
+    #         # print(song_lyrics)
+    #         em = discord.Embed(title=title, description=song_lyrics)
+    #         await ctx.send(embed=em)
+    #         # await ctx.send(title)
+    #         break
 
     # @commands.Cog.listener()
     # async def on_disconnect(self):

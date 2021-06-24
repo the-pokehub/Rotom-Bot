@@ -16,7 +16,7 @@ google = "^3.0.0"
 pydictionary = "^2.0.1"
 bs4 = "^0.0.1"
 replit = "^2.0.0"
-lyricsgenius = "^3.0.0"
+"discord.py" = "^1.7.3"
 
 [tool.poetry.dev-dependencies]
 

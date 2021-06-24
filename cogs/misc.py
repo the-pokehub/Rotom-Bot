@@ -9,6 +9,7 @@ import datetime
 from bs4 import BeautifulSoup
 import requests
 
+
 dictionary = PyDictionary()
 
 translator = Translator()
@@ -51,6 +52,15 @@ class Misc(commands.Cog):
         em.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=em)
+
+    @commands.command()
+    async def banner(self, ctx):
+        em = discord.Embed(title=f"{ctx.guild.name}'s Banner")
+        em.set_image(url=ctx.guild.banner_url)
+        em.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+
+        await ctx.send(embed=em)
+
 
     @commands.command(aliases=["t", "translate"])
     async def trans(self, ctx, *, text):
