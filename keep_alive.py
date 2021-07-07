@@ -1,12 +1,18 @@
-from flask import Flask
+from flask import Flask, render_template
 from threading import Thread
+import random
 
-app = Flask('')
+app = Flask(""
+#   __name__,
+#   template_folder='templates',
+#   static_folder='styles'
+)
 
 
 @app.route('/')
 def main():
-    return "Your bot is alive!"
+    # return render_template('index.html')
+    return "Bot is now Online"
 
 
 def run():

@@ -53,5 +53,10 @@ class Mod(commands.Cog):
         keys = db.keys()   
         await ctx.send(keys)
 
+    @commands.command()
+    async def members(self, ctx):
+        await ctx.send(ctx.guild.members)
+
+
 def setup(client):
     client.add_cog(Mod(client))

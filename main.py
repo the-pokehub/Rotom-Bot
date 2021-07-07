@@ -9,17 +9,48 @@ import asyncio
 import string
 import datetime
 import json
+from trivia import trivia
+import random
+
+
+async def ques():
+    
+    questions = await trivia.question(amount=1, quizType='multiple')
+
+    q = questions[0]["question"]
+    ans = questions[0]["incorrect_answers"]
+    cor = questions[0]["correct_answer"]
+    category = questions[0]["category"]
+    difficulty = questions[0]["difficulty"]
+
+    ans.append(cor)
+
+    random.shuffle(ans)
+
+    des = "Options:\n"
+    num = ["a", "b", "c", "d"]
+    for ele in range(len(ans)):
+        des += f"{num[ele]}) {ans[ele]}\n"
+
+    return q, ans, cor, category, difficulty, des  
 
 profanity.load_censor_words_from_file("swear_words.txt", whitelist_words=["gayder"])
 
 save = db["mod"]
 
 
-
 def get_prefix(client, message):
-    prefixes = db["prefixes"]
-
-    return str(prefixes[str(message.guild.id)])
+    if not message.guild:
+        return "."
+    
+    guild = db["guild"]
+    try:
+        ret = str(guild[str(message.guild.id)]["prefix"])
+    except AttributeError:
+        ret = "."
+    
+    return ret
+    
 
 
 prefix = get_prefix
@@ -41,6 +72,7 @@ client = commands.Bot(command_prefix=prefix,
 @client.event
 async def on_ready():
     change_presence.start()
+    del_snipe.start()
 
     print(
         f"Bot is Ready.\nLogged in as {client.user.name}\n---------------------"
@@ -55,6 +87,13 @@ async def on_ready():
     version = discord.__version__.replace(" ", "")
     print("discord.py Version: v" + version)
 
+    # with open("trivia.json", "r") as b:
+    #     lb = json.load(b)
+        
+    # lb["770846450896470046"] = dict(sorted(lb["770846450896470046"].items(), key=lambda item: item[1]))
+
+    # with open("trivia.json", "w") as b:
+    #     json.dump(lb, b, indent=4)
 
 
 @client.event
@@ -77,8 +116,8 @@ async def on_message(message):
         # if message.author.id == 549415697726439434:
         #     return
 
-        # if message.guild.id != 676777139776913408:
-        #     return
+        if message.guild.id != 676777139776913408:
+            return
 
         if not message.author.bot:
 
@@ -195,15 +234,16 @@ async def on_message(message):
 
 @client.event
 async def on_guild_join(guild):
-    prefixes = db["prefixes"]
-    prefixes[str(guild.id)] = "."
-    db["prefixes"] = prefixes
+    prefixes = db["guild"]
+    prefixes[str(guild.id)] = {}
+    prefixes[str(guild.id)]["prefix"] = "."
+    db["guild"] = prefixes
 
 
 @client.event
 async def on_guild_leave(guild):
-    prefixes = db["prefixes"]
-    prefixes.pop(str(guild.id))
+    prefixes = db["guild"]
+    del prefixes[str(guild.id)]
     db["prefixes"] = prefixes
 
 
@@ -213,6 +253,35 @@ async def on_command_error(ctx, error):
         pass
     else:
         await ctx.send('{}'.format(str(error)))
+
+# @client.event
+# async def on_raw_reaction_add(payload):
+
+#     pass
+
+snipe_message_author = {}
+snipe_message_content = {}
+ 
+
+@client.event
+async def on_message_delete(message):
+
+    global snipe_message_author
+    global snipe_message_content
+
+    snipe_message_author[message.channel.id] = message.author
+    snipe_message_content[message.channel.id] = message.content
+
+
+@client.command()
+async def snipe(ctx):
+    channel = ctx.channel 
+    try:
+        snipeEmbed = discord.Embed(title=f"Last deleted message in #{channel.name}", description = snipe_message_content[channel.id])
+        snipeEmbed.set_footer(text=f"Deleted by {snipe_message_author[channel.id]}")
+        await ctx.send(embed = snipeEmbed)
+    except:
+        await ctx.send(f"There are no deleted messages in #{channel.name}")
 
 
 @client.command()
@@ -226,9 +295,159 @@ async def reload(ctx):
     await ctx.send("Extensions has been reloaded.")
 
 
+@client.command(aliases=["trivia"])
+@commands.cooldown(1, 20, commands.BucketType.user)
+async def quiz(ctx):
+
+    q, ans, cor, category, difficulty, des = await ques()
+    
+    em = discord.Embed(title=q, description=f"{des}")
+
+    em.add_field(name="Category:", value=f"{category}", inline=True)
+    em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=True)
+
+    em.set_author(name=f"Question for {ctx.author}",icon_url=ctx.author.avatar_url)
+
+    time = ""
+
+    if difficulty.lower() == "easy":
+        time = 10
+    elif difficulty.lower() == "medium":
+        time = 15
+    elif difficulty.lower() == "hard":
+        time = 20
+
+    em.set_footer(text=f"You have {time} seconds to answer the question.")
+
+    msg = await ctx.send(embed=em)
+
+    A = "🇦"
+    B = "🇧"
+    C = "🇨"
+    D = "🇩"
+    choose = ""
+
+    await msg.add_reaction(A)
+    await msg.add_reaction(B)
+    await msg.add_reaction(C)
+    await msg.add_reaction(D)
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in ["🇦", "🇧", "🇨", "🇩"]
+
+    # print(cor)
+
+    try:
+        reaction, user = await client.wait_for("reaction_add", check=check, timeout=time)
+
+        if str(reaction.emoji) == "🇦":
+            choose = ans[0]
+
+        elif str(reaction.emoji) == "🇧":
+            choose = ans[1]
+
+        elif str(reaction.emoji) == "🇨":
+            choose = ans[2]
+
+        elif str(reaction.emoji) == "🇩":
+            choose = ans[3]
+
+    except asyncio.TimeoutError:
+        await msg.clear_reactions()
+
+        des = "Options:\n"
+        num = ["a", "b", "c", "d"]
+        for ele in range(len(ans)):
+            if ans[ele] != cor:
+                des += f"{num[ele]}) ~~{ans[ele]}~~\n"
+            else:
+                des += f"{num[ele]}) **{ans[ele]}**\n"
+
+        em = discord.Embed(title=q, description=f"{des}", color=discord.Color.orange())
+
+        em.add_field(name="Category:", value=f"{category}", inline=True)
+        em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=True)
+
+        em.set_author(name=f"{ctx.author}, You didn't answered in time.",icon_url=ctx.author.avatar_url)
+
+        await msg.edit(embed=em)
+        
+        return
+
+    await msg.clear_reactions()
+
+    if choose == cor:
+        # await ctx.reply("Correct!")
+        corr = True
+    else:
+        # await ctx.reply(f"The right answer was: {cor}")
+        corr = False
+
+    if corr:
+
+        des = "Options:\n"
+        num = ["a", "b", "c", "d"]
+        for ele in range(len(ans)):
+            if ans[ele] != cor:
+                des += f"{num[ele]}) ~~{ans[ele]}~~\n"
+            else:
+                des += f"{num[ele]}) **{ans[ele]}**\n"
+
+        em = discord.Embed(title=q, description=f"{des}", color=discord.Color.green())
+
+        em.add_field(name="Category:", value=f"{category}", inline=True)
+        em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=True)
+
+        em.set_author(name=f"{ctx.author}, You're Correct!",icon_url=ctx.author.avatar_url)
+
+        await msg.edit(embed=em)
+
+        lb = db["trivia"]
+        
+        # if str(ctx.guild.id) not in lb:
+        #     lb[str(ctx.guild.id)] = {}
+
+        if str(ctx.author.id) not in lb:
+            lb[str(ctx.author.id)] = 1
+        else:
+            lb[str(ctx.author.id)] += 1
+
+        lb = dict(sorted(lb.items(), key = lambda kv:kv[1], reverse = True))
+
+        db["trivia"] = lb
+
+    else:
+        des = "Options:\n"
+        num = ["a", "b", "c", "d"]
+        for ele in range(len(ans)):
+            if ans[ele] != cor:
+                des += f"{num[ele]}) ~~{ans[ele]}~~\n"
+            else:
+                des += f"{num[ele]}) **{ans[ele]}**\n"
+
+        em = discord.Embed(title=q, description=f"{des}", color=discord.Color.red())
+
+        em.add_field(name="Category:", value=f"{category}", inline=True)
+        em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=True)
+
+        em.set_author(name=f"{ctx.author}, That's Not Right.",icon_url=ctx.author.avatar_url)
+
+        await msg.edit(embed=em)
+
+
 @tasks.loop(seconds=10)
 async def change_presence():
     await client.change_presence(activity=next(presence))
+
+
+@tasks.loop(minutes=30)
+async def del_snipe():
+
+    global snipe_message_author
+    global snipe_message_content
+
+    snipe_message_author = {}
+    snipe_message_content = {}
 
 
 keep_alive.keep_alive()

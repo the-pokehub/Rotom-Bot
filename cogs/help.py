@@ -5,8 +5,8 @@ import asyncio
 
 
 def server_prefix(msg):
-    prefixes = db["prefixes"]
-    s_prefix = prefixes[str(msg.guild.id)]
+    prefixes = db["guild"]
+    s_prefix = prefixes[str(msg.guild.id)]["prefix"]
 
     return s_prefix
 
@@ -398,9 +398,12 @@ class Help(commands.Cog):
 
         em = discord.Embed(title="Game", description="", colour=discord.Colour.green())
         em.set_thumbnail(url=self.client.user.avatar_url)
+
         em.add_field(name=f"{prefix}GG", value="A basic guessing text based game.", inline=False)
+
         em.add_field(name=f"{prefix}tic-tac-toe", value=f"Play Tic-Tac-Toe with another member. Aliases: `{prefix}ttt`",
                      inline=False)
+                     
         em.add_field(name=f"{prefix}rock-paper-scissors",
                      value=f"Play Rock-Paper-Scissors with the Bot. Aliases: `{prefix}rps`", inline=False)
 
@@ -550,6 +553,7 @@ class Help(commands.Cog):
         help_embed.add_field(name="translate", value="Translate the passed sentence to desired Language.")
         help_embed.add_field(name="Search", value="Search for the passed word in Web.")
         help_embed.add_field(name="Dictionary", value="Search for the passed word in Dictionary.")
+        help_embed.add_field(name="Snipe", value="Snipe for the last deleted message from the channel.")
         help_embed.add_field(name="Invite", value="Get an Invite Link to add the Bot to your server.")
 
         await ctx.send(embed=help_embed)

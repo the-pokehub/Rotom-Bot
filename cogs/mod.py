@@ -138,6 +138,7 @@ class Mod(commands.Cog):
 
         if not role:
             perms = discord.Permissions(send_messages=False, add_reactions=False)
+            
             await ctx.guild.create_role(name="Muted", permissions=perms)
 
             role = discord.utils.get(ctx.guild.roles, name="Muted")
@@ -214,10 +215,10 @@ class Mod(commands.Cog):
     @commands.command(aliases=["change-prefix", "prefix"])
     @commands.has_permissions(manage_guild=True)
     async def change_prefix(self, ctx, new_prefix):
-        prefixes = db["prefixes"]
-        prefixes[(str(ctx.guild.id))] = new_prefix
-        db["prefixes"] = prefixes
-        await ctx.send(f"Server Prefix has been change to {new_prefix}")
+        prefixes = db["guild"]
+        prefixes[(str(ctx.guild.id))]["prefix"] = new_prefix
+        db["guild"] = prefixes
+        await ctx.send(f"Server Prefix has been changed to {new_prefix}")
 
 
 def setup(client):

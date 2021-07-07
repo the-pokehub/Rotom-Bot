@@ -20,6 +20,49 @@ class Misc(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload):
+        msgID = payload.message_id
+        emoji = payload.emoji
+        channel = self.client.get_channel(payload.channel_id)
+        msg = await channel.fetch_message(msgID)
+        users_list = []
+
+        emoji_list = {
+            "🇮🇳": "hi",
+            "🇬🇧": "en",
+            "🇪🇸": "Spanish",
+            "🇯🇵": "japanese",
+            "🇧🇩": "bangla",
+            "🇫🇷": "french",
+            "🇩🇪": "genman",
+            "🇰🇵": "korean",
+            "🇳🇵": "nepali",
+            "🇵🇭": "filipino",
+            "🇺🇸": "en"
+        }
+
+        if str(emoji) in emoji_list:
+            for r in msg.reactions:
+                if str(r) in emoji_list:
+                    users = await r.users().flatten()
+                    users_list.extend(users)
+
+            if len(users_list) > 1:
+                return
+
+            dest = emoji_list[str(emoji)]
+            src = "auto"
+            gtranslated = translator.translate(msg.content, src=src, dest=dest)
+            if profanity.contains_profanity(gtranslated.text):
+                return
+
+            try:
+                await msg.reply(
+                    f"{gtranslated.text}\nLanguage Detected: {googletrans.LANGUAGES[gtranslated.src].capitalize()}", mention_author=False)
+            except KeyError:
+                pass
+
     @commands.command()
     async def av(self, ctx, *, member: discord.Member = None):
 
@@ -139,6 +182,7 @@ class Misc(commands.Cog):
 
     # @commands.command()
     # async def say(self, ctx, *, txt=None):
+
     #     if txt is None:
     #         return
 
@@ -159,26 +203,30 @@ class Misc(commands.Cog):
     #         channel = ctx.channel
 
     #     send = " "
-    #     emoj = ""
+    #     emoj = 0
     #     emo = False
 
     #     if ":" in txt:
     #         txt = txt.split(":")
     #         for name in txt:
-    #             emo = False
-    #             for emoji in ctx.guild.emojis:
-    #                 if name == emoji.name:
-    #                     t = str(emoji)
-    #                     emoj = emoji.id
-    #                     send += t
-    #                     emo = True
 
-    #             if not emo:
+    #             emoji = discord.utils.get(self.client.emojis, name = name)
+
+    #             if emoji:
+    #                 t = str(emoji)
+    #                 emoj = emoji.id
+    #                 send += t
+
+    #             if not emoji:
+    #                 name = name.replace(" ", "")
     #                 if ">" in name:
     #                     name = name.replace(">", "")
     #                     if name.isnumeric():
     #                         if int(name) == int(emoj):
-    #                             continue
+    #                             name = ""
+    #                         else:
+    #                             if len(name) == 18:
+    #                                name = ""
 
     #                 if "<" in name[-2:]:
     #                     if "<a" in name:
@@ -188,14 +236,28 @@ class Misc(commands.Cog):
     #                         another_name = name.replace(" ", "")
     #                         if another_name.isnumeric():
     #                             if int(name) == int(emoj):
-    #                                 continue
+    #                                 name = ""
+    #                             else:
+    #                                 if len(name) == 18:
+    #                                     name = ""
+                    
     #                 send += name
 
     #     else:
     #         send = txt
-    #     em = discord.Embed(description=send)
 
-    #     await ctx.send(embed=em)
+    #     if ctx.author.guild_permissions.mention_everyone:
+    #         allowed_mentions=discord.AllowedMentions(everyone=True, roles=True)
+    #     else:
+    #         allowed_mentions=discord.AllowedMentions(everyone=False, roles=False)
+
+    #     webhooks = await channel.webhooks()
+    #     webhook = discord.utils.get(webhooks, name = "Rotom Bot")
+    #     if webhook is None:
+    #         webhook = await channel.create_webhook(name = "Rotom Bot")
+
+    #     await webhook.send(send, username = ctx.author.name, avatar_url = ctx.author.avatar_url, allowed_mentions=allowed_mentions)
+
 
     @commands.command(aliases=["search", "query"])
     async def google(self, ctx, *, query):
@@ -255,8 +317,8 @@ class Misc(commands.Cog):
         if mean:
             em = discord.Embed(title=f"Meaning of {word.capitalize()}", colour=discord.Colour.green())
 
-            em.set_thumbnail(
-                url="https://cdn.discordapp.com/attachments/819090822884491274/820149994572218368/dictionary.jpg")
+            # em.set_thumbnail(
+            #     url="https://cdn.discordapp.com/attachments/819090822884491274/820149994572218368/dictionary.jpg")
 
             for i in mean:
                 em.add_field(name=i, value="\n".join(mean[i]), inline=False)

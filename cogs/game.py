@@ -4,6 +4,7 @@ from discord import Embed, Member
 import secrets
 import random
 import asyncio
+from replit import db
 
 def clamp(val, min_, max_):
     return max(min_, min(max_, val))
@@ -190,13 +191,13 @@ class TicTacToe:
         if self.message:
             await self.message.edit(embed=embed)
         else:
-            self.message = await self.ctx.send(embed=embed)
+            self.message = await self.ctx.reply(embed=embed)
             self.bot.loop.create_task(self.add_reactions())
 
         if self.message2:
             await self.message2.delete()
 
-        self.message2 = await self.ctx.send(title)
+        self.message2 = await self.ctx.reply(title)
 
     async def add_reactions(self):
         for e in self.emojis:
@@ -233,7 +234,7 @@ class TicTacToe:
         else:
             # case where the enemy is a computer
             player2_turn = self.ai_turn
-            await self.ctx.send("Want to start first? [y(es)/n(o)/r(andom)/q(uit)]")
+            await self.ctx.reply("Want to start first? [y(es)/n(o)/r(andom)/q(uit)]")
 
             try:
                 msg = await self.bot.wait_for(
@@ -246,13 +247,13 @@ class TicTacToe:
                 )
 
                 if (msg := msg.content.lower()).startswith("q"):
-                    return await self.ctx.send("You've quit the game")
+                    return await self.ctx.reply("You've quit the game")
 
                 if msg not in ("r", "random"):
                     first = msg
 
             except asyncio.TimeoutError:
-                return await self.ctx.send("You took too long to answer!")
+                return await self.ctx.reply("You took too long to answer!")
 
         if first.startswith("n"):
             if not await player2_turn():
@@ -504,39 +505,103 @@ class Game(commands.Cog):
                     pass
 
                 if user_action == computer_action:
-                    await ctx.send(f"Both players selected {user_action.capitalize()}. It's a tie!")
+                    await ctx.reply(f"Both players selected {user_action.capitalize()}. It's a tie!")
                     return
 
                 if user_action == "rock":
-                    await ctx.send(f"I choosed {computer_action}")
+                    await ctx.reply(f"I choosed {computer_action}")
                     if computer_action == "scissors":
-                        await ctx.send("Rock smashes Scissors! You win!")
+                        await ctx.reply("Rock smashes Scissors! You win!")
                         return
                     else:
-                        await ctx.send("Paper covers Rock! You lose.")
+                        await ctx.reply("Paper covers Rock! You lose.")
                         return
 
                 elif user_action == "paper":
-                    await ctx.send(f"I choosed {computer_action}")
+                    await ctx.reply(f"I choosed {computer_action}")
                     if computer_action == "rock":
-                        await ctx.send("Paper covers Rock! You win!")
+                        await ctx.reply("Paper covers Rock! You win!")
                         return
                     else:
-                        await ctx.send("Scissors cuts Paper! You lose.")
+                        await ctx.reply("Scissors cuts Paper! You lose.")
                         return
 
                 elif user_action == "scissors":
-                    await ctx.send(f"I choosed {computer_action}")
+                    await ctx.reply(f"I choosed {computer_action}")
                     if computer_action == "paper":
-                        await ctx.send("Scissors cuts Paper! You win!")
+                        await ctx.reply("Scissors cuts Paper! You win!")
                         return
                     else:
-                        await ctx.send("Rock smashes Scissors! You lose.")
+                        await ctx.reply("Rock smashes Scissors! You lose.")
                         return
 
             except asyncio.TimeoutError:
-                await ctx.send("Response Timeout.\nReturning...")
+                await ctx.reply("Response Timeout.\nReturning...")
                 return
+
+    @commands.command()
+    async def gamelb(self, ctx, global_lb=""):
+
+        lb = db["trivia"]
+        lb = dict(sorted(lb.items(), key = lambda kv:kv[1], reverse = True))
+        db["trivia"] = lb
+
+        if global_lb != "global":
+            title = f"{ctx.guild.name}'s Leaderboard - Trivia"
+            des = ""
+            num = 1
+            for i in lb:
+                mem = None
+                try:
+                    mem = await ctx.guild.fetch_member(int(i))
+                except discord.HTTPException:
+                    pass
+
+                if mem:
+
+                    if num == 1:
+                        des += "🥇 "
+                    elif num == 2:
+                        des += "🥈 "
+                    elif num == 3:
+                        des += "🥉 "
+                    else:
+                        des += "👏 "
+
+                    
+                    wins = lb[i]
+                    des += f"**{wins}** wins - {mem}\n"
+                    num += 1
+                    if num > 10:
+                        break
+                        
+            if des == "":
+                des = "__NONE__"
+
+        else:
+            title = "Global Leaderboard - Trivia"
+            des = ""
+            num = 1
+            for i in lb:
+                mem = self.client.get_user(int(i))
+                if num == 1:
+                    des += "🥇 "
+                elif num == 2:
+                    des += "🥈 "
+                elif num == 3:
+                    des += "🥉 "
+                else:
+                    des += "👏 "
+
+                
+                wins = lb[i]
+                des += f"**{wins}** wins - {mem}\n"
+                num += 1
+                if num > 10:
+                    break
+
+        em = discord.Embed(title=title, description=des, color = discord.Color.green())
+        await ctx.send(embed=em)
 
 
 def setup(client):
