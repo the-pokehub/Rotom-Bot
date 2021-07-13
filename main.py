@@ -4,7 +4,7 @@ import os
 import keep_alive
 from itertools import cycle
 from replit import db
-from better_profanity import profanity
+from bprofanity import profanity
 import asyncio
 import string
 import datetime
@@ -34,28 +34,30 @@ async def ques():
 
     return q, ans, cor, category, difficulty, des  
 
-profanity.load_censor_words_from_file("swear_words.txt", whitelist_words=["gayder"])
 
 save = db["mod"]
 
 
 def get_prefix(client, message):
-    if not message.guild:
-        return "."
-    
+	      
     guild = db["guild"]
-    try:
-        ret = str(guild[str(message.guild.id)]["prefix"])
-    except AttributeError:
-        ret = "."
-    
+    ret = str(guild[str(message.guild.id)]["prefix"])
+
     return ret
-    
+
+# def get_filter(client, message):
+	      
+#     guild = db["guild"]
+#     ret = str(guild[str(message.guild.id)]["filter"])
+
+#     return ret
 
 
 prefix = get_prefix
+# filter = get_filter
 
-current_title = str(save["current_league"])
+# current_title = str(save["current_league"])
+current_title = "Smeargle Fling Moody Tour"
 intents = discord.Intents.all()
 
 presence = cycle([
@@ -151,13 +153,6 @@ async def on_message(message):
             except discord.errors.NotFound:
                 pass
 
-    nick_msg = profanity_check_msg.replace(" ", "")
-
-    if "iamback" in nick_msg.lower() or "iamback" in replaceDoubleCharacters(nick_msg.lower()) or "imback" in nick_msg.lower() or "imback" in replaceDoubleCharacters(nick_msg.lower()):
-        user = message.author
-        if user != message.guild.owner:    
-            await user.edit(nick="Back")
-
     if message.channel.id == 780981187317465119:
         if "you just advanced to level 15!" in message.content:
             member_id = ''.join(filter(lambda i: i.isdigit(), message.content))
@@ -177,57 +172,6 @@ async def on_message(message):
             if role not in mem.roles:
         
                 await mem.add_roles(role)
-
-    # if message.channel.id == 818452656670375978:
-    #     msg = message.content.lower()
-
-    #     if "gen" in msg:
-
-    #         gen6 = db["tour"]["gen6"]
-    #         gen7 = db["tour"]["gen7"]
-
-    #         n = msg.split("gen")
-
-    #         if len(n) > 3:
-    #             pass
-    #         else:
-    #             if "6" in n[1]:
-    #                 gen6.append(message.author.mention)
-    #             if "7" in n[1]:
-    #                 gen7.append(message.author.mention)
-
-    #             if len(n) == 3:
-    #                 if "6" in n[2]:
-    #                     gen6.append(message.author.mention)
-    #                 if "7" in n[2]:
-    #                     gen7.append(message.author.mention)
-
-    #         db["tour"]["gen6"] = gen6
-    #         db["tour"]["gen7"] = gen7
-
-    # if message.author.id == 763666468222664744:
-    #     emoji = "🐐"
-    #     try:
-    #         await message.add_reaction(emoji)
-    #     except discord.errors.NotFound:
-    #         pass
-
-    # if message.channel.name == "💭opinions-and-requests":
-    #     emoji1 = "<a:thumbs_up:796407963459780628>"
-    #     emoji2 = "<a:thumbs_down:796407964033351800>"
-    #     try:
-    #         await message.add_reaction(emoji1)
-    #         await message.add_reaction(emoji2)
-    #     except discord.errors.NotFound:
-    #         pass
-
-    # try:
-    #     if message.mentions[0] == client.user:
-    #         prefixes = db["prefixes"]
-    #         server_prefix = str(prefixes[str(message.guild.id)])
-    #         await message.channel.send(f"My prefix for this server is `{server_prefix}`")
-    # except IndexError:
-    #     pass
 
     await client.process_commands(message)
 
@@ -261,7 +205,10 @@ async def on_command_error(ctx, error):
 
 snipe_message_author = {}
 snipe_message_content = {}
- 
+esnipe_message_author = {}
+esnipe_message_content = {}
+
+
 
 @client.event
 async def on_message_delete(message):
@@ -272,16 +219,35 @@ async def on_message_delete(message):
     snipe_message_author[message.channel.id] = message.author
     snipe_message_content[message.channel.id] = message.content
 
+@client.event
+async def on_message_edit(before, after):
+
+    global esnipe_message_author
+    global esnipe_message_content
+
+    esnipe_message_author[before.channel.id] = before.author
+    esnipe_message_content[before.channel.id] = before.content
+
 
 @client.command()
 async def snipe(ctx):
-    channel = ctx.channel 
+    channel = ctx.channel
     try:
-        snipeEmbed = discord.Embed(title=f"Last deleted message in #{channel.name}", description = snipe_message_content[channel.id])
-        snipeEmbed.set_footer(text=f"Deleted by {snipe_message_author[channel.id]}")
+        snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = snipe_message_content[channel.id])
+        snipeEmbed.set_footer(text=f"Message sent by {snipe_message_author[channel.id]}")
         await ctx.send(embed = snipeEmbed)
     except:
         await ctx.send(f"There are no deleted messages in #{channel.name}")
+
+@client.command(aliases=['es'])
+async def edit_snipe(ctx):
+    channel = ctx.channel 
+    try:
+        snipeEmbed = discord.Embed(title=f"Last Edited message in #{channel.name}", description = esnipe_message_content[channel.id])
+        snipeEmbed.set_footer(text=f"Message edited by {esnipe_message_author[channel.id]}")
+        await ctx.send(embed = snipeEmbed)
+    except:
+        await ctx.send(f"There are no edited messages in #{channel.name}")
 
 
 @client.command()

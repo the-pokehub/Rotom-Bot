@@ -12,7 +12,7 @@ app = Flask(""
 @app.route('/')
 def main():
     # return render_template('index.html')
-    return "Bot is now Online"
+    return "Active"
 
 
 def run():

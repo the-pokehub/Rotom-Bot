@@ -2,7 +2,7 @@ import discord
 import googletrans
 from discord.ext import tasks, commands
 from googletrans import Translator
-from better_profanity import profanity
+from bprofanity import profanity
 from googlesearch import search
 from PyDictionary import PyDictionary
 import datetime
@@ -13,7 +13,6 @@ import requests
 dictionary = PyDictionary()
 
 translator = Translator()
-profanity.load_censor_words_from_file("swear_words.txt")
 
 
 class Misc(commands.Cog):
@@ -35,7 +34,7 @@ class Misc(commands.Cog):
             "🇯🇵": "japanese",
             "🇧🇩": "bangla",
             "🇫🇷": "french",
-            "🇩🇪": "genman",
+            "🇩🇪": "german",
             "🇰🇵": "korean",
             "🇳🇵": "nepali",
             "🇵🇭": "filipino",
