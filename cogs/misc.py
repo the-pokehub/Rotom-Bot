@@ -1,18 +1,47 @@
 import discord
-import googletrans
-from discord.ext import tasks, commands
-from googletrans import Translator
+import translator
+from discord.ext import commands
+# from translator import Translator
 from bprofanity import profanity
 from googlesearch import search
 from PyDictionary import PyDictionary
 import datetime
 from bs4 import BeautifulSoup
 import requests
+# import wikipedia
+import random
 
 
 dictionary = PyDictionary()
 
-translator = Translator()
+t = translator.Translator()
+
+# def wiki_get(query: str):
+#     """
+#     Function to fetch wikipedia about the query.
+
+#     :param query: The query to be fetched.
+#     :return: Result or Error.
+#     """
+#     try:
+#         m=wikipedia.search(query, results=3)
+#         if len(m) > 0:
+#             results = wikipedia.summary(m[0], sentences=3)
+#             ret = f"According to Wikipedia, {results}"
+#         else:
+#             ret = "No result found"
+        
+#     except wikipedia.exceptions.DisambiguationError as e:
+#         s=random.choice(e.options)
+#         results = wikipedia.summary(s, sentences=3)
+#         ret = f"According to Wikipedia, {results}"
+
+#     except wikipedia.exceptions.WikipediaException:
+#         ret = "Error, try again later."
+
+#     # except GuessedAtParserWarning:
+
+#     return ret
 
 
 class Misc(commands.Cog):
@@ -21,6 +50,9 @@ class Misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
+
+        # return
+
         msgID = payload.message_id
         emoji = payload.emoji
         channel = self.client.get_channel(payload.channel_id)
@@ -52,13 +84,13 @@ class Misc(commands.Cog):
 
             dest = emoji_list[str(emoji)]
             src = "auto"
-            gtranslated = translator.translate(msg.content, src=src, dest=dest)
+            gtranslated = t.translate(msg.content, src=src, dest=dest)
             if profanity.contains_profanity(gtranslated.text):
                 return
 
             try:
                 await msg.reply(
-                    f"{gtranslated.text}\nLanguage Detected: {googletrans.LANGUAGES[gtranslated.src].capitalize()}", mention_author=False)
+                    f"{gtranslated.text}\nLanguage Detected: {translator.LANGUAGES[gtranslated.src].capitalize()}", mention_author=False)
             except KeyError:
                 pass
 
@@ -107,6 +139,8 @@ class Misc(commands.Cog):
     @commands.command(aliases=["t", "translate"])
     async def trans(self, ctx, *, text):
 
+        # return await ctx.send("Command in rebuilding...")
+
         src = "auto"
         dest = "en"
         det = False
@@ -133,33 +167,33 @@ class Misc(commands.Cog):
 
             if to_trans.isnumeric():
                 msg = await ctx.fetch_message(int(to_trans))
-                gtranslated = translator.translate(msg.content, src=src, dest=dest)
+                gtranslated = t.translate(msg.content, src=src, dest=dest)
                 if profanity.contains_profanity(gtranslated.text):
                     await ctx.send("You cannot use banned words!")
                     return
 
                 try:
                     await ctx.send(
-                        f"{gtranslated.text}\nLanguage Detected: {googletrans.LANGUAGES[gtranslated.src].capitalize()}")
+                        f"{gtranslated.text}\nLanguage Detected: {translator.LANGUAGES[gtranslated.src].capitalize()}")
                 except KeyError:
                     await ctx.send(f"{gtranslated.text}\nLanguage Detected: Error in Detection...")
 
             else:
-                gtranslated = translator.translate(to_trans, src=src, dest=dest)
+                gtranslated = t.translate(to_trans, src=src, dest=dest)
                 if profanity.contains_profanity(gtranslated.text):
                     await ctx.send("You cannot use banned words!")
                     return
 
                 try:
                     await ctx.send(
-                        f"{gtranslated.text}\nLanguage Detected: {googletrans.LANGUAGES[gtranslated.src].capitalize()}")
+                        f"{gtranslated.text}\nLanguage Detected: {translator.LANGUAGES[gtranslated.src].capitalize()}")
                 except KeyError:
                     await ctx.send(f"{gtranslated.text}\nLanguage Detected: Error in Detection...")
         else:
 
             if to_trans.isnumeric():
                 msg = await ctx.fetch_message(int(to_trans))
-                gtranslated = translator.translate(msg.content, src=src, dest=dest)
+                gtranslated = t.translate(msg.content, src=src, dest=dest)
                 if profanity.contains_profanity(gtranslated.text):
                     await ctx.send("You cannot use banned words!")
                     return
@@ -167,7 +201,7 @@ class Misc(commands.Cog):
                 await ctx.send(f"{msg.content}\n{gtranslated.text}")
 
             else:
-                gtranslated = translator.translate(to_trans, src=src, dest=dest)
+                gtranslated = t.translate(to_trans, src=src, dest=dest)
                 if profanity.contains_profanity(gtranslated.text):
                     await ctx.send("You cannot use banned words!")
                     return
@@ -345,22 +379,16 @@ class Misc(commands.Cog):
 
         await ctx.send(embed=em)
 
-    @tasks.loop(seconds=60)
-    async def wishBirthday(ctx):
-        timenow = datetime.datetime.now()
-        timenow = str(timenow)[:-10]
-        if timenow == '2021-04-09 13:00':
-            channel = ctx.get_channel(761502109459677185)
-            await channel.send(
-                'Happy Birthday Mia! I remembered your birthday! Have a blast today! :partying_face: :partying_face: :partying_face:')
-        if timenow == '2021-04-09 23:00':
-            channel = ctx.get_channel(761502109459677185)
-            await channel.send(
-                'Happy Birthday Infernape! I remembered your birthday! Have a blast today! :partying_face: :partying_face: :partying_face:')
-        if timenow[14:] == '00':
-            print(timenow)
+    # @commands.command(aliases=["wiki"])
+    # async def wikipedia(self, ctx, *, query):
+
+    #     data = wiki_get(query)
+    #     em = discord.Embed(
+    #         title = "Wikipedia Search",
+    #         description=data, colour=discord.Colour.green())
+
+    #     await ctx.send(embed=em)
 
 
 def setup(client):
-    Misc.wishBirthday.start(client)
     client.add_cog(Misc(client))

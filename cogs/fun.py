@@ -48,9 +48,6 @@ class Fun(commands.Cog):
         if r:
             em = discord.Embed(title=f"Urban {word}", colour=discord.Colour.green())
 
-            em.set_thumbnail(
-                url="https://images.squarespace-cdn.com/content/v1/586bd48d03596e5605450cee/1484851165621-U1SMXTW7C9X3BB3IEQ2U/ke17ZwdGBToddI8pDm48kJByspMdSfv7m9ZIGPyubZ4UqsxRUqqbr1mOJYKfIPR7LoDQ9mXPOjoJoqy81S2I8N_N4V1vUb5AoIIIbLZhVYxCRW4BPu10St3TBAUQYVKcthlIMN9gg26tnxitDRAP9bmUoptCGNviqECz5gO8BYCGUi3wS_nhCZz__XN4iPcB/image-asset.jpeg?format=500w")
-
             soup = BeautifulSoup(r.content, features="html5lib")
 
             a = soup.find("div", attrs={"class": "meaning"}).text

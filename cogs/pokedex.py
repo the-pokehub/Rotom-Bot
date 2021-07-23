@@ -1,9 +1,8 @@
-from difflib import SequenceMatcher
+import difflib
 import random
 import json
 import discord
 from discord.ext import commands
-import asyncio
 import string
 
 
@@ -45,7 +44,8 @@ fields = {
     "eggGroups": "Egg Groups:",
     "otherFormes": "Alt Forms:",
     "canGigantamax": "G-Max Move:",
-    "requiredItem": "Alt Forme Item:"
+    "requiredItem": "Alt Forme Item:",
+    "requiredMove": "Required Move:"
 }
 
 m_fields = {
@@ -66,6 +66,8 @@ i_fields = {
     "zMoveFrom": "Base Move:"
 }
 
+genData = {"1":'gen1', "2":'gen2', "3":'gen3', "4":'gen4', "5":'gen5'}
+
 
 def get_data(dat, find):
 
@@ -82,21 +84,28 @@ def get_data(dat, find):
         ret = data[dat[1]][found]
         return add, ret
 
-    find = find.translate(
+    find1 = find.translate(
         str.maketrans('', '', string.punctuation))
 
+    find1 = find1.replace(" ", "")
+
     for get in data[dat[1]]:
-        if get == find:
+        if get == find1:
             ret = data[dat[1]][get]
             return add, ret
 
-    for get in data[dat[1]]:
-        match = SequenceMatcher(None, get, find)
+    match = difflib.get_close_matches(find1, data[dat[1]], 1)
 
-        if float(match.ratio()) > float(0.6):
-            add  = f"No 1 {find} found did u mean {get.capitalize()}?"
-            ret = data[dat[1]][get]
-            return add, ret
+    best = None
+
+    if match:
+        best = match[0]
+
+
+    if best:
+        add  = f"No 1 {find} found did u mean {best.capitalize()}?"
+        ret = data[dat[1]][best]
+        return add, ret
 
     
     add = "No 1 Found"
@@ -117,7 +126,10 @@ class PkDex(commands.Cog):
 
             spID = got['name'].replace(" ", "")
 
-            SPRITE_URL = f"https://play.pokemonshowdown.com/sprites/ani/{spID.lower()}.gif"
+            if "sprite" in got:
+                SPRITE_URL = got["sprite"]
+            else:
+                SPRITE_URL = f"https://play.pokemonshowdown.com/sprites/ani/{spID.lower()}.gif"
 
             em = discord.Embed(
             title=got['name'],
@@ -276,8 +288,145 @@ class PkDex(commands.Cog):
             await ctx.send(add.replace("1", "Nature"))
 
 
+    def get_sprite(self, mon, flags = None):
+
+        add, got = get_data(dex, mon)
+
+        if got:
+
+            if "sprite" in got:
+                url = got["sprite"]
+                return url
+
+            spID = got['name'].replace(" ", "")
+            add = ""
+            base_url = "https://play.pokemonshowdown.com/sprites/"
+            end = ".png"
+            afd = "no"
+            gen = "no"
+            final = ""
+
+            if flags:
+                flags = flags.lower()
+
+            if got['tier'] == "CAP":
+                add += "gen5"
+                end = ".png"
+                if flags is not None:
+                    if "gen" in flags:
+                        gen_num = ""
+                        for num in flags:
+                            if num.isnumeric():
+                                gen_num = num
+                                break
+                        if int(gen_num) < 9:
+                            r = f"gen{gen_num}"
+                        else:
+                            r = "gen"
+                        flags = flags.replace(r, "")
+
+            elif flags is None:
+                add += "ani"
+                end = ".gif"           
+
+            else:
+                flags = flags.replace(" ", "")
+                if "," in flags:
+                    flags = flags.split(",")
+
+                    for flag in flags:
+                        if flag == "afd":
+                            add += "afd"
+                            end = ".png"
+                            afd = "yes"
+
+                    if afd == "yes":
+                        for flag in flags:
+                            if flag == "back":
+                                add += "-back"
+
+                            elif flag == "shiny":
+                                add += "-shiny"
+
+                    else:
+                        for flag in flags:
+                            if "gen" in flag:
+                                flag = flag.replace("gen", "")
+                                if flag.isnumeric() and int(flag) < 6:
+                                    add += genData[flag]
+                                if flag.isnumeric() and 5 < int(flag) < 9:
+                                    add += ""
+                                gen ="yes"
+                        
+                        if gen == "yes":
+                            for flag in flags:
+                                if flag == "back":
+                                    add += "-back"
+
+                                if flag == "shiny":
+                                    add += "-shiny"
+                                
+
+                        else:
+                            add += "ani"
+                            end = ".gif"
+                            for flag in flags:
+                                if flag == "back":
+                                    add += "-back"
+
+                                if flag == "shiny":
+                                    add += "-shiny"    
+                    
+                else:
+                    if flags == "afd":
+                        add += "afd"
+                        end = ".png"
+
+                    elif "gen" in flags:
+                        flags = flags.replace("gen", "")
+                        print(flags)
+                        if flags.isnumeric() and int(flags) < 6:
+                            add += genData[flags]
+                            end = ".png"
+                        if flags.isnumeric() and 5 < int(flags) < 9:
+                            add += "ani"
+                            end = ".gif"
+
+                    else:
+                        add += "ani"
+                        if flags == "back":
+                            add += "-back"
+                            end = ".gif"
+
+                        if flags == "shiny":
+                            add += "-shiny"
+                            end = ".gif"
+
+            order = ["ani", "afd", "gen", "-back", "-shiny"]
+
+            for names in order:
+                if names in add:
+                    if names == "gen":
+                        gen_num = ""
+                        for num in add:
+                            if num.isnumeric():
+                                gen_num = num
+                                break
+                        if int(gen_num) < 9:
+                            final += f"gen{gen_num}"
+                    else:
+                        final += names
+
+            url = f"{base_url}{final}/{spID.lower()}{end}"
+
+            return url
+        
+        else:
+            return f"No Pokemon {mon} found."
+
+
     @commands.command()
-    async def dex(self, ctx, poke: str = None):
+    async def dex(self, ctx, *, poke: str = None):
 
         if poke is None:
             poke = "random"
@@ -285,7 +434,7 @@ class PkDex(commands.Cog):
         await self.get_poke(ctx, poke.lower())
 
     @commands.command()
-    async def ability(self, ctx, abi: str = None):
+    async def ability(self, ctx, *, abi: str = None):
 
         if abi is None:
             abi = "random"
@@ -293,7 +442,7 @@ class PkDex(commands.Cog):
         await self.get_ab(ctx, abi.lower())
 
     @commands.command()
-    async def move(self, ctx, move: str = None):
+    async def move(self, ctx, *, move: str = None):
 
         if move is None:
             move = "random"
@@ -301,7 +450,7 @@ class PkDex(commands.Cog):
         await self.get_move(ctx, move.lower())
 
     @commands.command()
-    async def item(self, ctx, item: str = None):
+    async def item(self, ctx, *, item: str = None):
 
         if item is None:
             item = "random"
@@ -309,7 +458,7 @@ class PkDex(commands.Cog):
         await self.get_item(ctx, item.lower())
 
     @commands.command()
-    async def nature(self, ctx, natu: str = None):
+    async def nature(self, ctx, *, natu: str = None):
 
         if natu is None:
             natu = "random"
@@ -317,69 +466,12 @@ class PkDex(commands.Cog):
         await self.get_na(ctx, natu.lower())
 
     @commands.command()
-    async def sprite(self, ctx, mon, *, flags = None):
+    async def sprite(self, ctx, pokemon, *, flags = None):
 
-        add, got = get_data(dex, mon)
-
-        if got:
-
-            spID = got['name'].replace(" ", "")
-            add = ""
-            base_url = "https://play.pokemonshowdown.com/sprites/"
-            afd = None
-
-            if flags is None:
-                add += "ani"
-
-            else:
-                flags = flags.replace(" ", "")
-                if "," in flags:
-                    flags = flags.split(",")
-
-                    for i in flags:
-                        if i == "afd":
-                            add += "afd"
-                            afd = True
-
-                    if not afd:
-                        add += "ani"
-
-                        if flags == "back":
-                            add += "-back"
-
-                        if flags == "shiny":
-                            add += "-shiny"
-
-                    else:
-                        if flags == "back":
-                            add += "-back"
-
-                        if flags == "shiny":
-                            add += "-shiny"
-
-                else:
-                    if flags == "afd":
-                        add += "afd"
-                        afd == True
-
-                    else:
-                        add += "ani"
-                        if flags == "back":
-                            add += "-back"
-
-                        if flags == "shiny":
-                            add += "-shiny"
-
-            if afd:
-                url = f"{base_url}{add}/{spID.lower()}.png"
-            else:
-                url = f"{base_url}{add}/{spID.lower()}.gif"
-                        
-            await ctx.send(url)
-
-        else:
-            await ctx.send(add.replace("1", "Pokemon"))
+        sp = self.get_sprite(pokemon.lower(), flags)
         
+        await ctx.send(sp)
+
 
 def setup(client):
     client.add_cog(PkDex(client))

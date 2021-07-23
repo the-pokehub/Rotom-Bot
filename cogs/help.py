@@ -2,11 +2,12 @@ import discord
 from discord.ext import commands
 from replit import db
 import asyncio
+# from translator.constants import LANGUAGES
 
 
 def server_prefix(msg):
-    prefixes = db["guild"]
-    s_prefix = prefixes[str(msg.guild.id)]["prefix"]
+    prefixes = db["prefixes"]
+    s_prefix = prefixes[str(msg.guild.id)]
 
     return s_prefix
 
@@ -703,6 +704,17 @@ class Help(commands.Cog):
         for i in raw_flags:
             flag += f"{i} : {raw_flags[i]}\n"
             help_embed.add_field(name=f"{i}", value=f"{raw_flags[i]}")
+
+        # lang = ""
+
+        # for i in LANGUAGES:
+        #     if lang == "":
+        #         lang += f"{i}: {LANGUAGES[i]}"
+        #     else:
+        #         lang += f", {i}: {LANGUAGES[i]}"
+
+
+        # help_embed.add_field(name="Languages", value=lang, inline=False)
 
         help_embed.add_field(name="Aliases:", value=f"`{prefix}t` , `{prefix}translate`", inline=False)
 

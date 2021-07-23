@@ -6393,6 +6393,37 @@
             ],
             "tier": "LC"
         },
+        "magikarpmega": {
+            "num": 129,
+            "name": "Magikarp-Mega",
+            "baseSpecies": "Magikarp",
+            "forme": "Mega",
+            "types": [
+                "Water"
+            ],
+            "gender": "N",
+            "baseStats": {
+                "hp": 720,
+                "atk": 720,
+                "def": 720,
+                "spa": 720,
+                "spd": 720,
+                "spe": 720
+            },
+            "abilities": {
+                "0": "Moody"
+            },
+            "heightm": 10.8,
+            "weightkg": 392,
+            "color": "Red",
+            "eggGroups": [
+                "Undiscovered"
+            ],
+            "requiredMove": "Magikarp's Wrath",
+            "tier": "Illegal",
+            "isNonstandard": "Past",
+            "sprite": "https://cdn.discordapp.com/attachments/819090822884491274/867009169910399016/magikarp-mega.gif"
+        },
         "gyarados": {
             "num": 130,
             "name": "Gyarados",

@@ -8,8 +8,8 @@ save = db["mod"]
 
 
 def server_prefix(msg):
-	prefixes = db["guild"]
-	s_prefix = prefixes[str(msg.guild.id)]["prefix"]
+	prefixes = db["prefixes"]
+	s_prefix = prefixes[str(msg.guild.id)]
 
 	return s_prefix
 

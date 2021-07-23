@@ -12,6 +12,17 @@ import json
 from trivia import trivia
 import random
 
+mongo = os.environ.get("mongoDB")
+
+# def url(string:str):
+
+#     result = validators.url(string)
+
+#     if isinstance(result, validators.ValidationFailure):
+#         return False
+
+#     return result
+
 
 async def ques():
     
@@ -40,17 +51,10 @@ save = db["mod"]
 
 def get_prefix(client, message):
 	      
-    guild = db["guild"]
-    ret = str(guild[str(message.guild.id)]["prefix"])
+    guild = db["prefixes"]
+    ret = guild.get(str(message.guild.id), ".")
 
     return ret
-
-# def get_filter(client, message):
-	      
-#     guild = db["guild"]
-#     ret = str(guild[str(message.guild.id)]["filter"])
-
-#     return ret
 
 
 prefix = get_prefix
@@ -62,14 +66,15 @@ intents = discord.Intents.all()
 
 presence = cycle([
     discord.Activity(type=discord.ActivityType.listening, name=".help"),
-    discord.Activity(type=discord.ActivityType.watching, name="Citra Pokéhub"),
-    discord.Activity(type=discord.ActivityType.playing, name=current_title)
+    discord.Activity(type=discord.ActivityType.watching, name="Citra Pokéhub")
 ])
 
 client = commands.Bot(command_prefix=prefix,
                       intents=intents,
                       case_insensitive=True)
 
+
+# dbs = ["guild", "gen6", "gen7", "mod"]
 
 @client.event
 async def on_ready():
@@ -88,14 +93,22 @@ async def on_ready():
 
     version = discord.__version__.replace(" ", "")
     print("discord.py Version: v" + version)
+    # print("DataBase: ", os.getenv("REPLIT_DB_URL"))
 
-    # with open("trivia.json", "r") as b:
+    # del db["guild"]
+
+    # with open("prefixes.json", "r") as b:
     #     lb = json.load(b)
         
-    # lb["770846450896470046"] = dict(sorted(lb["770846450896470046"].items(), key=lambda item: item[1]))
+    # db["prefixes"] = lb
 
-    # with open("trivia.json", "w") as b:
-    #     json.dump(lb, b, indent=4)
+    # for i in dbs:
+    #     dbase = db[i]
+
+    #     ser = json.dumps(dbase)
+
+    #     with open(f"jsons/{i}.json", "w") as d:
+    #         json.dump(ser, d, indent=4)
 
 
 @client.event
@@ -118,40 +131,39 @@ async def on_message(message):
         # if message.author.id == 549415697726439434:
         #     return
 
-        if message.guild.id != 676777139776913408:
-            return
+        if message.guild.id == 676777139776913408:
 
-        if not message.author.bot:
+            if not message.author.bot:
 
-            try:
-                await message.delete()
-            except discord.errors.NotFound:
-                pass
+                try:
+                    await message.delete()
+                except discord.errors.NotFound:
+                    pass
 
-            embed = discord.Embed(
-                description=
-                f"**{message.author.mention} you are not allowed to say that.**",
-                colour=discord.Colour.red())
+                embed = discord.Embed(
+                    description=
+                    f"**{message.author.mention} you are not allowed to say that.**",
+                    colour=discord.Colour.red())
 
-            msg = await message.channel.send(embed=embed)
+                msg = await message.channel.send(embed=embed)
 
-            em = discord.Embed(
-                title="Deleted Message",
-                description=
-                f"From {message.author.mention} in <#{message.channel.id}>",
-                colour=discord.Colour.red())
+                em = discord.Embed(
+                    title="Deleted Message",
+                    description=
+                    f"From {message.author.mention} in <#{message.channel.id}>",
+                    colour=discord.Colour.red())
 
-            em.add_field(name="Message", value=message.content)
-            em.timestamp = datetime.datetime.utcnow()
+                em.add_field(name="Message", value=message.content)
+                em.timestamp = datetime.datetime.utcnow()
 
-            channel = client.get_channel(836139191666343966)
-            await channel.send(embed=em)
+                channel = client.get_channel(836139191666343966)
+                await channel.send(embed=em)
 
-            await asyncio.sleep(10)
-            try:
-                await msg.delete()
-            except discord.errors.NotFound:
-                pass
+                await asyncio.sleep(10)
+                try:
+                    await msg.delete()
+                except discord.errors.NotFound:
+                    pass
 
     if message.channel.id == 780981187317465119:
         if "you just advanced to level 15!" in message.content:
@@ -178,15 +190,14 @@ async def on_message(message):
 
 @client.event
 async def on_guild_join(guild):
-    prefixes = db["guild"]
-    prefixes[str(guild.id)] = {}
-    prefixes[str(guild.id)]["prefix"] = "."
-    db["guild"] = prefixes
+    prefixes = db["prefixes"]
+    prefixes[str(guild.id)] = "."
+    db["prefixes"] = prefixes
 
 
 @client.event
 async def on_guild_leave(guild):
-    prefixes = db["guild"]
+    prefixes = db["prefixes"]
     del prefixes[str(guild.id)]
     db["prefixes"] = prefixes
 
@@ -195,18 +206,17 @@ async def on_guild_leave(guild):
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         pass
+    elif isinstance(error, discord.errors.NotFound):
+        pass
     else:
         await ctx.send('{}'.format(str(error)))
 
-# @client.event
-# async def on_raw_reaction_add(payload):
-
-#     pass
 
 snipe_message_author = {}
 snipe_message_content = {}
 esnipe_message_author = {}
 esnipe_message_content = {}
+esinpe_message_link = {}
 
 
 
@@ -224,26 +234,42 @@ async def on_message_edit(before, after):
 
     global esnipe_message_author
     global esnipe_message_content
+    global esinpe_message_link
 
     esnipe_message_author[before.channel.id] = before.author
     esnipe_message_content[before.channel.id] = before.content
+    esinpe_message_link[before.channel.id] = before.jump_url
+
 
 
 @client.command()
 async def snipe(ctx):
     channel = ctx.channel
     try:
-        snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = snipe_message_content[channel.id])
+        snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = f"**{snipe_message_content[channel.id]}**")
+
+        # valid = url(snipe_message_content[channel.id])
+        # if valid == True:
+        #     snipeEmbed.set_image(url=snipe_message_content[channel.id])
+
+
         snipeEmbed.set_footer(text=f"Message sent by {snipe_message_author[channel.id]}")
         await ctx.send(embed = snipeEmbed)
     except:
         await ctx.send(f"There are no deleted messages in #{channel.name}")
 
-@client.command(aliases=['es'])
+
+@client.command(aliases=['es', "edit-snipe"])
 async def edit_snipe(ctx):
     channel = ctx.channel 
     try:
-        snipeEmbed = discord.Embed(title=f"Last Edited message in #{channel.name}", description = esnipe_message_content[channel.id])
+        cont = esnipe_message_content[channel.id]
+        snipeEmbed = discord.Embed(title=f"Last Edited message in #{channel.name}", description = f"**{cont}**\n\n[*__Message__*]({esinpe_message_link[channel.id]})")
+
+        # valid = url(cont[0])
+        # if valid == True:
+        #     snipeEmbed.set_image(url=cont[0])
+
         snipeEmbed.set_footer(text=f"Message edited by {esnipe_message_author[channel.id]}")
         await ctx.send(embed = snipeEmbed)
     except:

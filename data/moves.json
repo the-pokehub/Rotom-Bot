@@ -16860,7 +16860,7 @@
         "splash": {
             "num": 150,
             "accuracy": true,
-            "basePower": 0,
+            "basePower": "--",
             "category": "Status",
             "name": "Splash",
             "pp": 40,
@@ -16877,7 +16877,7 @@
                 }
             },
             "contestType": "Cute",
-            "desc": "No competitive use.",
+            "desc": "KO all the opponent's Pokemon",
             "shortDesc": "No competitive use."
         },
         "splinteredstormshards": {
@@ -20147,6 +20147,32 @@
             "contestType": "Cool",
             "desc": "Has a 100% chance to raise the user's evasion by 1 stage.",
             "shortDesc": "Goes first. Raises user's evasion by 1."
+        },
+        "magikarpswrath": {
+            "num": 6969,
+            "accuracy": 101,
+            "basePower": 250,
+            "category": "Physical",
+            "isNonstandard": "LGPE",
+            "name": "Magikarp's Wrath",
+            "pp": "Bigger than u imagine",
+            "priority": "+69",
+            "flags": {
+                "contact": 1,
+                "protect": 1
+            },
+            "secondary": {
+                "chance": 100,
+                "self": {
+                    "boosts": {
+                        "evasion": 1
+                    }
+                }
+            },
+            "target": "normal",
+            "type": "Water",
+            "contestType": "Cool",
+            "desc": "Has a 100% chance to confuse the target and lower its Defense and Special Attack by 1 stage. The user recovers 1/2 the HP lost by the target, rounded half up. If Big Root is held by the user, the HP recovered is 1.3x normal, rounded half down. The user steals the foe's boosts. If this move is successful, the weather changes to rain unless it is already in effect, and the user gains the effects of Aqua Ring and Magic Coat. If the user is Magikarp, it also enables it to Mega Evolve."
         }
     }
 }

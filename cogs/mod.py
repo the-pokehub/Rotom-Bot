@@ -215,9 +215,9 @@ class Mod(commands.Cog):
     @commands.command(aliases=["change-prefix", "prefix"])
     @commands.has_permissions(manage_guild=True)
     async def change_prefix(self, ctx, new_prefix):
-        prefixes = db["guild"]
-        prefixes[(str(ctx.guild.id))]["prefix"] = new_prefix
-        db["guild"] = prefixes
+        prefixes = db["prefixes"]
+        prefixes[(str(ctx.guild.id))] = new_prefix
+        db["preixes"] = prefixes
         await ctx.send(f"Server Prefix has been changed to {new_prefix}")
 
 
