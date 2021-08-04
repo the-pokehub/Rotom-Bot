@@ -4,13 +4,14 @@ import json
 import discord
 from discord.ext import commands
 import string
-
+import requests
 
 dex = "data/pokedex.json Pokedex"
 ability = "data/abilities.json Abilities"
 move = "data/moves.json Moves"
 item = "data/items.json Items"
 nature = "data/natures.json Natures"
+weakness = "data/typechart.json"
 
 colors = {
     "Green": discord.Color.green(),
@@ -103,8 +104,8 @@ def get_data(dat, find):
 
 
     if best:
-        add  = f"No 1 {find} found did u mean {best.capitalize()}?"
         ret = data[dat[1]][best]
+        add  = f"No 1 {find} found did u mean {ret['name'].capitalize()}?"
         return add, ret
 
     
@@ -116,6 +117,98 @@ class PkDex(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+
+    async def weak(self, ctx, type1, type2):
+
+        with open(weakness, "r") as w:
+            data = json.load(w)
+
+        _000 = ""
+        _025 = ""
+        _050 = ""
+        _100 = ""
+        _200 = ""
+        _400 = ""
+
+        if type1.capitalize() not in data["TypeChart"]:
+            add, got = get_data(dex, type1)
+            if got:
+                types = got["types"]
+                title = got["name"] + " " + str(got["types"])
+                color = colors[got['color']]
+            else:
+                return discord.Embed(title=add)
+
+        else:
+            if type2 != "None":
+                types = [type1.capitalize(), type2.capitalize()]
+            else:
+                types = [type1.capitalize()]
+
+            title = types
+            x = random.choice(list(colors.keys()))
+            color = colors[x]
+
+        if len(types) > 1:
+
+            a = data["TypeChart"][types[0]]["damageTaken"]
+            b = data["TypeChart"][types[1]]["damageTaken"]
+
+            for i in a:
+                if i in b:
+
+                    effective = float(a[i]) * float(b[i])
+
+                    if effective == 0:
+                        _000 += i + ", "
+
+                    elif effective == 0.25:
+                        _025 += i + ", "
+
+                    elif effective == 0.5:
+                        _050 += i + ", "
+
+                    elif effective == 1.0:
+                        _100 += i + ", "
+
+                    elif effective == 2.0:
+                        _200 += i + ", "
+
+                    elif effective == 4.0:
+                        _400 = i + ", "
+
+        else:
+            a = data["TypeChart"][types[0]]["damageTaken"]
+            for i in a:
+                effective = a[i]
+
+                if effective == 0:
+                    _000 += i + ", "
+
+                elif effective == 0.25:
+                    _025 += i + ", "
+
+                elif effective == 0.5:
+                    _050 += i + ", "
+
+                elif effective == 1.0:
+                    _100 += i + ", "
+
+                elif effective == 2.0:
+                    _200 += i + ", "
+                    
+                elif effective == 4.0:
+                    _400 = i + ", "
+
+        form = f"x0.00: {_000}\nx0.25: {_025}\nx0.50: {_050}\nx1.00: {_100}\nx2.00: {_200}\nx4.00: {_400}"
+
+        em = discord.Embed(
+            title=title,
+            description=form,
+            colour=color)
+
+        return em
+
     
     async def get_poke(self, ctx, poke):
 
@@ -125,11 +218,15 @@ class PkDex(commands.Cog):
             color = got['color']
 
             spID = got['name'].replace(" ", "")
+            spID = spID.replace("’", "")
+            spID = spID.lower()
+            if spID == "darmanitan-galar-zen":
+                spID = "darmanitan-galarzen"
 
             if "sprite" in got:
                 SPRITE_URL = got["sprite"]
             else:
-                SPRITE_URL = f"https://play.pokemonshowdown.com/sprites/ani/{spID.lower()}.gif"
+                SPRITE_URL = f"https://play.pokemonshowdown.com/sprites/ani/{spID}.gif"
 
             em = discord.Embed(
             title=got['name'],
@@ -298,18 +395,55 @@ class PkDex(commands.Cog):
                 url = got["sprite"]
                 return url
 
-            spID = got['name'].replace(" ", "")
             add = ""
-            base_url = "https://play.pokemonshowdown.com/sprites/"
             end = ".png"
             afd = "no"
             gen = "no"
-            final = ""
+            flagGen = ""
+            base_url = "https://play.pokemonshowdown.com/sprites/"
+            spiID = got['name'].replace(" ", "")
+            spID = spiID.replace("’", "")
+            spID = spID.lower()
+            if spID == "darmanitan-galar-zen":
+                spID = "darmanitan-galarzen"
 
-            if flags:
-                flags = flags.lower()
 
-            if got['tier'] == "CAP":
+            def formUrl(ending, adding):
+
+                order = ["ani", "afd", "gen", "-back", "-shiny"]
+                final = ""
+
+                for names in order:
+                    if names in adding:
+                        if names == "gen":
+                            gen_num = ""
+                            for num in adding:
+                                if num.isnumeric():
+                                    gen_num = num
+                                    break
+                            if int(gen_num) < 9:
+                                final += f"gen{gen_num}"
+                        else:
+                            final += names
+
+                url = f"{base_url}{final}/{spID}{ending}"
+
+                response = requests.get(url)
+
+                if response.status_code == 404:
+                    return None
+                else:
+                    return url
+
+            try:
+                if got['tier'] == "CAP":
+                    check = True
+                else:
+                    check = False
+            except KeyError:
+                check = False
+
+            if check:
                 add += "gen5"
                 end = ".png"
                 if flags is not None:
@@ -325,11 +459,12 @@ class PkDex(commands.Cog):
                             r = "gen"
                         flags = flags.replace(r, "")
 
-            elif flags is None:
+            elif not flags:
                 add += "ani"
                 end = ".gif"           
 
             else:
+                flags = flags.lower()
                 flags = flags.replace(" ", "")
                 if "," in flags:
                     flags = flags.split(",")
@@ -353,10 +488,15 @@ class PkDex(commands.Cog):
                             if "gen" in flag:
                                 flag = flag.replace("gen", "")
                                 if flag.isnumeric() and int(flag) < 6:
+                                    flagGen = int(flag)
                                     add += genData[flag]
                                 if flag.isnumeric() and 5 < int(flag) < 9:
                                     add += ""
                                 gen ="yes"
+
+                            valid = formUrl(end, add)
+                            if valid is None:
+                                return f"{got['name'].capitalize()} does not existed in this Generation."
                         
                         if gen == "yes":
                             for flag in flags:
@@ -364,6 +504,8 @@ class PkDex(commands.Cog):
                                     add += "-back"
 
                                 if flag == "shiny":
+                                    if flagGen == 1:
+                                        add += ""
                                     add += "-shiny"
                                 
 
@@ -384,13 +526,16 @@ class PkDex(commands.Cog):
 
                     elif "gen" in flags:
                         flags = flags.replace("gen", "")
-                        print(flags)
                         if flags.isnumeric() and int(flags) < 6:
                             add += genData[flags]
                             end = ".png"
                         if flags.isnumeric() and 5 < int(flags) < 9:
                             add += "ani"
                             end = ".gif"
+
+                        valid = formUrl(end, add)
+                        if valid is None:
+                            return f"{got['name'].capitalize()} does not existed in Gen {flagGen}"
 
                     else:
                         add += "ani"
@@ -402,24 +547,12 @@ class PkDex(commands.Cog):
                             add += "-shiny"
                             end = ".gif"
 
-            order = ["ani", "afd", "gen", "-back", "-shiny"]
-
-            for names in order:
-                if names in add:
-                    if names == "gen":
-                        gen_num = ""
-                        for num in add:
-                            if num.isnumeric():
-                                gen_num = num
-                                break
-                        if int(gen_num) < 9:
-                            final += f"gen{gen_num}"
-                    else:
-                        final += names
-
-            url = f"{base_url}{final}/{spID.lower()}{end}"
-
-            return url
+            valid = formUrl(end, add)
+            if valid is not None:
+                return valid
+            else:
+                ret = f"{base_url}ani/{spID}.gif"
+                return ret
         
         else:
             return f"No Pokemon {mon} found."
@@ -471,6 +604,15 @@ class PkDex(commands.Cog):
         sp = self.get_sprite(pokemon.lower(), flags)
         
         await ctx.send(sp)
+
+    @commands.command(aliases=["weak"])
+    async def weakness(self, ctx, type1, type2 = None):
+        if type2 is None:
+            p = await self.weak(ctx, type1, "None")
+        else:
+            p = await self.weak(ctx, type1, type2)
+        
+        await ctx.send(embed=p)
 
 
 def setup(client):

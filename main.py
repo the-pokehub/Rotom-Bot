@@ -11,18 +11,12 @@ import datetime
 import json
 from trivia import trivia
 import random
+import time
+# import pymongo, dns
 
-mongo = os.environ.get("mongoDB")
+mongoKey = os.environ.get("mongoDB")
 
-# def url(string:str):
-
-#     result = validators.url(string)
-
-#     if isinstance(result, validators.ValidationFailure):
-#         return False
-
-#     return result
-
+# mclient = pymongo.MongoClient(mongoKey)
 
 async def ques():
     
@@ -50,6 +44,8 @@ save = db["mod"]
 
 
 def get_prefix(client, message):
+
+    time.sleep(0.01)
 	      
     guild = db["prefixes"]
     ret = guild.get(str(message.guild.id), ".")
@@ -74,12 +70,13 @@ client = commands.Bot(command_prefix=prefix,
                       case_insensitive=True)
 
 
-# dbs = ["guild", "gen6", "gen7", "mod"]
+dbs = ['league_prof7', 'gen7', 'hall_of_fame', 'league_prof6', 'gen6', 'mod']
 
 @client.event
 async def on_ready():
     change_presence.start()
     del_snipe.start()
+    del_esnipe.start()
 
     print(
         f"Bot is Ready.\nLogged in as {client.user.name}\n---------------------"
@@ -93,22 +90,11 @@ async def on_ready():
 
     version = discord.__version__.replace(" ", "")
     print("discord.py Version: v" + version)
-    # print("DataBase: ", os.getenv("REPLIT_DB_URL"))
-
-    # del db["guild"]
-
-    # with open("prefixes.json", "r") as b:
-    #     lb = json.load(b)
-        
-    # db["prefixes"] = lb
 
     # for i in dbs:
-    #     dbase = db[i]
-
-    #     ser = json.dumps(dbase)
-
-    #     with open(f"jsons/{i}.json", "w") as d:
-    #         json.dump(ser, d, indent=4)
+    #     get = db[i]
+    #     c = mclient["league"][i]
+    #     c.insert_many(get)
 
 
 @client.event
@@ -216,7 +202,7 @@ snipe_message_author = {}
 snipe_message_content = {}
 esnipe_message_author = {}
 esnipe_message_content = {}
-esinpe_message_link = {}
+esnipe_message_link = {}
 
 
 
@@ -234,19 +220,37 @@ async def on_message_edit(before, after):
 
     global esnipe_message_author
     global esnipe_message_content
-    global esinpe_message_link
+    global esnipe_message_link
 
     esnipe_message_author[before.channel.id] = before.author
     esnipe_message_content[before.channel.id] = before.content
-    esinpe_message_link[before.channel.id] = before.jump_url
+    esnipe_message_link[before.channel.id] = before.jump_url
 
 
 
 @client.command()
 async def snipe(ctx):
     channel = ctx.channel
+
     try:
-        snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = f"**{snipe_message_content[channel.id]}**")
+
+        message = snipe_message_content[channel.id]
+
+        profanity_check_msg = message.translate(
+        str.maketrans('', '', string.punctuation))
+
+        def replaceDoubleCharacters(string):
+            lastLetter, replacedString = "", ""
+            for letter in string:
+                if letter != lastLetter:
+                    replacedString += letter
+                lastLetter = letter
+            return replacedString
+
+        if profanity.contains_profanity(profanity_check_msg) or profanity.contains_profanity(replaceDoubleCharacters(profanity_check_msg)):
+            return await ctx.send("Deleted message contains words which is not allowed.")
+            
+        snipeEmbed = discord.Embed(title=f"Last Deleted message in {channel.mention}", description = f"{snipe_message_content[channel.id]}")
 
         # valid = url(snipe_message_content[channel.id])
         # if valid == True:
@@ -256,7 +260,7 @@ async def snipe(ctx):
         snipeEmbed.set_footer(text=f"Message sent by {snipe_message_author[channel.id]}")
         await ctx.send(embed = snipeEmbed)
     except:
-        await ctx.send(f"There are no deleted messages in #{channel.name}")
+        await ctx.send(f"There are no deleted messages in {channel.mention}")
 
 
 @client.command(aliases=['es', "edit-snipe"])
@@ -264,7 +268,7 @@ async def edit_snipe(ctx):
     channel = ctx.channel 
     try:
         cont = esnipe_message_content[channel.id]
-        snipeEmbed = discord.Embed(title=f"Last Edited message in #{channel.name}", description = f"**{cont}**\n\n[*__Message__*]({esinpe_message_link[channel.id]})")
+        snipeEmbed = discord.Embed(title=f"Last Edited message in {channel.mention}", description = f"{cont}\n\n[*__Message__*]({esnipe_message_link[channel.id]})")
 
         # valid = url(cont[0])
         # if valid == True:
@@ -273,7 +277,7 @@ async def edit_snipe(ctx):
         snipeEmbed.set_footer(text=f"Message edited by {esnipe_message_author[channel.id]}")
         await ctx.send(embed = snipeEmbed)
     except:
-        await ctx.send(f"There are no edited messages in #{channel.name}")
+        await ctx.send(f"There are no edited messages in {channel.mention}")
 
 
 @client.command()
@@ -440,6 +444,17 @@ async def del_snipe():
 
     snipe_message_author = {}
     snipe_message_content = {}
+
+@tasks.loop(minutes=30)
+async def del_esnipe():
+
+    global esnipe_message_author
+    global esnipe_message_content
+    global esnipe_message_link
+
+    esnipe_message_author = {}
+    esnipe_message_content = {}
+    esnipe_message_link = {}
 
 
 keep_alive.keep_alive()
