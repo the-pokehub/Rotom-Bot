@@ -34,10 +34,10 @@ class Help(commands.Cog):
 
         help_embed.add_field(name="🎮 Game", value=f"`{prefix}help game`", inline=True)
 
-        if ctx.guild.id == 676777139776913408:
-            help_embed.add_field(name="🔰 League", value=f"`{prefix}help league`", inline=True)
+        # if ctx.guild.id == 676777139776913408:
+        #     help_embed.add_field(name="🔰 League", value=f"`{prefix}help league`", inline=True)
 
-        help_embed.add_field(name="🎶 Music", value=f"`{prefix}help music`", inline=True)
+        # help_embed.add_field(name="🎶 Music", value=f"`{prefix}help music`", inline=True)
 
         help_embed.add_field(name="🎉 Misc", value=f"`{prefix}help misc`", inline=True)
 
@@ -463,147 +463,147 @@ class Help(commands.Cog):
 
         await ctx.send(embed=em)
 
-    @help.command(aliases=["phl"])
-    async def league(self, ctx):
+    # @help.command(aliases=["phl"])
+    # async def league(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        help_embed1 = discord.Embed(
-            title="League Commands",
-            description=f"If you need more information about a specific command, type `{prefix}help <command>` or `{prefix}h <command>`",
-            colour=discord.Colour.green())
-        help_embed1.set_footer(text="Page 1 of 2")
-        help_embed1.set_thumbnail(url=self.client.user.avatar_url)
+    #     help_embed1 = discord.Embed(
+    #         title="League Commands",
+    #         description=f"If you need more information about a specific command, type `{prefix}help <command>` or `{prefix}h <command>`",
+    #         colour=discord.Colour.green())
+    #     help_embed1.set_footer(text="Page 1 of 2")
+    #     help_embed1.set_thumbnail(url=self.client.user.avatar_url)
 
-        help_embed2 = discord.Embed(
-            title="League Commands",
-            description=f"If you need more information about a specific command, type `{prefix}help <command>` or `{prefix}h <command>`",
-            colour=discord.Colour.green())
-        help_embed2.set_footer(text="Page 2 of 2")
-        help_embed2.set_thumbnail(url=self.client.user.avatar_url)
+    #     help_embed2 = discord.Embed(
+    #         title="League Commands",
+    #         description=f"If you need more information about a specific command, type `{prefix}help <command>` or `{prefix}h <command>`",
+    #         colour=discord.Colour.green())
+    #     help_embed2.set_footer(text="Page 2 of 2")
+    #     help_embed2.set_thumbnail(url=self.client.user.avatar_url)
 
-        help_embed1.set_thumbnail(url=self.client.user.avatar_url)
+    #     help_embed1.set_thumbnail(url=self.client.user.avatar_url)
 
-        help_embed1.add_field(name="Register",
-                              value="The registration command.")
+    #     help_embed1.add_field(name="Register",
+    #                           value="The registration command.")
 
-        help_embed1.add_field(
-            name="Swap",
-            value="Swap one of your Pokémon of the desired generation before league starts")
+    #     help_embed1.add_field(
+    #         name="Swap",
+    #         value="Swap one of your Pokémon of the desired generation before league starts")
 
-        # help_embed1.add_field(name="Reset", value="Claim your reset token and swap 6 of your Pokémon Pool.")
+    #     # help_embed1.add_field(name="Reset", value="Claim your reset token and swap 6 of your Pokémon Pool.")
 
-        help_embed1.add_field(
-            name="Profile",
-            value="Check profile of provided generation and user.")
+    #     help_embed1.add_field(
+    #         name="Profile",
+    #         value="Check profile of provided generation and user.")
 
-        help_embed1.add_field(
-            name="Pool",
-            value="See your or someone's current registered pool of the current generation.")
+    #     help_embed1.add_field(
+    #         name="Pool",
+    #         value="See your or someone's current registered pool of the current generation.")
 
-        # help_embed1.add_field(name="Check_team", value="Check if the battling team of the member mentioned is valid or not.", inline=False)
+    #     # help_embed1.add_field(name="Check_team", value="Check if the battling team of the member mentioned is valid or not.", inline=False)
 
-        help_embed1.add_field(
-            name="Add_badge",
-            value="Add defined badge of the provided generation to the mentioned user.")
+    #     help_embed1.add_field(
+    #         name="Add_badge",
+    #         value="Add defined badge of the provided generation to the mentioned user.")
 
-        help_embed1.add_field(
-            name="Elite_pool",
-            value="Command to see and check the elite pool of a challenger.")
+    #     help_embed1.add_field(
+    #         name="Elite_pool",
+    #         value="Command to see and check the elite pool of a challenger.")
 
-        help_embed1.add_field(
-            name="Elite_team",
-            value="Command to submit the elite team of the challenger.")
+    #     help_embed1.add_field(
+    #         name="Elite_team",
+    #         value="Command to submit the elite team of the challenger.")
 
-        help_embed2.add_field(
-            name="Add_streak",
-            value="Increase elite streak of the provided generation and mentioned user by one.")
+    #     help_embed2.add_field(
+    #         name="Add_streak",
+    #         value="Increase elite streak of the provided generation and mentioned user by one.")
 
-        help_embed2.add_field(
-            name="Reset_streak",
-            value="Reset the elite streak if the member and if streak was 4, increase champion endurance by 1.")
+    #     help_embed2.add_field(
+    #         name="Reset_streak",
+    #         value="Reset the elite streak if the member and if streak was 4, increase champion endurance by 1.")
 
-        help_embed2.add_field(
-            name="Champion",
-            value="Make new champion and update hall of fame.")
+    #     help_embed2.add_field(
+    #         name="Champion",
+    #         value="Make new champion and update hall of fame.")
 
-        help_embed2.add_field(
-            name="Hall_of_fame",
-            value="See the Hall of Fame of all the champions.")
+    #     help_embed2.add_field(
+    #         name="Hall_of_fame",
+    #         value="See the Hall of Fame of all the champions.")
 
-        help_embed2.add_field(
-            name="Swap_close",
-            value="Stops the Pokémon swappable option available earlier.")
+    #     help_embed2.add_field(
+    #         name="Swap_close",
+    #         value="Stops the Pokémon swappable option available earlier.")
 
-        help_embed2.add_field(
-            name="Restart_league",
-            value="Erases the data of the Current league.")
+    #     help_embed2.add_field(
+    #         name="Restart_league",
+    #         value="Erases the data of the Current league.")
 
-        msg = await ctx.send(embed=help_embed1)
+    #     msg = await ctx.send(embed=help_embed1)
 
-        await msg.add_reaction("◀️")
-        await msg.add_reaction("▶️")
+    #     await msg.add_reaction("◀️")
+    #     await msg.add_reaction("▶️")
 
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
+    #     def check(reaction, user):
+    #         return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
 
-        pages = 2
-        cur_page = 1
+    #     pages = 2
+    #     cur_page = 1
 
-        while True:
-            try:
-                reaction, user = await self.client.wait_for("reaction_add", timeout=60, check=check)
+    #     while True:
+    #         try:
+    #             reaction, user = await self.client.wait_for("reaction_add", timeout=60, check=check)
 
-                if str(reaction.emoji) == "▶️" and cur_page != pages:
-                    cur_page += 1
-                    await msg.edit(embed=help_embed2)
-                    await msg.remove_reaction(reaction, user)
+    #             if str(reaction.emoji) == "▶️" and cur_page != pages:
+    #                 cur_page += 1
+    #                 await msg.edit(embed=help_embed2)
+    #                 await msg.remove_reaction(reaction, user)
 
-                elif str(reaction.emoji) == "◀️" and cur_page > 1:
-                    cur_page -= 1
-                    await msg.edit(embed=help_embed1)
-                    await msg.remove_reaction(reaction, user)
+    #             elif str(reaction.emoji) == "◀️" and cur_page > 1:
+    #                 cur_page -= 1
+    #                 await msg.edit(embed=help_embed1)
+    #                 await msg.remove_reaction(reaction, user)
 
-                else:
-                    await msg.remove_reaction(reaction, user)
-            except asyncio.TimeoutError:
-                await msg.clear_reaction("▶️")
-                await msg.clear_reaction("◀️")
+    #             else:
+    #                 await msg.remove_reaction(reaction, user)
+    #         except asyncio.TimeoutError:
+    #             await msg.clear_reaction("▶️")
+    #             await msg.clear_reaction("◀️")
 
-    @help.command()
-    async def music(self, ctx):
+    # @help.command()
+    # async def music(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        help_embed = discord.Embed(
-            title="Music Commands", colour=discord.Colour.green())
-        help_embed.set_thumbnail(url=self.client.user.avatar_url)
+    #     help_embed = discord.Embed(
+    #         title="Music Commands", colour=discord.Colour.green())
+    #     help_embed.set_thumbnail(url=self.client.user.avatar_url)
 
-        help_embed.add_field(name="Join", value="Summons the bot to a voice channel.")
+    #     help_embed.add_field(name="Join", value="Summons the bot to a voice channel.")
 
-        help_embed.add_field(name="Leave", value="Clears the queue and leaves the voice channel.")
+    #     help_embed.add_field(name="Leave", value="Clears the queue and leaves the voice channel.")
 
-        help_embed.add_field(name="Play", value="Plays a song.")
+    #     help_embed.add_field(name="Play", value="Plays a song.")
 
-        help_embed.add_field(name="Pause", value="Pauses the currently playing song.")
+    #     help_embed.add_field(name="Pause", value="Pauses the currently playing song.")
 
-        help_embed.add_field(name="Resume", value="Resumes a currently paused song.")
+    #     help_embed.add_field(name="Resume", value="Resumes a currently paused song.")
 
-        help_embed.add_field(name="Now", value="Displays the currently playing song.")
+    #     help_embed.add_field(name="Now", value="Displays the currently playing song.")
 
-        help_embed.add_field(name="Stop", value="Stops playing song and clears the queue.")
+    #     help_embed.add_field(name="Stop", value="Stops playing song and clears the queue.")
 
-        help_embed.add_field(name="Skip", value="Vote to skip a song.")
+    #     help_embed.add_field(name="Skip", value="Vote to skip a song.")
 
-        help_embed.add_field(name="Queue", value="Shows the player's queue.")
+    #     help_embed.add_field(name="Queue", value="Shows the player's queue.")
 
-        help_embed.add_field(name="Shuffle", value="Shuffles the queue")
+    #     help_embed.add_field(name="Shuffle", value="Shuffles the queue")
 
-        help_embed.add_field(name="Remove", value="Removes a song from the queue at a given index.")
+    #     help_embed.add_field(name="Remove", value="Removes a song from the queue at a given index.")
 
-        help_embed.add_field(name="Loop", value="Loops the currently playing song.")
+    #     help_embed.add_field(name="Loop", value="Loops the currently playing song.")
 
-        await ctx.send(embed=help_embed)
+    #     await ctx.send(embed=help_embed)
 
     @help.command()
     async def misc(self, ctx):
@@ -730,15 +730,19 @@ class Help(commands.Cog):
             title="Pokedex Commands", colour=discord.Colour.green())
         help_embed.set_thumbnail(url=self.client.user.avatar_url)
 
-        help_embed.add_field(name="dex", value="Get Pokemon info.")
+        help_embed.add_field(name="dex", value="Get Information of a Pokémon.")
 
-        help_embed.add_field(name="move", value="Get Move info.")
+        help_embed.add_field(name="move", value="Get Information of a Move.")
 
-        help_embed.add_field(name="item", value="Get item info.")
+        help_embed.add_field(name="item", value="Get Information of an Item.")
 
-        help_embed.add_field(name="ability", value=f"Get ability info.")
+        help_embed.add_field(name="ability", value=f"Get Information of an Ability.")
 
-        help_embed.add_field(name="nature", value=f"Get nature info.")
+        help_embed.add_field(name="nature", value=f"Get Information of a Nature.")
+
+        help_embed.add_field(name="data", value=f"Get Information of a Pokémon, ability, move, item, or nature.")
+
+        help_embed.add_field(name="learn", value=f"Get Information of a Pokémon Learnset, add optional move to show how that Pokémon learns that move.")
 
         await ctx.send(embed=help_embed)
 

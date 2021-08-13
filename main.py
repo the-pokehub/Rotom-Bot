@@ -250,7 +250,7 @@ async def snipe(ctx):
         if profanity.contains_profanity(profanity_check_msg) or profanity.contains_profanity(replaceDoubleCharacters(profanity_check_msg)):
             return await ctx.send("Deleted message contains words which is not allowed.")
             
-        snipeEmbed = discord.Embed(title=f"Last Deleted message in {channel.mention}", description = f"{snipe_message_content[channel.id]}")
+        snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = f"{snipe_message_content[channel.id]}")
 
         # valid = url(snipe_message_content[channel.id])
         # if valid == True:
@@ -263,12 +263,12 @@ async def snipe(ctx):
         await ctx.send(f"There are no deleted messages in {channel.mention}")
 
 
-@client.command(aliases=['es', "edit-snipe"])
+@client.command(aliases=['es', "edit-snipe", "esnipe"])
 async def edit_snipe(ctx):
     channel = ctx.channel 
     try:
         cont = esnipe_message_content[channel.id]
-        snipeEmbed = discord.Embed(title=f"Last Edited message in {channel.mention}", description = f"{cont}\n\n[*__Message__*]({esnipe_message_link[channel.id]})")
+        snipeEmbed = discord.Embed(title=f"Last Edited message in #{channel.name}", description = f"{cont}\n\n[*__Message__*]({esnipe_message_link[channel.id]})")
 
         # valid = url(cont[0])
         # if valid == True:
@@ -459,3 +459,5 @@ async def del_esnipe():
 
 keep_alive.keep_alive()
 client.run(os.environ.get("TOKEN"))
+
+# Rate Limit Fix: "kill 1"
