@@ -30,12 +30,11 @@ class Help(commands.Cog):
 
         help_embed.set_thumbnail(url=self.client.user.avatar_url)
 
-        help_embed.add_field(name="🔨 Moderator", value=f"`{prefix}help mod`", inline=True)
+        help_embed.add_field(name="🔨 Moderator", value=f"`{prefix}help mod`")
 
         help_embed.add_field(name="🎮 Game", value=f"`{prefix}help game`", inline=True)
-
-        # if ctx.guild.id == 676777139776913408:
-        #     help_embed.add_field(name="🔰 League", value=f"`{prefix}help league`", inline=True)
+        
+        help_embed.add_field(name="📛Badge System", value=f"`{prefix}help badge`")
 
         # help_embed.add_field(name="🎶 Music", value=f"`{prefix}help music`", inline=True)
 
@@ -274,7 +273,7 @@ class Help(commands.Cog):
     @help.command(aliases=["mod"])
     async def moderator(self, ctx):
 
-        prefix = server_prefix(ctx)
+        # prefix = server_prefix(ctx)
 
         help_embed = discord.Embed(
             title="Moderator Commands",
@@ -691,8 +690,6 @@ class Help(commands.Cog):
         }
 
         flag = ""
-        
-
 
         prefix = server_prefix(ctx)
 
@@ -744,8 +741,70 @@ class Help(commands.Cog):
 
         help_embed.add_field(name="learn", value=f"Get Information of a Pokémon Learnset, add optional move to show how that Pokémon learns that move.")
 
+        help_embed.add_field(name="filter", value=f"Search Pokémon based on user-inputted parameters. Use `{prefix}help filter` for more information.")
+
         await ctx.send(embed=help_embed)
 
+    @help.command()
+    async def badge(self, ctx):
+
+        prefix = server_prefix(ctx)
+
+        help_embed = discord.Embed(
+            title="Badge System Commands", colour=discord.Colour.green())
+        help_embed.set_thumbnail(url=self.client.user.avatar_url)
+        help_embed.set_footer(text=f"Argument in {{}} are Optional argument and in [] are required.")
+
+        help_embed.add_field(name=f"{prefix}badges {{user}}", value="View your current Gym Badges (or someone else's) in the server.")
+
+        help_embed.add_field(name=f"{prefix}gyms", value="View all the Gym Leaders of the server.")
+
+        help_embed.add_field(name=f"{prefix}glrole [role]", value="Add a Gym Leader role for Gym Leader commands.")
+
+        help_embed.add_field(name=f"{prefix}elrole [role]", value="Add a Elite role for Elite commands.")
+
+        help_embed.add_field(name=f"{prefix}badgen [badge name] [badge emoji]", value="Add a new badge for the server.")
+
+        help_embed.add_field(name=f"{prefix}leaderadd [user] [badge]", value="Add a Gym Leader. Need to add badge first.")
+
+        help_embed.add_field(name=f"{prefix}leaderremove [user] [badge]", value="Remove a Gym Leader.")
+
+        help_embed.add_field(name=f"{prefix}award [user] {{badge}}", value="Award a Gym Badge to a challenger.")
+
+        help_embed.add_field(name=f"{prefix}revoke [user] {{badge}}", value="Revoke a Gym Badge from a challenger.")
+
+        help_embed.add_field(name=f"{prefix}streaka [user]", value="Add a Elite Streak to a challenger.")
+
+        help_embed.add_field(name=f"{prefix}streakr [user]", value="Remove all Elite Streak from a challenger.")
+
+        help_embed.add_field(name=f"{prefix}badgereset", value=f"Erase all badges from all Users in the given server.")
+
+        await ctx.send(embed=help_embed)
+
+    @help.command()
+    async def filter(self, ctx):
+
+        # prefix = server_prefix(ctx)
+
+        help_embed = discord.Embed(
+            title="filter Command",
+            description=f"Search Pokémon based on user-inputted parameters. Availible parameters are:" , colour=discord.Colour.green())
+        help_embed.set_thumbnail(url=self.client.user.avatar_url)
+
+        help_embed.add_field(name="hp/hitpoints", value="Eg: hp=100 or hp>100 or hp<100")
+        help_embed.add_field(name="atk/attack", value="Eg: atk=100 or atk>100 or atk<100")
+        help_embed.add_field(name="def/defense", value="Eg: def=100 or def>100 or def<100")
+        help_embed.add_field(name="spa/specialattack", value="Eg: spa=100 or spa>100 or spa<100")
+        help_embed.add_field(name="spd/speicaldefense", value="Eg: spd=100 or spd>100 or spd<100")
+        help_embed.add_field(name="spe/speed", value="Eg: spe=100 or spe>100 or spe<100")
+
+        help_embed.add_field(name="ability", value="Eg: ability=flash fire")
+        help_embed.add_field(name="move", value="Eg: move=lavaplume")
+        help_embed.add_field(name="type", value="Eg: type=fire")
+        
+        help_embed.set_footer(text="For multiple value in type or move use parameter multiple times or separated by a ; Eg: type=fire;steel")
+
+        await ctx.send(embed=help_embed)
 
 def setup(client):
     client.add_cog(Help(client))

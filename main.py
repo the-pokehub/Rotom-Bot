@@ -46,9 +46,17 @@ save = db["mod"]
 def get_prefix(client, message):
 
     time.sleep(0.01)
-	      
+
+    if isinstance(message.channel, discord.channel.DMChannel):
+        return "."
+        
     guild = db["prefixes"]
     ret = guild.get(str(message.guild.id), ".")
+
+    if str(message.guild.id) not in guild:
+        guild[str(message.guild.id)] = "."
+
+        db["prefixes"] = guild
 
     return ret
 
@@ -66,8 +74,8 @@ presence = cycle([
 ])
 
 client = commands.Bot(command_prefix=prefix,
-                      intents=intents,
-                      case_insensitive=True)
+                    intents=intents,
+                    case_insensitive=True)
 
 
 dbs = ['league_prof7', 'gen7', 'hall_of_fame', 'league_prof6', 'gen6', 'mod']
@@ -90,11 +98,6 @@ async def on_ready():
 
     version = discord.__version__.replace(" ", "")
     print("discord.py Version: v" + version)
-
-    # for i in dbs:
-    #     get = db[i]
-    #     c = mclient["league"][i]
-    #     c.insert_many(get)
 
 
 @client.event
@@ -157,7 +160,7 @@ async def on_message(message):
 
             mem = await message.guild.fetch_member(int(member_id[:-2]))
             role = discord.utils.get(message.guild.roles,
-                                     name="advanced-trainers")
+                                    name="advanced-trainers")
 
             await mem.add_roles(role)
 
@@ -170,6 +173,11 @@ async def on_message(message):
             if role not in mem.roles:
         
                 await mem.add_roles(role)
+                
+    pfx = get_prefix(client, message).lower()
+
+    if message.content.lower().startswith(pfx):
+        message.content = message.content[:len(pfx)].lower() + message.content[len(pfx):]
 
     await client.process_commands(message)
 
@@ -252,11 +260,6 @@ async def snipe(ctx):
             
         snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = f"{snipe_message_content[channel.id]}")
 
-        # valid = url(snipe_message_content[channel.id])
-        # if valid == True:
-        #     snipeEmbed.set_image(url=snipe_message_content[channel.id])
-
-
         snipeEmbed.set_footer(text=f"Message sent by {snipe_message_author[channel.id]}")
         await ctx.send(embed = snipeEmbed)
     except:
@@ -269,10 +272,6 @@ async def edit_snipe(ctx):
     try:
         cont = esnipe_message_content[channel.id]
         snipeEmbed = discord.Embed(title=f"Last Edited message in #{channel.name}", description = f"{cont}\n\n[*__Message__*]({esnipe_message_link[channel.id]})")
-
-        # valid = url(cont[0])
-        # if valid == True:
-        #     snipeEmbed.set_image(url=cont[0])
 
         snipeEmbed.set_footer(text=f"Message edited by {esnipe_message_author[channel.id]}")
         await ctx.send(embed = snipeEmbed)

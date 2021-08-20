@@ -11,6 +11,11 @@ class Mod(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    def cog_check(self, ctx):
+        if isinstance(ctx.channel, discord.channel.DMChannel):
+
+            raise commands.NoPrivateMessage("This command can't be used in DM.")
+
     @commands.command()
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
@@ -218,7 +223,7 @@ class Mod(commands.Cog):
         prefixes = db["prefixes"]
         prefixes[(str(ctx.guild.id))] = new_prefix
         db["preixes"] = prefixes
-        await ctx.send(f"Server Prefix has been changed to {new_prefix}")
+        await ctx.send(f"Server Prefix has been changed to `{new_prefix}`")
 
 
 def setup(client):

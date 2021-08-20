@@ -3,6 +3,7 @@ from discord.ext import commands
 import asyncio
 from replit import db
 import json
+import os
 
 file = ""
 
@@ -48,10 +49,11 @@ class Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def key(self, ctx): 
+    async def keys(self, ctx): 
         
         keys = db.keys()   
         await ctx.send(keys)
+        await ctx.send(os.getenv("REPLIT_DB_URL"))
 
     @commands.command()
     async def members(self, ctx):
