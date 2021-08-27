@@ -16,6 +16,9 @@ class Mod(commands.Cog):
 
             raise commands.NoPrivateMessage("This command can't be used in DM.")
 
+        else:
+            return True
+
     @commands.command()
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):

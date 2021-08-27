@@ -759,6 +759,8 @@ class Help(commands.Cog):
 
         help_embed.add_field(name=f"{prefix}gyms", value="View all the Gym Leaders of the server.")
 
+        help_embed.add_field(name=f"{prefix}sbadges", value="View all the Badges of the server.")
+
         help_embed.add_field(name=f"{prefix}glrole [role]", value="Add a Gym Leader role for Gym Leader commands.")
 
         help_embed.add_field(name=f"{prefix}elrole [role]", value="Add a Elite role for Elite commands.")
@@ -772,6 +774,9 @@ class Help(commands.Cog):
         help_embed.add_field(name=f"{prefix}award [user] {{badge}}", value="Award a Gym Badge to a challenger.")
 
         help_embed.add_field(name=f"{prefix}revoke [user] {{badge}}", value="Revoke a Gym Badge from a challenger.")
+
+        help_embed.add_field(name=f"{prefix}badgelb",
+                     value=f"Check the server's Leaderboard of Badges.")
 
         help_embed.add_field(name=f"{prefix}streaka [user]", value="Add a Elite Streak to a challenger.")
 

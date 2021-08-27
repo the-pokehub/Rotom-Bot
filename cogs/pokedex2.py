@@ -1,3 +1,8 @@
+"""
+learnset, filter
+TODO: coverage, calculator(opt), hiddenpower(opt)
+"""
+
 import json
 import string
 import difflib
@@ -26,14 +31,22 @@ dex_dat = "data/pokedex.json Pokedex"
 def get_data(dat, find):
 
     dat = dat.split()
+
     with open(dat[0], "r") as load:
         data = json.load(load)
+
+    with open("data/aliases.json", "r") as ala:
+        lit = json.load(ala)
 
     find1 = find.translate(
         str.maketrans('', '', string.punctuation))
 
     if find1 in data[dat[1]]:
         return find1
+    
+    if find1 in lit[dat[1]]:
+        mod = lit[dat[1]][find1]
+        return mod
 
     match = difflib.get_close_matches(find1, data[dat[1]], 1)
 
@@ -59,6 +72,9 @@ def get_set(mon, move):
     with open("data/pokedex.json", "r") as load:
         data = json.load(load)
 
+    with open("data/aliases.json", "r") as ala:
+        lit = json.load(ala)
+
     find = mon.translate(
         str.maketrans('', '', string.punctuation))
 
@@ -66,6 +82,10 @@ def get_set(mon, move):
 
     if find in data["Pokedex"]:
         ret = find
+
+    if find in lit["Pokedex"]:
+        mod = lit["Pokedex"][find]
+        ret = mod
 
     else:
 
@@ -136,8 +156,12 @@ def get_set(mon, move):
         title = f"{mn}'s Learnset:"
 
     else:
+
         with open("data/moves.json", "r") as load:
             data = json.load(load)
+
+        with open("data/aliases.json", "r") as ala:
+            lit = json.load(ala)
 
         mov = move.translate(
             str.maketrans('', '', string.punctuation))
@@ -146,6 +170,10 @@ def get_set(mon, move):
 
         if mov in data["Moves"]:
             ret1 = mov
+
+        if find in lit["Moves"]:
+            mod = lit["Moves"][find]
+            ret = mod
 
         else:
 

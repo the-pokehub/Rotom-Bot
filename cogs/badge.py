@@ -3,9 +3,6 @@ from discord.ext import commands
 from replit import db
 import asyncio
 
-# save = db["mod"]
-
-
 def server_prefix(msg):
     prefixes = db["prefixes"]
     s_prefix = prefixes[str(msg.guild.id)]
@@ -27,9 +24,12 @@ class League(commands.Cog):
         self.client = client
 
     def cog_check(self, ctx):
+
         if isinstance(ctx.channel, discord.channel.DMChannel):
 
             raise commands.NoPrivateMessage("This command can't be used in DM.")
+        else:
+            return True
 
     @commands.command(aliases=["aw", "badgea"])
     async def award(self, ctx, member: discord.Member, badge = None):
@@ -64,6 +64,9 @@ class League(commands.Cog):
 
         if member == ctx.author:
             return await ctx.send("You cannot give yourself a badge...")
+
+        if member.bot:
+            return await ctx.send("How high you are?\nNub giving Badge to Bot")
 
         if str(member.id) not in data[str(ctx.guild.id)]:
             data[str(ctx.guild.id)][str(member.id)] = {
@@ -101,7 +104,7 @@ class League(commands.Cog):
             f"{member.mention} won {badges_dict[badge]} Badge")
 
 
-    @commands.command(aliases=["rv", "badger"])
+    @commands.command(aliases=["rv"])
     async def revoke(self, ctx, member: discord.Member, badge):
 
         obtained = []
@@ -504,6 +507,105 @@ class League(commands.Cog):
 
         await ctx.send(embed=em)
 
+    @commands.command(aliases=["serverbadges"])
+    async def sbadges(self, ctx):
+
+        data = db["league"]
+
+        if str(ctx.guild.id) not in data:
+            return await ctx.send("There is No Badges set for this server yet.")
+
+        if data[str(ctx.guild.id)]["cbadges"] == {}:
+            return await ctx.send("There is No Badges set for this server yet.")
+
+        em = discord.Embed(title=f"Badges of {ctx.guild.name}", colour=discord.Color.orange())
+
+        for i in data[str(ctx.guild.id)]["cbadges"]:
+            em.add_field(name=f"{i.capitalize()} Badge", value=data[str(ctx.guild.id)]["cbadges"][i])
+
+        await ctx.send(embed=em)
+
+    @commands.command(aliases=[])
+    async def badgelb(self, ctx):
+
+        data1 = db["badges"]
+
+        gg = {}
+
+        if str(ctx.guild.id) not in data1:
+            return await ctx.send("No server DATA yet")
+
+        if data1[str(ctx.guild.id)] == {}:
+            return await ctx.send("No server DATA yet")
+
+        for i in data1[str(ctx.guild.id)]:
+            num  = len(data1[str(ctx.guild.id)][i]["Badges"])
+            
+            if num == 0:
+                pass
+            else:
+                gg[i] = num
+
+        lb = dict(sorted(gg.items(), key = lambda kv:kv[1], reverse = True))
+
+        des = ""
+        no = 1
+
+        for i in lb:
+            mem = None
+            try:
+                mem = await ctx.guild.fetch_member(int(i))
+            except discord.HTTPException:
+                pass
+
+            if mem:
+
+                if no == 1:
+                    des += "🥇 "
+                elif no == 2:
+                    des += "🥈 "
+                elif no == 3:
+                    des += "🥉 "
+                else:
+                    des += "👏 "
+
+                
+                wins = lb[i]
+                des += f"**{wins}** Badges - {mem}\n"
+                no += 1
+                if no > 10:
+                    break
+
+        em = discord.Embed(title=f"Badge Leaderboard", description=des, colour=discord.Color.orange())
+
+        em.set_author(icon_url=ctx.guild.icon_url, name=f"{ctx.guild.name}'s")
+
+        await ctx.send(embed=em)
+
+    @commands.command(aliases=["badger"])
+    @commands.has_permissions(manage_guild=True)
+    async def badgerem(self, ctx, name):
+
+        data = db["league"]
+        data1 = db["badges"]
+
+        name = name.lower()
+
+        if str(ctx.guild.id) not in data:
+            return await ctx.send()
+
+        if data[str(ctx.guild.id)]["cbadges"] == {}:
+            return await ctx.send()
+
+        if name not in data[str(ctx.guild.id)]["cbadges"]:
+            return
+        
+        del data[str(ctx.guild.id)]["cbadges"][name]
+
+        db["league"] = data
+        db["badges"] = data1
+
+        return await ctx.send(f"{name} has been removed from Server Badges.")
 
 def setup(client):
     client.add_cog(League(client))

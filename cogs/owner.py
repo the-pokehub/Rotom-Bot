@@ -15,37 +15,36 @@ class Owner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def load(self, ctx, filename):
+
         global file
 
         file = filename
 
         try:
+            
             data = db[filename]
 
-            with open("manage.json", "w") as bot_data:
-                json.dump(data, bot_data)
+            for i in data:
+                await ctx.send(f"{i} : {data[i]}")
 
-            await ctx.send(f"{filename} has been transferred")
+            # with open("manage.txt", "w") as bot_data:
+            #     bot_data.write(str(data))
+
+            # await ctx.send(f"{filename} has been transferred")
 
         except KeyError:
             await ctx.send(f"No DataBase named {filename} found")
 
     @commands.command()
     @commands.is_owner()
-    async def rewrite(self, ctx):
-
-        global file
-
-        filename = file
+    async def rewrite(self, ctx, file):
 
         with open("manage.json", "r") as bot_data:
             data = json.load(bot_data)
 
-        db[filename] = data
+        db[file] = data
 
-        file = ""
-
-        await ctx.send(f"{filename} has been rewritten")
+        await ctx.send(f"{file} has been rewritten")
 
     @commands.command()
     @commands.is_owner()
@@ -56,10 +55,14 @@ class Owner(commands.Cog):
         await ctx.send(os.getenv("REPLIT_DB_URL"))
 
     @commands.command()
-    async def members(self, ctx):
-        await ctx.send(ctx.guild.members)
+    @commands.is_owner()
+    async def delete(self, ctx, file):
 
+        del db[file]
 
+        await ctx.send(f"Deleted {file} from DataBase")
+
+    
 def setup(client):
     client.add_cog(Owner(client))
     

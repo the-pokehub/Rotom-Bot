@@ -1,3 +1,15 @@
+"""
+ability
+data
+dex
+item
+move
+nature
+sprite
+weakness
+"""
+
+
 import difflib
 import random
 import json
@@ -15,57 +27,57 @@ weakness = "data/typechart.json"
 all = "data/data.json"
 
 colors = {
-	"Green": discord.Color.green(),
-	"Red": discord.Color.red(),
-	"Black": discord.Color.darker_gray(),
-	"Blue": discord.Color.blue(),
-	"White": discord.Color.lighter_grey(),
-	"Brown": discord.Color.dark_purple(),
-	"Yellow": discord.Color.orange(),
-	"Purple": discord.Color.purple(),
-	"Pink": discord.Color.magenta(),
-	"Gray": discord.Color.light_gray()
+    "Green": discord.Color.green(),
+    "Red": discord.Color.red(),
+    "Black": discord.Color.darker_gray(),
+    "Blue": discord.Color.blue(),
+    "White": discord.Color.lighter_grey(),
+    "Brown": discord.Color.dark_purple(),
+    "Yellow": discord.Color.orange(),
+    "Purple": discord.Color.purple(),
+    "Pink": discord.Color.magenta(),
+    "Gray": discord.Color.light_gray()
 }
 
 fields = {
-	"num": "Number:",
-	"baseSpecies": "Base Species:",
-	"types": "Types:",
-	"genderRatio": "Gender Ratio:",
-	"baseStats": "Base Stats:",
-	"abilities": "Abilities:",
-	"heightm": "Height(in m):",
-	"weightkg": "Weight(in kg)",
-	"tier": "Tier:",
-	"prevo": "Previous Evo:",
-	"evos": "Next Evo:",
-	"evoType": "Evo Type:",
-	"evoCondition": "Evo Condition:",
-	"evoLevel": "Evo Level:",
-	"evoItem": "Evo Item:",
-	"eggGroups": "Egg Groups:",
-	"otherFormes": "Alt Forms:",
-	"canGigantamax": "G-Max Move:",
-	"requiredItem": "Alt Forme Item:",
-	"requiredMove": "Required Move:"
+    "num": "Number:",
+    "baseSpecies": "Base Species:",
+    "types": "Types:",
+    "genderRatio": "Gender Ratio:",
+    "baseStats": "Base Stats:",
+    "abilities": "Abilities:",
+    "heightm": "Height(in m):",
+    "weightkg": "Weight(in kg)",
+    "tier": "Tier:",
+    "prevo": "Previous Evo:",
+    "evos": "Next Evo:",
+    "evoType": "Evo Type:",
+    "evoCondition": "Evo Condition:",
+    "evoLevel": "Evo Level:",
+    "evoItem": "Evo Item:",
+    "eggGroups": "Egg Groups:",
+    "otherFormes": "Alt Forms:",
+    "canGigantamax": "G-Max Move:",
+    "requiredItem": "Alt Forme Item:",
+    "requiredMove": "Required Move:"
 }
 
 m_fields = {
-	"accuracy": "Accuracy:",
-	"basePower": "Base Power:",
-	"category": "Category:",
-	"pp": "PP:",
-	"priority": "Priority:",
-	"isZ": "Z-Stone:",
-	"type": "Type:"
+    "accuracy": "Accuracy:",
+    "basePower": "Base Power:",
+    "category": "Category:",
+    "pp": "PP:",
+    "priority": "Priority:",
+    "isZ": "Z-Stone:",
+    "type": "Type:"
 }
 
 i_fields = {
-	"itemUser": "Item User:",
-	"num": "Number:",
-	"fling": "Fling Power",
-	"naturalGift": "Natural Gift:",
-	"zMoveFrom": "Base Move:"
+    "itemUser": "Item User:",
+    "num": "Number:",
+    "fling": "Fling Power",
+    "naturalGift": "Natural Gift:",
+    "zMoveFrom": "Base Move:"
 }
 
 genData = {"1":'gen1', "2":'gen2', "3":'gen3', "4":'gen4', "5":'gen5'}
@@ -73,614 +85,681 @@ genData = {"1":'gen1', "2":'gen2', "3":'gen3', "4":'gen4', "5":'gen5'}
 
 def get_data(dat, find):
 
-	ret = None
-	add = None
+    ret = None
+    add = None
 
-	dat = dat.split()
-	with open(dat[0], "r") as load:
-		data = json.load(load)
+    dat = dat.split()
+    
+    with open(dat[0], "r") as load:
+        data = json.load(load)
 
-	if find == "random":
-		found = random.choice(list(data[dat[1]].keys()))
-		add = "No 1 specified, I found a random 1 for you."
-		ret = data[dat[1]][found]
-		return add, ret
+    with open("data/aliases.json", "r") as ala:
+        lit = json.load(ala)
 
-	find1 = find.translate(
-		str.maketrans('', '', string.punctuation))
+    if find == "random":
+        found = random.choice(list(data[dat[1]].keys()))
+        add = "No 1 specified, I found a random 1 for you."
+        ret = data[dat[1]][found]
+        return add, ret
 
-	find1 = find1.replace(" ", "")
+    find1 = find.translate(
+        str.maketrans('', '', string.punctuation))
 
-	for get in data[dat[1]]:
-		if get == find1:
-			ret = data[dat[1]][get]
-			return add, ret
+    find1 = find1.replace(" ", "")
 
-	match = difflib.get_close_matches(find1, data[dat[1]], 1)
+    if find1 in data[dat[1]]:
+        ret = data[dat[1]][find1]
+        return add, ret
 
-	best = None
+    if find1 in lit[dat[1]]:
+        mod = lit[dat[1]][find1]
+        ret = data[dat[1]][mod]
+        # add = f"No 1 {find} found did u mean {ret['name'].capitalize()}?"
+        return add, ret
 
-	if match:
-		best = match[0]
+    match = difflib.get_close_matches(find1, data[dat[1]], 1)
+
+    best = None
+
+    if match:
+        best = match[0]
 
 
-	if best:
-		ret = data[dat[1]][best]
-		add  = f"No 1 {find} found did u mean {ret['name'].capitalize()}?"
-		return add, ret
+    if best:
+        ret = data[dat[1]][best]
+        add  = f"No 1 {find} found did u mean {ret['name'].capitalize()}?"
+        return add, ret
 
-	
-	add = "No 1 Found"
-	return add, ret
+    
+    add = "No 1 Found"
+    return add, ret
+
 
 
 class PkDex(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+    def __init__(self, client):
+        self.client = client
 
 
-	async def weak(self, ctx, type1, type2):
+    async def weak(self, ctx, type1, type2):
 
-		with open(weakness, "r") as w:
-			data = json.load(w)
+        with open(weakness, "r") as w:
+            data = json.load(w)
 
-		_000 = ""
-		_025 = ""
-		_050 = ""
-		_100 = ""
-		_200 = ""
-		_400 = ""
+        _000 = ""
+        _025 = ""
+        _050 = ""
+        _100 = ""
+        _200 = ""
+        _400 = ""
 
-		if type1.capitalize() not in data["TypeChart"]:
-			add, got = get_data(dex, type1)
-			if got:
-				types = got["types"]
-				title = got["name"] + " " + str(got["types"])
-				color = colors[got['color']]
-			else:
-				return discord.Embed(title=add)
+        if type1.capitalize() not in data["TypeChart"]:
+            add, got = get_data(dex, type1)
+            if got:
+                types = got["types"]
+                title = got["name"] + " " + str(got["types"])
+                color = colors[got['color']]
+            else:
+                return discord.Embed(title=add)
 
-		else:
-			if type2 != "None":
-				types = [type1.capitalize(), type2.capitalize()]
-			else:
-				types = [type1.capitalize()]
+        else:
+            if type2 != "None":
+                types = [type1.capitalize(), type2.capitalize()]
+            else:
+                types = [type1.capitalize()]
 
-			title = types
-			x = random.choice(list(colors.keys()))
-			color = colors[x]
+            title = types
+            x = random.choice(list(colors.keys()))
+            color = colors[x]
 
-		if len(types) > 1:
+        if len(types) > 1:
 
-			a = data["TypeChart"][types[0]]["damageTaken"]
-			b = data["TypeChart"][types[1]]["damageTaken"]
+            a = data["TypeChart"][types[0]]["damageTaken"]
+            b = data["TypeChart"][types[1]]["damageTaken"]
 
-			for i in a:
-				if i in b:
+            for i in a:
+                if i in b:
 
-					effective = float(a[i]) * float(b[i])
+                    effective = float(a[i]) * float(b[i])
 
-					if effective == 0:
-						_000 += i + ", "
+                    if effective == 0:
+                        _000 += i + ", "
 
-					elif effective == 0.25:
-						_025 += i + ", "
+                    elif effective == 0.25:
+                        _025 += i + ", "
 
-					elif effective == 0.5:
-						_050 += i + ", "
+                    elif effective == 0.5:
+                        _050 += i + ", "
 
-					elif effective == 1.0:
-						_100 += i + ", "
+                    elif effective == 1.0:
+                        _100 += i + ", "
 
-					elif effective == 2.0:
-						_200 += i + ", "
+                    elif effective == 2.0:
+                        _200 += i + ", "
 
-					elif effective == 4.0:
-						_400 = i + ", "
+                    elif effective == 4.0:
+                        _400 = i + ", "
 
-		else:
-			a = data["TypeChart"][types[0]]["damageTaken"]
-			for i in a:
-				effective = a[i]
+        else:
+            a = data["TypeChart"][types[0]]["damageTaken"]
+            for i in a:
+                effective = a[i]
 
-				if effective == 0:
-					_000 += i + ", "
+                if effective == 0:
+                    _000 += i + ", "
 
-				elif effective == 0.25:
-					_025 += i + ", "
+                elif effective == 0.25:
+                    _025 += i + ", "
 
-				elif effective == 0.5:
-					_050 += i + ", "
+                elif effective == 0.5:
+                    _050 += i + ", "
 
-				elif effective == 1.0:
-					_100 += i + ", "
+                elif effective == 1.0:
+                    _100 += i + ", "
 
-				elif effective == 2.0:
-					_200 += i + ", "
-					
-				elif effective == 4.0:
-					_400 = i + ", "
+                elif effective == 2.0:
+                    _200 += i + ", "
+                    
+                elif effective == 4.0:
+                    _400 = i + ", "
 
-		form = f"x0.00: {_000}\nx0.25: {_025}\nx0.50: {_050}\nx1.00: {_100}\nx2.00: {_200}\nx4.00: {_400}"
+        form = f"x0.00: {_000}\nx0.25: {_025}\nx0.50: {_050}\nx1.00: {_100}\nx2.00: {_200}\nx4.00: {_400}"
 
-		em = discord.Embed(
-			title=title,
-			description=form,
-			colour=color)
+        em = discord.Embed(
+            title=title,
+            description=form,
+            colour=color)
 
-		return em
+        return em
 
-	
-	async def get_poke(self, ctx, poke):
+    def get_spid(self, mon:dict):
 
-		add, got = get_data(dex, poke)
+        spe = mon["name"].replace(" ", "")
 
-		if poke:
-			color = got['color']
+        spID = spe.replace("’", "").lower()
 
-			spID = got['name'].replace(" ", "")
-			spID = spID.replace("’", "")
-			spID = spID.lower()
-			if spID == "darmanitan-galar-zen":
-				spID = "darmanitan-galarzen"
+        if spID == "darmanitan-galar-zen":
+            spID = "darmanitan-galarzen"
 
-			if "sprite" in got:
-				SPRITE_URL = got["sprite"]
-			else:
-				SPRITE_URL = f"https://play.pokemonshowdown.com/sprites/ani/{spID}.gif"
+        if "o-o" in spID:
+            if spID != "kommo-o-totem":
+                spID = spID.replace("o-o", "oo")
 
-			em = discord.Embed(
-			title=got['name'],
-			# description=f"",
-			colour=colors[color])
+        if spID.endswith("-star"):
+            spId = spID.replace("-star", "star")
 
-			for field in fields:
-				if field in got:
+        if "striped" in spID:
+            spId = spID.replace("-striped", "striped")
 
-					if type(got[field]) == list:
-						val = ""
-						for i in got[field]:
-							val += f"{i}\n"
-						em.add_field(name=fields[field], value=val)
-						
-					elif type(got[field]) == dict:
+        if "pom-pom" in spID:
+            spId = spID.replace("-pom", "pom")
+        
+        if "dusk-mane" in spID:
+            spId = spID.replace("-mane", "mane")
 
-						k = list(got[field].keys())
-						v = list(got[field].values())
+        if "dawn-wing" in spID:
+            spId = spID.replace("-wing", "wing")
 
-						val = ""
+        if "low-key" in spID:
+            if "gmax" in spID:
+                spId = spID.replace("low-key", "")
+            else:
+                spId = spID.replace("low-key", "lowkey")
 
-						if field == "genderRatio":
-							for i in range(len(k)):
-								val += f"**{k[i].upper()}** - {float(v[i])*100}%\n"
+        if "urshifu" in spID:
+            if "gmax" in spID:
+                spId = spID.replace("-gmax", "")
 
-							em.add_field(name=fields[field], value=val)
-						else:
-							for i in range(len(k)):
-								val += f"**{k[i].upper()}** - {v[i]}\n"
-							em.add_field(name=fields[field], value=val)
+            if "rapid" in spID:
+                spId = spID.replace("-strike", "strike")
 
-					else:
-						em.add_field(name=fields[field], value=got[field])
+        if "mega-x" in spID:
+            spID = spID.replace("mega-x", "megax")
 
-			em.set_thumbnail(url=SPRITE_URL)
-			
-			if add:
-				await ctx.send(add.replace("1", "Pokemon"), embed=em)
+        if "mega-y" in spID:
+            spID = spID.replace("mega-y", "megay")
 
-			else:
-				await ctx.send(embed=em)
-		else:
-			await ctx.send(add.replace("1", "Pokemon"))
+        return spID
 
+    
+    async def get_poke(self, ctx, poke):
 
-	async def get_ab(self, ctx, abi):
+        add, got = get_data(dex, poke)
 
-		add, got = get_data(ability, abi)
+        if poke:
+            color = got['color']
 
-		if got:
+            spID = self.get_spid(got)
 
-			em = discord.Embed(
-			title=got['name'],
-			description=got['desc']
-			)
+            if "sprite" in got:
+                SPRITE_URL = got["sprite"]
+            else:
+                SPRITE_URL = f"https://play.pokemonshowdown.com/sprites/ani/{spID}.gif"
 
-			em.add_field(name="Rating:", value=got['rating'])
+            em = discord.Embed(
+            title=got['name'],
+            # description=f"",
+            colour=colors[color])
 
-			em.add_field(name="Number:", value=got['num'])
+            for field in fields:
+                if field in got:
 
-			if add:
-				await ctx.send(add.replace("1", "Ability"), embed=em)
+                    if type(got[field]) == list:
+                        val = ""
+                        for i in got[field]:
+                            val += f"{i}\n"
+                        em.add_field(name=fields[field], value=val)
+                        
+                    elif type(got[field]) == dict:
 
-			else:
-				await ctx.send(embed=em)
-		else:
-			await ctx.send(add.replace("1", "Ability"))
+                        k = list(got[field].keys())
+                        v = list(got[field].values())
 
+                        val = ""
 
-	async def get_move(self, ctx, mov):
+                        if field == "genderRatio":
+                            for i in range(len(k)):
+                                val += f"**{k[i].upper()}** - {float(v[i])*100}%\n"
 
-		add, got = get_data(move, mov)
+                            em.add_field(name=fields[field], value=val)
+                        else:
+                            for i in range(len(k)):
+                                val += f"**{k[i].upper()}** - {v[i]}\n"
+                            em.add_field(name=fields[field], value=val)
 
-		if got:
+                    else:
+                        em.add_field(name=fields[field], value=got[field])
 
-			em = discord.Embed(
-			title=got['name'],
-			description=got['desc']
-			)
+            em.set_thumbnail(url=SPRITE_URL)
+            
+            if add:
+                await ctx.send(add.replace("1", "Pokemon"), embed=em)
 
-			for field in m_fields:
-				if field in got:
-					
-					em.add_field(name=m_fields[field], value=got[field])
+            else:
+                await ctx.send(embed=em)
+        else:
+            await ctx.send(add.replace("1", "Pokemon"))
 
-			if add:
-				await ctx.send(add.replace("1", "Move"), embed=em)
-			else:
-				await ctx.send(embed=em)
-		else:
-			await ctx.send(add.replace("1", "Move"))
 
+    async def get_ab(self, ctx, abi):
 
-	async def get_item(self, ctx, itm):
+        add, got = get_data(ability, abi)
 
-		add, got = get_data(item, itm)
+        if got:
 
-		if got:
+            em = discord.Embed(
+            title=got['name'],
+            description=got['desc']
+            )
 
-			em = discord.Embed(
-			title=got['name'],
-			description=got['desc']
-			)
+            em.add_field(name="Rating:", value=got['rating'])
 
-			for field in i_fields:
-				if field in got:
+            em.add_field(name="Number:", value=got['num'])
 
-					if type(got[field]) == list:
-						val = ""
-						for i in got[field]:
-							val += f"{i}\n"
-							em.add_field(name=i_fields[field], value=val)
+            if add:
+                await ctx.send(add.replace("1", "Ability"), embed=em)
 
-					elif type(got[field]) == dict:
+            else:
+                await ctx.send(embed=em)
+        else:
+            await ctx.send(add.replace("1", "Ability"))
 
-						k = list(got[field].keys())
-						v = list(got[field].values())
 
-						val = ""
+    async def get_move(self, ctx, mov):
 
-						for i in range(len(k)):
-							val += f"**{k[i].upper()}** - {v[i]}\n"
-						em.add_field(name=i_fields[field], value=val)
+        add, got = get_data(move, mov)
 
-					else:
-						em.add_field(name=i_fields[field], value=got[field])
+        if got:
 
-			if add:
-				await ctx.send(add.replace("1", "Item"), embed=em)
+            em = discord.Embed(
+            title=got['name'],
+            description=got['desc']
+            )
 
-			else:
-				await ctx.send(embed=em)
-		else:
-			await ctx.send(add.replace("1", "Item"))
+            for field in m_fields:
+                if field in got:
+                    
+                    em.add_field(name=m_fields[field], value=got[field])
 
-	async def get_na(self, ctx, nat):
+            if add:
+                await ctx.send(add.replace("1", "Move"), embed=em)
+            else:
+                await ctx.send(embed=em)
+        else:
+            await ctx.send(add.replace("1", "Move"))
 
-		add, got = get_data(nature, nat)
 
-		add = add.replace("1", "Nature")
+    async def get_item(self, ctx, itm):
 
-		if got:
+        add, got = get_data(item, itm)
 
-			if "plus" in got or "minus" in got:
-				send = f"```{got['name']}:          +{got['plus']}          -{got['minus']}```"
-			else:
-				send = f"```{got['name']}\nNoob Stat```"
+        if got:
 
-			if add:
-				await ctx.send(f"{add}\n{send}")
-			else:
-				await ctx.send(send)
-		else:
-			await ctx.send(add)
+            em = discord.Embed(
+            title=got['name'],
+            description=got['desc']
+            )
 
+            for field in i_fields:
+                if field in got:
 
-	def get_sprite(self, mon, flags = None):
+                    if type(got[field]) == list:
+                        val = ""
+                        for i in got[field]:
+                            val += f"{i}\n"
+                            em.add_field(name=i_fields[field], value=val)
 
-		add, got = get_data(dex, mon)
+                    elif type(got[field]) == dict:
 
-		if got:
+                        k = list(got[field].keys())
+                        v = list(got[field].values())
 
-			if "sprite" in got:
-				url = got["sprite"]
-				return url
+                        val = ""
 
-			add = ""
-			end = ".png"
-			afd = "no"
-			gen = "no"
-			flagGen = ""
-			base_url = "https://play.pokemonshowdown.com/sprites/"
-			spiID = got['name'].replace(" ", "")
-			spID = spiID.replace("’", "")
-			spID = spID.lower()
-			if spID == "darmanitan-galar-zen":
-				spID = "darmanitan-galarzen"
-
-
-			def formUrl(ending, adding):
-
-				order = ["ani", "afd", "gen", "-back", "-shiny"]
-				final = ""
-
-				for names in order:
-					if names in adding:
-						if names == "gen":
-							gen_num = ""
-							for num in adding:
-								if num.isnumeric():
-									gen_num = num
-									break
-							if int(gen_num) < 9:
-								final += f"gen{gen_num}"
-						else:
-							final += names
-
-				url = f"{base_url}{final}/{spID}{ending}"
-
-				response = requests.get(url)
-
-				if response.status_code == 404:
-					return None
-				else:
-					return url
-
-			try:
-				if got['tier'] == "CAP":
-					check = True
-				else:
-					check = False
-			except KeyError:
-				check = False
-
-			if check:
-				add += "gen5"
-				end = ".png"
-				if flags is not None:
-					if "gen" in flags:
-						gen_num = ""
-						for num in flags:
-							if num.isnumeric():
-								gen_num = num
-								break
-						if int(gen_num) < 9:
-							r = f"gen{gen_num}"
-						else:
-							r = "gen"
-						flags = flags.replace(r, "")
-
-			elif not flags:
-				add += "ani"
-				end = ".gif"           
-
-			else:
-				flags = flags.lower()
-				flags = flags.replace(" ", "")
-				if "," in flags:
-					flags = flags.split(",")
-
-					for flag in flags:
-						if flag == "afd":
-							add += "afd"
-							end = ".png"
-							afd = "yes"
-
-					if afd == "yes":
-						for flag in flags:
-							if flag == "back":
-								add += "-back"
-
-							elif flag == "shiny":
-								add += "-shiny"
-
-					else:
-						for flag in flags:
-							if "gen" in flag:
-								flag = flag.replace("gen", "")
-								if flag.isnumeric() and int(flag) < 6:
-									flagGen = int(flag)
-									add += genData[flag]
-								if flag.isnumeric() and 5 < int(flag) < 9:
-									add += ""
-								gen ="yes"
-
-							valid = formUrl(end, add)
-							if valid is None:
-								return f"{got['name'].capitalize()} does not existed in this Generation."
-						
-						if gen == "yes":
-							for flag in flags:
-								if flag == "back":
-									add += "-back"
-
-								if flag == "shiny":
-									if flagGen == 1:
-										add += ""
-									add += "-shiny"
-								
-
-						else:
-							add += "ani"
-							end = ".gif"
-							for flag in flags:
-								if flag == "back":
-									add += "-back"
-
-								if flag == "shiny":
-									add += "-shiny"    
-					
-				else:
-					if flags == "afd":
-						add += "afd"
-						end = ".png"
-
-					elif "gen" in flags:
-						flags = flags.replace("gen", "")
-						if flags.isnumeric() and int(flags) < 6:
-							add += genData[flags]
-							end = ".png"
-						if flags.isnumeric() and 5 < int(flags) < 9:
-							add += "ani"
-							end = ".gif"
-
-						valid = formUrl(end, add)
-						if valid is None:
-							return f"{got['name'].capitalize()} does not existed in Gen {flagGen}"
-
-					else:
-						add += "ani"
-						if flags == "back":
-							add += "-back"
-							end = ".gif"
-
-						if flags == "shiny":
-							add += "-shiny"
-							end = ".gif"
-
-			valid = formUrl(end, add)
-			if valid is not None:
-				return valid
-			else:
-				ret = f"{base_url}ani/{spID}.gif"
-				return ret
-		
-		else:
-			return f"No Pokemon {mon} found."
-
-	async def data_cmd(self, ctx, find):
-
-		with open(all, "r") as d:
-			data = json.load(d)
-
-		add = None
-		ret = None
-		best = None
-
-		if find == "random":
-			found = random.choice(list(data.keys()))
-			add = "Nothing specified, I found a random data for you."
-			ret = data[found]
-			best = found
-			
-		else:
-			find1 = find.translate(
-				str.maketrans('', '', string.punctuation))
-
-			find1 = find1.replace(" ", "")
-
-			if find1 in data:
-				ret = data[find1]
-				best = find1
-			elif find1 == "metronome":
-				add = "Do you mean Metronome-Move or Metronome-Item?\nUse Metronome-M or Metronome-I"
-			else:
-				match = difflib.get_close_matches(find1, data, 1)
-
-				if match:
-					best = match[0]
-				else:
-					add = "No data found"
-
-				if best:
-					ret = data[best]
-					if "-" in best:
-						best = best.split("-")
-						best = best[0]
-					add  = f"No data {find} found did you mean {best.capitalize()}?"
-
-		if add:
-			await ctx.send(add)
-
-		if ret:
-			if ret == "Pokedex":
-				await self.get_poke(ctx, best.lower())
-				
-			elif ret == "Abilities":
-				await self.get_ab(ctx, best.lower())
-				
-			elif ret == "Moves":
-				await self.get_move(ctx, best.lower())
-				
-			elif ret == "Items":
-				await self.get_item(ctx, best.lower())
-
-			elif ret == "Natures":
-				await self.get_na(ctx, best.lower())
-				
-
-	@commands.command(aliases=["mon"])
-	async def dex(self, ctx, *, poke: str = None):
-
-		if poke is None:
-			poke = "random"
-
-		await self.get_poke(ctx, poke.lower())
-
-	@commands.command()
-	async def ability(self, ctx, *, abi: str = None):
-
-		if abi is None:
-			abi = "random"
-
-		await self.get_ab(ctx, abi.lower())
-
-	@commands.command()
-	async def move(self, ctx, *, move: str = None):
-
-		if move is None:
-			move = "random"
-
-		await self.get_move(ctx, move.lower())
-
-	@commands.command()
-	async def item(self, ctx, *, item: str = None):
-
-		if item is None:
-			item = "random"
-
-		await self.get_item(ctx, item.lower())
-
-	@commands.command()
-	async def nature(self, ctx, *, natu: str = None):
-
-		if natu is None:
-			natu = "random"
-
-		await self.get_na(ctx, natu.lower())
-
-	@commands.command()
-	async def sprite(self, ctx, pokemon, *, flags = None):
-
-		sp = self.get_sprite(pokemon.lower(), flags)
-		
-		await ctx.send(sp)
-
-	@commands.command(aliases=["weak"])
-	async def weakness(self, ctx, type1, type2 = None):
-		if type2 is None:
-			p = await self.weak(ctx, type1, "None")
-		else:
-			p = await self.weak(ctx, type1, type2)
-		
-		await ctx.send(embed=p)
-
-	@commands.command(aliases=["dt"])
-	async def data(self, ctx, *, get: str = None):
-
-		if get is None:
-			get = "random"
-
-		await self.data_cmd(ctx, get.lower())
+                        for i in range(len(k)):
+                            val += f"**{k[i].upper()}** - {v[i]}\n"
+                        em.add_field(name=i_fields[field], value=val)
+
+                    else:
+                        em.add_field(name=i_fields[field], value=got[field])
+
+            if add:
+                await ctx.send(add.replace("1", "Item"), embed=em)
+
+            else:
+                await ctx.send(embed=em)
+        else:
+            await ctx.send(add.replace("1", "Item"))
+
+    async def get_na(self, ctx, nat):
+
+        add, got = get_data(nature, nat)
+
+        add = add.replace("1", "Nature")
+
+        if got:
+
+            if "plus" in got or "minus" in got:
+                send = f"```{got['name']}:          +{got['plus']}          -{got['minus']}```"
+            else:
+                send = f"```{got['name']}\nNoob Stat```"
+
+            if add:
+                await ctx.send(f"{add}\n{send}")
+            else:
+                await ctx.send(send)
+        else:
+            await ctx.send(add)
+
+
+    def get_sprite(self, mon, flags = None):
+
+        add, got = get_data(dex, mon)
+
+        if got:
+
+            if "sprite" in got:
+                url = got["sprite"]
+                return url
+
+            add = ""
+            end = ".png"
+            afd = "no"
+            gen = "no"
+            flagGen = ""
+            base_url = "https://play.pokemonshowdown.com/sprites/"
+
+            spID = self.get_spid(got)
+
+
+            def formUrl(ending, adding):
+
+                order = ["ani", "afd", "gen", "-back", "-shiny"]
+                final = ""
+
+                for names in order:
+                    if names in adding:
+                        if names == "gen":
+                            gen_num = ""
+                            for num in adding:
+                                if num.isnumeric():
+                                    gen_num = num
+                                    break
+                            if int(gen_num) < 9:
+                                final += f"gen{gen_num}"
+                        else:
+                            final += names
+
+                url = f"{base_url}{final}/{spID}{ending}"
+
+                response = requests.get(url)
+
+                if response.status_code == 404:
+                    return None
+                else:
+                    return url
+
+            try:
+                if got['tier'] == "CAP":
+                    check = True
+                else:
+                    check = False
+            except KeyError:
+                check = False
+
+            if check:
+                add += "gen5"
+                end = ".png"
+                if flags is not None:
+                    if "gen" in flags:
+                        gen_num = ""
+                        for num in flags:
+                            if num.isnumeric():
+                                gen_num = num
+                                break
+                        if int(gen_num) < 9:
+                            r = f"gen{gen_num}"
+                        else:
+                            r = "gen"
+                        flags = flags.replace(r, "")
+
+            elif not flags:
+                add += "ani"
+                end = ".gif"           
+
+            else:
+                flags = flags.lower()
+                flags = flags.replace(" ", "")
+                if "," in flags:
+                    flags = flags.split(",")
+
+                    for flag in flags:
+                        if flag == "afd":
+                            add += "afd"
+                            end = ".png"
+                            afd = "yes"
+
+                    if afd == "yes":
+                        for flag in flags:
+                            if flag == "back":
+                                add += "-back"
+
+                            elif flag == "shiny":
+                                add += "-shiny"
+
+                    else:
+                        for flag in flags:
+                            if "gen" in flag:
+                                flag = flag.replace("gen", "")
+                                if flag.isnumeric() and int(flag) < 6:
+                                    flagGen = int(flag)
+                                    add += genData[flag]
+                                if flag.isnumeric() and 5 < int(flag) < 9:
+                                    add += ""
+                                gen ="yes"
+
+                                valid = formUrl(end, add)
+                                if valid is None:
+                                    return f"{got['name'].capitalize()} does not existed in this Generation."
+                        
+                        if gen == "yes":
+                            for flag in flags:
+                                if flag == "back":
+                                    add += "-back"
+
+                                if flag == "shiny":
+                                    if flagGen == 1:
+                                        add += ""
+                                    add += "-shiny"
+                                
+
+                        else:
+                            add += "ani"
+                            end = ".gif"
+                            for flag in flags:
+                                if flag == "back":
+                                    add += "-back"
+
+                                if flag == "shiny":
+                                    add += "-shiny"    
+                    
+                else:
+                    if flags == "afd":
+                        add += "afd"
+                        end = ".png"
+
+                    elif "gen" in flags:
+                        flags = flags.replace("gen", "")
+                        if flags.isnumeric() and int(flags) < 6:
+                            add += genData[flags]
+                            end = ".png"
+                        if flags.isnumeric() and 5 < int(flags) < 9:
+                            add += "ani"
+                            end = ".gif"
+
+                        valid = formUrl(end, add)
+                        if valid is None:
+                            return f"{got['name'].capitalize()} does not existed in Gen {flagGen}"
+
+                    else:
+                        add += "ani"
+                        if flags == "back":
+                            add += "-back"
+                            end = ".gif"
+
+                        if flags == "shiny":
+                            add += "-shiny"
+                            end = ".gif"
+
+            valid = formUrl(end, add)
+            if valid is not None:
+                return valid
+            else:
+                ret = f"{base_url}ani/{spID}.gif"
+                return ret
+        
+        else:
+            return f"No Pokemon {mon} found."
+
+    async def data_cmd(self, ctx, find):
+
+        with open(all, "r") as d:
+            data = json.load(d)
+
+        with open("data/aliases.json", "r") as ala:
+            lit = json.load(ala)
+
+        add = None
+        ret = None
+        best = None
+
+        if find == "random":
+            found = random.choice(list(data.keys()))
+            add = "Nothing specified, I found a random data for you."
+            ret = data[found]
+            best = found
+            
+        else:
+            find1 = find.translate(
+                str.maketrans('', '', string.punctuation))
+
+            find1 = find1.replace(" ", "")
+
+            if find1 in data:
+                ret = data[find1]
+                best = find1
+
+            elif find1 == "metronome":
+                add = "Do you mean Metronome-Move or Metronome-Item?\nUse Metronome-M or Metronome-I"
+
+            if find1 in lit["Aliases"]:
+                mod = lit["Aliases"][find1]
+                ret = data[mod]
+                best = mod
+
+            else:
+                match = difflib.get_close_matches(find1, data, 1)
+
+                if match:
+                    best = match[0]
+                else:
+                    add = "No data found"
+                    with open("data/aliases.json", "r") as ali:
+                        lin = json.load(ali)
+
+                    if find1 in lin["Aliases"]:
+                        pass
+
+                if best:
+                    ret = data[best]
+                    if "-" in best:
+                        best = best.split("-")
+                        best = best[0]
+                    add  = f"No data {find} found did you mean {best.capitalize()}?"
+
+        if add:
+            await ctx.send(add)
+
+        if ret:
+            if ret == "Pokedex":
+                await self.get_poke(ctx, best.lower())
+                
+            elif ret == "Abilities":
+                await self.get_ab(ctx, best.lower())
+                
+            elif ret == "Moves":
+                await self.get_move(ctx, best.lower())
+                
+            elif ret == "Items":
+                await self.get_item(ctx, best.lower())
+
+            elif ret == "Natures":
+                await self.get_na(ctx, best.lower())
+                
+
+    @commands.command(aliases=["mon"])
+    async def dex(self, ctx, *, poke: str = None):
+
+        if poke is None:
+            poke = "random"
+
+        await self.get_poke(ctx, poke.lower())
+
+    @commands.command()
+    async def ability(self, ctx, *, abi: str = None):
+
+        if abi is None:
+            abi = "random"
+
+        await self.get_ab(ctx, abi.lower())
+
+    @commands.command()
+    async def move(self, ctx, *, move: str = None):
+
+        if move is None:
+            move = "random"
+
+        await self.get_move(ctx, move.lower())
+
+    @commands.command()
+    async def item(self, ctx, *, item: str = None):
+
+        if item is None:
+            item = "random"
+
+        await self.get_item(ctx, item.lower())
+
+    @commands.command()
+    async def nature(self, ctx, *, natu: str = None):
+
+        if natu is None:
+            natu = "random"
+
+        await self.get_na(ctx, natu.lower())
+
+    @commands.command()
+    async def sprite(self, ctx, pokemon, *, flags = None):
+
+        sp = self.get_sprite(pokemon.lower(), flags)
+        
+        await ctx.send(sp)
+
+    @commands.command(aliases=["weak"])
+    async def weakness(self, ctx, type1, type2 = None):
+        if type2 is None:
+            p = await self.weak(ctx, type1, "None")
+        else:
+            p = await self.weak(ctx, type1, type2)
+        
+        await ctx.send(embed=p)
+
+    @commands.command(aliases=["dt"])
+    async def data(self, ctx, *, get: str = None):
+
+        if get is None:
+            get = "random"
+
+        await self.data_cmd(ctx, get.lower())
 
 def setup(client):
-	client.add_cog(PkDex(client))
+    client.add_cog(PkDex(client))
