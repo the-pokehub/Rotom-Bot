@@ -30,84 +30,84 @@ class Help(commands.Cog):
 
         help_embed.set_thumbnail(url=self.client.user.avatar_url)
 
-        help_embed.add_field(name="🔨 Moderator", value=f"`{prefix}help mod`")
+        # help_embed.add_field(name="🔨 Moderator", value=f"`{prefix}help mod`")
 
-        help_embed.add_field(name="🎮 Game", value=f"`{prefix}help game`", inline=True)
-        
-        help_embed.add_field(name="📛Badge System", value=f"`{prefix}help badge`")
+        help_embed.add_field(name="📛Badge System", value=f"`{prefix}help badge`", inline=False)
+
+        help_embed.add_field(name="🎴 Pokedex", value=f"`{prefix}help pokedex`", inline=False)
+
+        help_embed.add_field(name="🎮 Game", value=f"`{prefix}help game`", inline=False)
+
+        help_embed.add_field(name="🎪 Fun", value=f"`{prefix}help fun`", inline=False)
 
         # help_embed.add_field(name="🎶 Music", value=f"`{prefix}help music`", inline=True)
 
-        help_embed.add_field(name="🎉 Misc", value=f"`{prefix}help misc`", inline=True)
-
-        help_embed.add_field(name="🎪 Fun", value=f"`{prefix}help fun`", inline=True)
-
-        help_embed.add_field(name="🎴 Pokedex", value=f"`{prefix}help pokedex`", inline=True)
+        help_embed.add_field(name="🎉 Misc", value=f"`{prefix}help misc`", inline=False)
 
         await ctx.send(embed=help_embed)
 
-    @help.command(aliases=["r", "registration"])
-    async def register(self, ctx):
+    # @help.command(aliases=["r", "registration"])
+    # async def register(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        if ctx.channel.name == "📝registration":
-            return
+    #     if ctx.channel.name == "📝registration":
+    #         return
 
-        em = discord.Embed(
-            title="Register",
-            description="Register your pool of 12 Pokémon for league.",
-            colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(
+    #         title="Register",
+    #         description="Register your pool of 12 Pokémon for league.",
+    #         colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(name="Channel Specific Command.",
-                     value="<#764672011087642645>")
+    #     em.add_field(name="Channel Specific Command.",
+    #                  value="<#764672011087642645>")
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}register <generation> <pool>`\n\n*Generation can be 6 or 7*\n*The Pool of 12 should be written continuously separated by a **comma(,)** and a **space( )**.*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}register <generation> <pool>`\n\n*Generation can be 6 or 7*\n*The Pool of 12 should be written continuously separated by a **comma(,)** and a **space( )**.*",
+    #         inline=False)
 
-        em.add_field(name="Aliases",
-                     value="`r` , `register` , `registration`",
-                     inline=False)
+    #     em.add_field(name="Aliases",
+    #                  value="`r` , `register` , `registration`",
+    #                  inline=False)
 
-        em.add_field(
-            name="Usage",
-            value=f"`{prefix}r 6 metagross, talonflame, absol, zweilous, zapdos, wobbuffet, whimsicott, volcanion, vanillite, altaria, alakazam, seismitoad`",
-            inline=False)
+    #     em.add_field(
+    #         name="Usage",
+    #         value=f"`{prefix}r 6 metagross, talonflame, absol, zweilous, zapdos, wobbuffet, whimsicott, volcanion, vanillite, altaria, alakazam, seismitoad`",
+    #         inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
-    @help.command(aliases=["p", "summary"])
-    async def profile(self, ctx):
+    # @help.command(aliases=["p", "summary"])
+    # async def profile(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        if ctx.channel.name == "📝registration":
-            return
+    #     if ctx.channel.name == "📝registration":
+    #         return
 
-        em = discord.Embed(
-            title="Profile",
-            description="Check your or someone's profile of the provided generation",
-            colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(
+    #         title="Profile",
+    #         description="Check your or someone's profile of the provided generation",
+    #         colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}profile <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the user you wanna check*\n*It will show your profile by default if no user is mentioned.*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}profile <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the user you wanna check*\n*It will show your profile by default if no user is mentioned.*",
+    #         inline=False)
 
-        em.add_field(name="Aliases",
-                     value="`p` , `profile` , `summary`",
-                     inline=False)
+    #     em.add_field(name="Aliases",
+    #                  value="`p` , `profile` , `summary`",
+    #                  inline=False)
 
-        em.add_field(
-            name="Usage",
-            value=f"`{prefix}profile 6 @{ctx.author.name}`\n`{prefix}p 6`",
-            inline=False)
+    #     em.add_field(
+    #         name="Usage",
+    #         value=f"`{prefix}profile 6 @{ctx.author.name}`\n`{prefix}p 6`",
+    #         inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
     # @help.command(aliases=["rs", "restart"])
     # async def reset(self, ctx):
@@ -130,131 +130,131 @@ class Help(commands.Cog):
 
     #     await ctx.send(embed=em)
 
-    @help.command(aliases=["as"])
-    async def add_streak(self, ctx):
+    # @help.command(aliases=["as"])
+    # async def add_streak(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        if ctx.channel.name == "📝registration":
-            return
+    #     if ctx.channel.name == "📝registration":
+    #         return
 
-        em = discord.Embed(
-            title="Add_streak",
-            description="Add elite streak by one of the provided generation and mentioned user.",
-            colour=discord.Colour.green())
+    #     em = discord.Embed(
+    #         title="Add_streak",
+    #         description="Add elite streak by one of the provided generation and mentioned user.",
+    #         colour=discord.Colour.green())
 
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(
-            name="Needed Roles",
-            value="<@&761487391147950111>, <@&776871326371020830>, <@&761514056439562240>",
-            inline=False)
+    #     em.add_field(
+    #         name="Needed Roles",
+    #         value="<@&761487391147950111>, <@&776871326371020830>, <@&761514056439562240>",
+    #         inline=False)
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}add_streak <generation> <user>`\n\n*Generation can be 6 or 7*\n*The user to whom the streak to be added*",
-            inline=False)
-        em.add_field(name="Aliases", value="`add_streak` , `as`", inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}add_streak <generation> <user>`\n\n*Generation can be 6 or 7*\n*The user to whom the streak to be added*",
+    #         inline=False)
+    #     em.add_field(name="Aliases", value="`add_streak` , `as`", inline=False)
 
-        em.add_field(name="Usage",
-                     value=f"`{prefix}add_streak 6 @Sayan`",
-                     inline=False)
+    #     em.add_field(name="Usage",
+    #                  value=f"`{prefix}add_streak 6 @Sayan`",
+    #                  inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
-    @help.command(aliases=["ab"])
-    async def add_badge(self, ctx):
+    # @help.command(aliases=["ab"])
+    # async def add_badge(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        if ctx.channel.name == "📝registration":
-            return
+    #     if ctx.channel.name == "📝registration":
+    #         return
 
-        em = discord.Embed(
-            title="Add_badge",
-            description="Add given badge to the mentioned user of the provided generation.",
-            colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(
+    #         title="Add_badge",
+    #         description="Add given badge to the mentioned user of the provided generation.",
+    #         colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(
-            name="Needed Roles",
-            value="<@&761488015829762048>, <@&776871326371020830>, <@&761514056439562240>",
-            inline=False)
+    #     em.add_field(
+    #         name="Needed Roles",
+    #         value="<@&761488015829762048>, <@&776871326371020830>, <@&761514056439562240>",
+    #         inline=False)
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}add_badge <generation> <user> <badge>`\n\n*Generation can be 6 or 7*\n*The user to whom the badge to be added*\n*Badge which to be added in text format.*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}add_badge <generation> <user> <badge>`\n\n*Generation can be 6 or 7*\n*The user to whom the badge to be added*\n*Badge which to be added in text format.*",
+    #         inline=False)
 
-        em.add_field(name="Aliases", value="`add_badge` , `ab`", inline=False)
+    #     em.add_field(name="Aliases", value="`add_badge` , `ab`", inline=False)
 
-        em.add_field(name="Usage",
-                     value=f"`{prefix}add_badge 6 @Sayan grass`",
-                     inline=False)
+    #     em.add_field(name="Usage",
+    #                  value=f"`{prefix}add_badge 6 @Sayan grass`",
+    #                  inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
-    @help.command(aliases=["s", "sp", "swap_pokemon", "swap_pool", "change"])
-    async def swap(self, ctx):
+    # @help.command(aliases=["s", "sp", "swap_pokemon", "swap_pool", "change"])
+    # async def swap(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        if ctx.channel.name == "📝registration":
-            return
+    #     if ctx.channel.name == "📝registration":
+    #         return
 
-        em = discord.Embed(
-            title="Swap",
-            description="Swap one of Pokémon from pool of the given generation before starting of League",
-            colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(
+    #         title="Swap",
+    #         description="Swap one of Pokémon from pool of the given generation before starting of League",
+    #         colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(name="Channel Specific Command.",
-                     value="<#764672011087642645>")
+    #     em.add_field(name="Channel Specific Command.",
+    #                  value="<#764672011087642645>")
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}swap <generation> <prev Pokémon> <new Pokémon>`\n\n*Generation can be 6 or 7*\n*Pokémon to be swapped*\n*Pokémon with whom to be swapped.*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}swap <generation> <prev Pokémon> <new Pokémon>`\n\n*Generation can be 6 or 7*\n*Pokémon to be swapped*\n*Pokémon with whom to be swapped.*",
+    #         inline=False)
 
-        em.add_field(
-            name="Aliases",
-            value="`s` , `swap` , `sp` , `swap_pokemon` , `swap_pool` , `change`",
-            inline=False)
+    #     em.add_field(
+    #         name="Aliases",
+    #         value="`s` , `swap` , `sp` , `swap_pokemon` , `swap_pool` , `change`",
+    #         inline=False)
 
-        em.add_field(name="Usage",
-                     value=f"`{prefix}swap 6 alakazam gengar`",
-                     inline=False)
+    #     em.add_field(name="Usage",
+    #                  value=f"`{prefix}swap 6 alakazam gengar`",
+    #                  inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
-    @help.command(aliases=["pl", "pokemon"])
-    async def pool(self, ctx):
+    # @help.command(aliases=["pl", "pokemon"])
+    # async def pool(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        if ctx.channel.name == "📝registration":
-            return
+    #     if ctx.channel.name == "📝registration":
+    #         return
 
-        em = discord.Embed(
-            title="Pool",
-            description="See your or anyone's currently registered pool of 12 Pokémon of the provided generation.",
-            colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(
+    #         title="Pool",
+    #         description="See your or anyone's currently registered pool of 12 Pokémon of the provided generation.",
+    #         colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}pool <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the user you wanna check*\n*It will show your pool by default if no user is mentioned.*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}pool <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the user you wanna check*\n*It will show your pool by default if no user is mentioned.*",
+    #         inline=False)
 
-        em.add_field(name="Aliases",
-                     value="`pool` , `pokemon` , `pl`",
-                     inline=False)
+    #     em.add_field(name="Aliases",
+    #                  value="`pool` , `pokemon` , `pl`",
+    #                  inline=False)
 
-        em.add_field(name="Usage",
-                     value=f"`{prefix}pool 6 {ctx.author}`\n`{prefix}pl 7`",
-                     inline=False)
+    #     em.add_field(name="Usage",
+    #                  value=f"`{prefix}pool 6 {ctx.author}`\n`{prefix}pl 7`",
+    #                  inline=False)
 
-        await ctx.send(embed=em)
+        # await ctx.send(embed=em)
 
     # @help.command(aliases=["ct"])
     # async def check_team(self, ctx):
@@ -270,173 +270,173 @@ class Help(commands.Cog):
 
     #     await ctx.send(embed=em)
 
-    @help.command(aliases=["mod"])
-    async def moderator(self, ctx):
+    # @help.command(aliases=["mod"])
+    # async def moderator(self, ctx):
 
-        # prefix = server_prefix(ctx)
+    #     # prefix = server_prefix(ctx)
 
-        help_embed = discord.Embed(
-            title="Moderator Commands",
-            colour=discord.Colour.green())
-        help_embed.set_thumbnail(url=self.client.user.avatar_url)
+    #     help_embed = discord.Embed(
+    #         title="Moderator Commands",
+    #         colour=discord.Colour.green())
+    #     help_embed.set_thumbnail(url=self.client.user.avatar_url)
 
-        help_embed.add_field(name="Change-Prefix", value="Change the Server Prefix of the Bot to a new one.")
+    #     help_embed.add_field(name="Change-Prefix", value="Change the Server Prefix of the Bot to a new one.")
 
-        help_embed.add_field(name="Kick", value="Kick the Member out of the Server.")
+    #     help_embed.add_field(name="Kick", value="Kick the Member out of the Server.")
 
-        help_embed.add_field(name="Ban", value="Ban the Member from the Server.")
+    #     help_embed.add_field(name="Ban", value="Ban the Member from the Server.")
 
-        help_embed.add_field(name="Unban", value="Unban the Member from the Server.")
+    #     help_embed.add_field(name="Unban", value="Unban the Member from the Server.")
 
-        help_embed.add_field(name="Mute", value="Mute the Member for specific or non-specific time.")
+    #     help_embed.add_field(name="Mute", value="Mute the Member for specific or non-specific time.")
 
-        help_embed.add_field(name="Unmute", value="Unmute the Member previously Muted.")
+    #     help_embed.add_field(name="Unmute", value="Unmute the Member previously Muted.")
 
-        help_embed.add_field(name="Clear", value="Delete specified number of messages.")
+    #     help_embed.add_field(name="Clear", value="Delete specified number of messages.")
 
-        await ctx.send(embed=help_embed)
+    #     await ctx.send(embed=help_embed)
 
-    @help.command(aliases=["hof"])
-    async def hall_of_fame(self, ctx):
+    # @help.command(aliases=["hof"])
+    # async def hall_of_fame(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        if ctx.channel.name == "📝registration":
-            return
+    #     if ctx.channel.name == "📝registration":
+    #         return
 
-        em = discord.Embed(
-            title="Hall_of_fame",
-            description="See the Hall of Fame of all the Champions formed in our server.",
-            colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(
+    #         title="Hall_of_fame",
+    #         description="See the Hall of Fame of all the Champions formed in our server.",
+    #         colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(name="Syntax", value=f"`{prefix}hof`", inline=False)
+    #     em.add_field(name="Syntax", value=f"`{prefix}hof`", inline=False)
 
-        em.add_field(name="Aliases",
-                     value="`hof` , `hall_of_fame`",
-                     inline=False)
+    #     em.add_field(name="Aliases",
+    #                  value="`hof` , `hall_of_fame`",
+    #                  inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
-    @help.command(aliases=["champ", "nc"])
-    async def champion(self, ctx):
+    # @help.command(aliases=["champ", "nc"])
+    # async def champion(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        em = discord.Embed(
-            title="Champion",
-            description="Command to make the mentioned user champion of the given generation",
-            colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(
+    #         title="Champion",
+    #         description="Command to make the mentioned user champion of the given generation",
+    #         colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(
-            name="Needed Roles",
-            value="<@&767742527818039317>, <@&776871326371020830>, <@&761514056439562240>",
-            inline=False)
+    #     em.add_field(
+    #         name="Needed Roles",
+    #         value="<@&767742527818039317>, <@&776871326371020830>, <@&761514056439562240>",
+    #         inline=False)
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}champ <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the New Champion*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}champ <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the New Champion*",
+    #         inline=False)
 
-        em.add_field(name="Aliases",
-                     value="`champ` , `champion` , `nc`",
-                     inline=False)
+    #     em.add_field(name="Aliases",
+    #                  value="`champ` , `champion` , `nc`",
+    #                  inline=False)
 
-        em.add_field(name="Usage",
-                     value=f"`{prefix}champ 6 @{ctx.author.name}`",
-                     inline=False)
+    #     em.add_field(name="Usage",
+    #                  value=f"`{prefix}champ 6 @{ctx.author.name}`",
+    #                  inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
-    @help.command(aliases=["res"])
-    async def reset_streak(self, ctx):
+    # @help.command(aliases=["res"])
+    # async def reset_streak(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        em = discord.Embed(
-            title="Reset_streak",
-            description="Reset the elite streak of the mention user of the generation and check if challenger had 4 elite streak to increase endured matches of the current champion by 1.",
-            colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(
+    #         title="Reset_streak",
+    #         description="Reset the elite streak of the mention user of the generation and check if challenger had 4 elite streak to increase endured matches of the current champion by 1.",
+    #         colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(
-            name="Needed Roles",
-            value="<@&767742527818039317>, <@&776871326371020830>, <@&761514056439562240>",
-            inline=False)
+    #     em.add_field(
+    #         name="Needed Roles",
+    #         value="<@&767742527818039317>, <@&776871326371020830>, <@&761514056439562240>",
+    #         inline=False)
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}res <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the user whose streak to be reseted.*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}res <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the user whose streak to be reseted.*",
+    #         inline=False)
 
-        em.add_field(name="Aliases",
-                     value="`res` , `reset_streak`",
-                     inline=False)
+    #     em.add_field(name="Aliases",
+    #                  value="`res` , `reset_streak`",
+    #                  inline=False)
 
-        em.add_field(name="Usage",
-                     value=f"`{prefix}res @{ctx.author.name}`",
-                     inline=False)
+    #     em.add_field(name="Usage",
+    #                  value=f"`{prefix}res @{ctx.author.name}`",
+    #                  inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
-    @help.command(aliases=["epl", "epk"])
-    async def elite_pool(self, ctx):
+    # @help.command(aliases=["epl", "epk"])
+    # async def elite_pool(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        em = discord.Embed(title="Elite_pool",
-                           description="See the elite pool if available",
-                           colour=discord.Colour.green())
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em = discord.Embed(title="Elite_pool",
+    #                        description="See the elite pool if available",
+    #                        colour=discord.Colour.green())
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}epl <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the user you wanna check*\n*It will show your pool by default if no user is mentioned.*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}epl <generation> <user>`\n\n*Generation can be 6 or 7*\n*Mention the user you wanna check*\n*It will show your pool by default if no user is mentioned.*",
+    #         inline=False)
 
-        em.add_field(name="Aliases",
-                     value="`elite_pool` , `epl` , `epk`",
-                     inline=False)
+    #     em.add_field(name="Aliases",
+    #                  value="`elite_pool` , `epl` , `epk`",
+    #                  inline=False)
 
-        em.add_field(
-            name="Usage",
-            value=f"`{prefix}epl 6 @{ctx.author.name}`\n`{prefix}epk 7`",
-            inline=False)
+    #     em.add_field(
+    #         name="Usage",
+    #         value=f"`{prefix}epl 6 @{ctx.author.name}`\n`{prefix}epk 7`",
+    #         inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
-    @help.command(aliases=["et", "ep"])
-    async def elite_team(self, ctx):
+    # @help.command(aliases=["et", "ep"])
+    # async def elite_team(self, ctx):
 
-        prefix = server_prefix(ctx)
+    #     prefix = server_prefix(ctx)
 
-        em = discord.Embed(title="Elite_team",
-                           description="Submit the elite team of a member.",
-                           colour=discord.Colour.green())
+    #     em = discord.Embed(title="Elite_team",
+    #                        description="Submit the elite team of a member.",
+    #                        colour=discord.Colour.green())
 
-        em.set_thumbnail(url=self.client.user.avatar_url)
+    #     em.set_thumbnail(url=self.client.user.avatar_url)
 
-        em.add_field(
-            name="Needed Roles",
-            value="<@&767743473116905474>, <@&761487391147950111>, <@&776871326371020830>, <@&761514056439562240>",
-            inline=False)
+    #     em.add_field(
+    #         name="Needed Roles",
+    #         value="<@&767743473116905474>, <@&761487391147950111>, <@&776871326371020830>, <@&761514056439562240>",
+    #         inline=False)
 
-        em.add_field(
-            name="Syntax",
-            value=f"`{prefix}et <generation> <user> <team>`\n\n*Generation can be 6 or 7*\n*Mention the user whose pool to be submitted*\n*User's used team in elite battle*",
-            inline=False)
+    #     em.add_field(
+    #         name="Syntax",
+    #         value=f"`{prefix}et <generation> <user> <team>`\n\n*Generation can be 6 or 7*\n*Mention the user whose pool to be submitted*\n*User's used team in elite battle*",
+    #         inline=False)
 
-        em.add_field(name="Aliases",
-                     value="`elite_team` , `et` , `ep`",
-                     inline=False)
+    #     em.add_field(name="Aliases",
+    #                  value="`elite_team` , `et` , `ep`",
+    #                  inline=False)
 
-        em.add_field(
-            name="Usage",
-            value=f"`{prefix}et 6 @Sayan  Dragonite, Excadrill, Ferrothorn, Zapdos, Pinsir, Keldeo-resolute`",
-            inline=False)
+    #     em.add_field(
+    #         name="Usage",
+    #         value=f"`{prefix}et 6 @Sayan  Dragonite, Excadrill, Ferrothorn, Zapdos, Pinsir, Keldeo-resolute`",
+    #         inline=False)
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
     @help.command()
     async def game(self, ctx):
@@ -453,12 +453,6 @@ class Help(commands.Cog):
                      
         em.add_field(name=f"{prefix}rock-paper-scissors",
                      value=f"Play Rock-Paper-Scissors with the Bot. Aliases: `{prefix}rps`", inline=False)
-
-        em.add_field(name=f"{prefix}trivia",
-                     value=f"Get a random MCQ type question. Aliases: `{prefix}quiz`", inline=False)
-
-        em.add_field(name=f"{prefix}gamelb",
-                     value=f"Check the server's Leaderboard of Trivia. Use `{prefix}gamelb global` to see global Leaderboard.", inline=False)
 
         await ctx.send(embed=em)
 
@@ -627,6 +621,10 @@ class Help(commands.Cog):
 
         help_embed.add_field(name="Snipe", value="Snipe for the last deleted message from the channel.")
 
+        help_embed.add_field(name="serverinfo", value="Get some informations about the server.")
+
+        help_embed.add_field(name="say", value="Make Bot say something for you. `Bot needs manage_messages and manage_webhooks permission for this.`")
+
         help_embed.add_field(name="Invite", value="Get an Invite Link to add the Bot to your server.")
 
         await ctx.send(embed=help_embed)
@@ -647,7 +645,7 @@ class Help(commands.Cog):
         help_embed.add_field(name="Urban", value="Search for the passed word in Urban Dictionary.")
 
         help_embed.add_field(name=f"{prefix}8Pool",
-                     value="Play 8Pool. See your Fortune or take advice.", inline=False)
+                     value="Play 8Pool. See your Fortune or take advice.", inline=True)
 
         help_embed.add_field(name="Poll", value=f"Create a Poll. Use `{prefix}help poll` for more info.")
 

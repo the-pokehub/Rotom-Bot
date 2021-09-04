@@ -14,7 +14,11 @@ class Mod(commands.Cog):
     def cog_check(self, ctx):
         if isinstance(ctx.channel, discord.channel.DMChannel):
 
-            raise commands.NoPrivateMessage("This command can't be used in DM.")
+            raise commands.CommandNotFound
+
+        elif ctx.guild.id != 676777139776913408:
+            
+            raise commands.CommandNotFound
 
         else:
             return True
@@ -144,15 +148,15 @@ class Mod(commands.Cog):
 
         role = discord.utils.get(ctx.guild.roles, name="Muted")
 
-        if not role:
-            perms = discord.Permissions(send_messages=False, add_reactions=False)
+        # if not role:
+        #     perms = discord.Permissions(send_messages=False, add_reactions=False)
             
-            await ctx.guild.create_role(name="Muted", permissions=perms)
+        #     await ctx.guild.create_role(name="Muted", permissions=perms)
 
-            role = discord.utils.get(ctx.guild.roles, name="Muted")
+        #     role = discord.utils.get(ctx.guild.roles, name="Muted")
 
-        for channels in ctx.guild.channels:
-            await channels.set_permissions(role, send_messages=False, add_reactions=False)
+        # for channels in ctx.guild.channels:
+        #     await channels.set_permissions(role, send_messages=False, add_reactions=False)
 
         if role in member.roles:
             await ctx.send(f"{member.mention} is already Muted!")
@@ -192,14 +196,14 @@ class Mod(commands.Cog):
 
                 await asyncio.sleep(wait)
 
-            elif "d" in time or "day" in time or "days" in time:
-                int_time = ''.join(filter(lambda i: i.isdigit(), time))
-                wait = int(int_time) * 60 * 60 * 24
+            # elif "d" in time or "day" in time or "days" in time:
+            #     int_time = ''.join(filter(lambda i: i.isdigit(), time))
+            #     wait = int(int_time) * 60 * 60 * 24
 
-                await member.add_roles(role)
-                await ctx.send(f"{member.mention} has been muted for {int_time} days!")
+            #     await member.add_roles(role)
+            #     await ctx.send(f"{member.mention} has been muted for {int_time} days!")
 
-                await asyncio.sleep(wait)
+            #     await asyncio.sleep(wait)
 
             else:
                 await member.add_roles(role)

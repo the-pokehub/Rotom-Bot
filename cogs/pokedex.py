@@ -652,7 +652,7 @@ class PkDex(commands.Cog):
             elif find1 == "metronome":
                 add = "Do you mean Metronome-Move or Metronome-Item?\nUse Metronome-M or Metronome-I"
 
-            if find1 in lit["Aliases"]:
+            elif find1 in lit["Aliases"]:
                 mod = lit["Aliases"][find1]
                 ret = data[mod]
                 best = mod
@@ -664,11 +664,11 @@ class PkDex(commands.Cog):
                     best = match[0]
                 else:
                     add = "No data found"
-                    with open("data/aliases.json", "r") as ali:
-                        lin = json.load(ali)
+                    # with open("data/aliases.json", "r") as ali:
+                    #     lin = json.load(ali)
 
-                    if find1 in lin["Aliases"]:
-                        pass
+                    # if find1 in lin["Aliases"]:
+                    #     pass
 
                 if best:
                     ret = data[best]

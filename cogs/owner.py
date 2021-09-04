@@ -62,6 +62,13 @@ class Owner(commands.Cog):
 
         await ctx.send(f"Deleted {file} from DataBase")
 
+    @commands.command()
+    async def owner(self, ctx):
+
+        member = ctx.guild.owner
+
+        await ctx.send(member)
+
     
 def setup(client):
     client.add_cog(Owner(client))

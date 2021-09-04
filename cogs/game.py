@@ -93,6 +93,9 @@ class Game(commands.Cog):
 
         answer = random.randint(1, highest)
         guesses = 1
+        
+        if ctx.author.id == 549415697726439434:
+            print(answer)
 
         await ctx.send(
             "Guess a number between 1 and {} or 0 to quit: ".format(highest))
@@ -216,69 +219,69 @@ class Game(commands.Cog):
                 await ctx.reply("Response Timeout.\nReturning...")
                 return
 
-    @commands.command()
-    async def gamelb(self, ctx, global_lb=""):
+    # @commands.command()
+    # async def gamelb(self, ctx, global_lb=""):
 
-        lb = db["trivia"]
-        lb = dict(sorted(lb.items(), key = lambda kv:kv[1], reverse = True))
-        db["trivia"] = lb
+    #     lb = db["trivia"]
+    #     lb = dict(sorted(lb.items(), key = lambda kv:kv[1], reverse = True))
+    #     db["trivia"] = lb
 
-        if global_lb != "global":
-            title = f"{ctx.guild.name}'s Leaderboard - Trivia"
-            des = ""
-            num = 1
-            for i in lb:
-                mem = None
-                try:
-                    mem = await ctx.guild.fetch_member(int(i))
-                except discord.HTTPException:
-                    pass
+    #     if global_lb != "global":
+    #         title = f"{ctx.guild.name}'s Leaderboard - Trivia"
+    #         des = ""
+    #         num = 1
+    #         for i in lb:
+    #             mem = None
+    #             try:
+    #                 mem = await ctx.guild.fetch_member(int(i))
+    #             except discord.HTTPException:
+    #                 pass
 
-                if mem:
+    #             if mem:
 
-                    if num == 1:
-                        des += "🥇 "
-                    elif num == 2:
-                        des += "🥈 "
-                    elif num == 3:
-                        des += "🥉 "
-                    else:
-                        des += "👏 "
+    #                 if num == 1:
+    #                     des += "🥇 "
+    #                 elif num == 2:
+    #                     des += "🥈 "
+    #                 elif num == 3:
+    #                     des += "🥉 "
+    #                 else:
+    #                     des += "👏 "
 
                     
-                    wins = lb[i]
-                    des += f"**{wins}** wins - {mem}\n"
-                    num += 1
-                    if num > 10:
-                        break
+    #                 wins = lb[i]
+    #                 des += f"**{wins}** wins - {mem}\n"
+    #                 num += 1
+    #                 if num > 10:
+    #                     break
                         
-            if des == "":
-                des = "__NONE__"
+    #         if des == "":
+    #             des = "__NONE__"
 
-        else:
-            title = "Global Leaderboard - Trivia"
-            des = ""
-            num = 1
-            for i in lb:
-                mem = self.client.get_user(int(i))
-                if num == 1:
-                    des += "🥇 "
-                elif num == 2:
-                    des += "🥈 "
-                elif num == 3:
-                    des += "🥉 "
-                else:
-                    des += "👏 "
+    #     else:
+    #         title = "Global Leaderboard - Trivia"
+    #         des = ""
+    #         num = 1
+    #         for i in lb:
+    #             mem = self.client.get_user(int(i))
+    #             if num == 1:
+    #                 des += "🥇 "
+    #             elif num == 2:
+    #                 des += "🥈 "
+    #             elif num == 3:
+    #                 des += "🥉 "
+    #             else:
+    #                 des += "👏 "
 
                 
-                wins = lb[i]
-                des += f"**{wins}** wins - {mem}\n"
-                num += 1
-                if num > 10:
-                    break
+    #             wins = lb[i]
+    #             des += f"**{wins}** wins - {mem}\n"
+    #             num += 1
+    #             if num > 10:
+    #                 break
 
-        em = discord.Embed(title=title, description=des, color = discord.Color.green())
-        await ctx.send(embed=em)
+    #     em = discord.Embed(title=title, description=des, color = discord.Color.green())
+    #     await ctx.send(embed=em)
 
 
 def setup(client):

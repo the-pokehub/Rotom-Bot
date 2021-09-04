@@ -213,83 +213,41 @@ class Misc(commands.Cog):
         await ctx.send(
             "<a:dance1:807167808164331531>\n<a:dance2:807167807757746177>\n<a:dance3:807167807804014602>\n<a:dance4:807167807904940073>")
 
-    # @commands.command()
-    # async def say(self, ctx, *, txt=None):
+    @commands.command()
+    async def say(self, ctx, *, txt=None):
 
-    #     if txt is None:
-    #         return
+        if txt is None:
+            return
 
-    #     try:
-    #         await ctx.message.delete()
-    #     except discord.errors.NotFound:
-    #         pass
+        try:
+            await ctx.message.delete()
+        except discord.errors.NotFound:
+            pass
 
-    #     if profanity.contains_profanity(txt):
-    #         await ctx.send("You cannot use banned words!")
-    #         return
+        if profanity.contains_profanity(txt):
+            await ctx.send("You cannot use banned words!")
+            return
 
-    #     if "--" in txt:
-    #         txt = txt.split("--")
-    #         channel = self.client.get_channel(int(txt[1]))
-    #         txt = txt[0]
-    #     else:
-    #         channel = ctx.channel
+        if "--" in txt:
+            txt = txt.split("--")
+            channel = self.client.get_channel(int(txt[1]))
+            txt = txt[0]
+        else:
+            channel = ctx.channel
 
-    #     send = " "
-    #     emoj = 0
-    #     emo = False
+        send = txt
 
-    #     if ":" in txt:
-    #         txt = txt.split(":")
-    #         for name in txt:
+        if ctx.author.guild_permissions.mention_everyone:
+            allowed_mentions=discord.AllowedMentions(everyone=True, roles=True)
+        else:
+            allowed_mentions=discord.AllowedMentions(everyone=False, roles=False)
 
-    #             emoji = discord.utils.get(self.client.emojis, name = name)
+        webhooks = await channel.webhooks()
+        webhook = discord.utils.get(webhooks, name = "Rotom Bot")
+        if webhook is None:
+            webhook = await channel.create_webhook(name = "Rotom Bot")
 
-    #             if emoji:
-    #                 t = str(emoji)
-    #                 emoj = emoji.id
-    #                 send += t
-
-    #             if not emoji:
-    #                 name = name.replace(" ", "")
-    #                 if ">" in name:
-    #                     name = name.replace(">", "")
-    #                     if name.isnumeric():
-    #                         if int(name) == int(emoj):
-    #                             name = ""
-    #                         else:
-    #                             if len(name) == 18:
-    #                                name = ""
-
-    #                 if "<" in name[-2:]:
-    #                     if "<a" in name:
-    #                         name = name.replace("<a", "")
-    #                     else:
-    #                         name = name[:-1]
-    #                         another_name = name.replace(" ", "")
-    #                         if another_name.isnumeric():
-    #                             if int(name) == int(emoj):
-    #                                 name = ""
-    #                             else:
-    #                                 if len(name) == 18:
-    #                                     name = ""
-                    
-    #                 send += name
-
-    #     else:
-    #         send = txt
-
-    #     if ctx.author.guild_permissions.mention_everyone:
-    #         allowed_mentions=discord.AllowedMentions(everyone=True, roles=True)
-    #     else:
-    #         allowed_mentions=discord.AllowedMentions(everyone=False, roles=False)
-
-    #     webhooks = await channel.webhooks()
-    #     webhook = discord.utils.get(webhooks, name = "Rotom Bot")
-    #     if webhook is None:
-    #         webhook = await channel.create_webhook(name = "Rotom Bot")
-
-    #     await webhook.send(send, username = ctx.author.name, avatar_url = ctx.author.avatar_url, allowed_mentions=allowed_mentions)
+        await webhook.send(send, username = ctx.author.name, avatar_url = ctx.author.avatar_url, allowed_mentions=allowed_mentions)
 
 
     @commands.command(aliases=["search", "query"])
@@ -389,6 +347,65 @@ class Misc(commands.Cog):
 
     #     await ctx.send(embed=em)
 
+    @commands.command()
+    async def serverinfo(self, ctx):
 
+        desc = ctx.guild.description
+
+        if desc:
+        
+            embed = discord.Embed(
+                title=ctx.guild.name + " Server Information",
+                description=desc,
+                color=discord.Color.green()
+                )
+        else:
+            embed = discord.Embed(
+                title=ctx.guild.name + " Server Information",
+                color=discord.Color.green()
+                )
+
+        channel = len(ctx.guild.channels)
+        vc = len(ctx.guild.voice_channels)
+        booster = len(ctx.guild.premium_subscribers)
+        roles = len(ctx.guild.roles)
+        lvl = ctx.guild.premium_tier
+        boosts = ctx.guild.premium_subscription_count
+        banner = ctx.guild.banner_url
+        icon = ctx.guild.icon_url
+
+        info = f"Verification Level: {ctx.guild.verification_level}"
+
+        if banner:
+            info += f"\n[Banner]({banner})"
+        if icon:
+            info += f"\n[Icon]({icon})"
+
+        embed.set_thumbnail(url=icon)
+
+        embed.add_field(name="Owner:", value=ctx.guild.owner)
+
+        embed.add_field(name="Server ID:", value=ctx.guild.id)
+
+        embed.add_field(name="Region:", value=ctx.guild.region)
+
+        embed.add_field(name="Member Count:", value=ctx.guild.member_count)
+
+        embed.add_field(name="Server Boosts:", value=f"Level: {lvl}\nBoosts: {boosts}\nBoosters: {booster}")
+
+        embed.add_field(name="Channels:", value=f"Text: {channel}\nVoice: {vc}")
+
+        embed.add_field(name="Roles:", value=roles)
+
+        embed.add_field(name="Emojis:", value=len(ctx.guild.emojis))
+        
+        embed.add_field(name="Other Infos:", value=info)
+
+        embed.set_footer(text="Created on:")
+        embed.timestamp = ctx.guild.created_at
+        
+        await ctx.send(embed=embed)
+
+	
 def setup(client):
     client.add_cog(Misc(client))

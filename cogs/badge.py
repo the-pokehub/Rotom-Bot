@@ -293,7 +293,9 @@ class League(commands.Cog):
         for i in es:
             streak += i + " "        
 
-        em = discord.Embed(title = f"{member}'s Profile of {ctx.guild.name}", colour=discord.Color.orange())
+        em = discord.Embed(title = f"{member}'s Profile", colour=discord.Color.orange())
+
+        em.set_author(icon_url=ctx.guild.icon_url, name=f"{ctx.guild.name}'s")
 
         em.set_thumbnail(url=member.avatar_url)
 

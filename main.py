@@ -9,35 +9,12 @@ import asyncio
 import string
 import datetime
 import json
-from trivia import trivia
-import random
 import time
+# import random
 # import pymongo, dns
 
-mongoKey = os.environ.get("mongoDB")
-
-# mclient = pymongo.MongoClient(mongoKey)
-
-async def ques():
-    
-    questions = await trivia.question(amount=1, quizType='multiple')
-
-    q = questions[0]["question"]
-    ans = questions[0]["incorrect_answers"]
-    cor = questions[0]["correct_answer"]
-    category = questions[0]["category"]
-    difficulty = questions[0]["difficulty"]
-
-    ans.append(cor)
-
-    random.shuffle(ans)
-
-    des = "Options:\n"
-    num = ["a", "b", "c", "d"]
-    for ele in range(len(ans)):
-        des += f"{num[ele]}) {ans[ele]}\n"
-
-    return q, ans, cor, category, difficulty, des  
+# mongoKey = os.environ.get("mongoDB")
+# mclient = pymongo.MongoClient(mongoKey)  
 
 
 save = db["mod"]
@@ -84,18 +61,23 @@ dbs = ['league_prof7', 'gen7', 'hall_of_fame', 'league_prof6', 'gen6', 'mod']
 async def on_ready():
     change_presence.start()
     del_snipe.start()
-    del_esnipe.start()
-
-    print(
-        f"Bot is Ready.\nLogged in as {client.user.name}\n---------------------"
-    )
 
     client.remove_command("help")
 
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
             client.load_extension(f"cogs.{filename[:-3]}")
+    
+    data = {}
+    data2 = {}
 
+    with open(sni, "w") as bd:
+        json.dump(data, bd) 
+
+    with open(esni, "w") as bd2:
+        json.dump(data2, bd2)
+
+    print(f"Bot is Ready.\nLogged in as {client.user.name}\n-----------------------")
     version = discord.__version__.replace(" ", "")
     print("discord.py Version: v" + version)
 
@@ -122,7 +104,10 @@ async def on_message(message):
 
         if message.guild.id == 676777139776913408:
 
-            if not message.author.bot:
+            if message.channel.id == 882939775177355304:
+                pass
+
+            elif not message.author.bot:
 
                 try:
                     await message.delete()
@@ -154,7 +139,7 @@ async def on_message(message):
                 except discord.errors.NotFound:
                     pass
 
-    if message.channel.id == 780981187317465119:
+    if message.channel.id == 775388498919948299:
         if "you just advanced to level 15!" in message.content:
             member_id = ''.join(filter(lambda i: i.isdigit(), message.content))
 
@@ -203,36 +188,56 @@ async def on_command_error(ctx, error):
     elif isinstance(error, discord.errors.NotFound):
         pass
     else:
-        await ctx.send('{}'.format(str(error)))
+        try:
+            await ctx.send('{}'.format(str(error)))
+        except:
+            pass
 
 
-snipe_message_author = {}
-snipe_message_content = {}
-esnipe_message_author = {}
-esnipe_message_content = {}
-esnipe_message_link = {}
+# snipe_message_author = {}
+# snipe_message_content = {}
+# esnipe_message_author = {}
+# esnipe_message_content = {}
+# esnipe_message_link = {}
 
-
+sni = "snipe/snipe.json"
+esni = "snipe/esnipe.json"
 
 @client.event
 async def on_message_delete(message):
 
-    global snipe_message_author
-    global snipe_message_content
+    with open(sni, "r") as bd:
+        data = json.load(bd)
 
-    snipe_message_author[message.channel.id] = message.author
-    snipe_message_content[message.channel.id] = message.content
+    if message.attachments:
+        attach = str(message.attachments[0])
+    else:
+        attach = None
+
+    data[str(message.channel.id)] = {
+        "author": str(message.author),
+        "content": message.content,
+        "attachment": attach    
+    }
+
+    with open(sni, "w") as bd:
+        json.dump(data, bd)
+    
 
 @client.event
 async def on_message_edit(before, after):
 
-    global esnipe_message_author
-    global esnipe_message_content
-    global esnipe_message_link
+    with open(esni, "r") as bd:
+        data = json.load(bd)
 
-    esnipe_message_author[before.channel.id] = before.author
-    esnipe_message_content[before.channel.id] = before.content
-    esnipe_message_link[before.channel.id] = before.jump_url
+    data[str(before.channel.id)] = {
+        "author": str(before.author),
+        "content": before.content,
+        "link": before.jump_url    
+    }
+
+    with open(esni, "w") as bd:
+        json.dump(data, bd)
 
 
 
@@ -240,11 +245,14 @@ async def on_message_edit(before, after):
 async def snipe(ctx):
     channel = ctx.channel
 
+    with open(sni, "r") as bd:
+        data = json.load(bd)
+
     try:
 
-        message = snipe_message_content[channel.id]
+        message = data[str(channel.id)]
 
-        profanity_check_msg = message.translate(
+        profanity_check_msg = message['content'].translate(
         str.maketrans('', '', string.punctuation))
 
         def replaceDoubleCharacters(string):
@@ -257,11 +265,16 @@ async def snipe(ctx):
 
         if profanity.contains_profanity(profanity_check_msg) or profanity.contains_profanity(replaceDoubleCharacters(profanity_check_msg)):
             return await ctx.send("Deleted message contains words which is not allowed.")
-            
-        snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = f"{snipe_message_content[channel.id]}")
 
-        snipeEmbed.set_footer(text=f"Message sent by {snipe_message_author[channel.id]}")
+        snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = f"{message['content']}")
+
+        snipeEmbed.set_footer(text=f"Message sent by {message['author']}")
+
+        if message['attachment']:
+            snipeEmbed.set_image(url=message['attachment'])
+
         await ctx.send(embed = snipeEmbed)
+
     except:
         await ctx.send(f"There are no deleted messages in {channel.mention}")
 
@@ -269,14 +282,19 @@ async def snipe(ctx):
 @client.command(aliases=['es', "edit-snipe", "esnipe"])
 async def edit_snipe(ctx):
     channel = ctx.channel 
-    try:
-        cont = esnipe_message_content[channel.id]
-        snipeEmbed = discord.Embed(title=f"Last Edited message in #{channel.name}", description = f"{cont}\n\n[*__Message__*]({esnipe_message_link[channel.id]})")
 
-        snipeEmbed.set_footer(text=f"Message edited by {esnipe_message_author[channel.id]}")
+    with open(esni, "r") as bd:
+        data = json.load(bd)
+
+    try:
+        cont = data[str(channel.id)]
+        snipeEmbed = discord.Embed(title=f"Last Edited message in #{channel.name}", description = f"{cont['content']}\n\n[*__Message__*]({cont['link']})")
+
+        snipeEmbed.set_footer(text=f"Message edited by {cont['author']}")
         await ctx.send(embed = snipeEmbed)
     except:
         await ctx.send(f"There are no edited messages in {channel.mention}")
+
 
 
 @client.command()
@@ -290,170 +308,22 @@ async def reload(ctx):
     await ctx.send("Extensions has been reloaded.")
 
 
-@client.command(aliases=["trivia"])
-@commands.cooldown(1, 20, commands.BucketType.user)
-async def quiz(ctx):
-
-    q, ans, cor, category, difficulty, des = await ques()
-    
-    em = discord.Embed(title=q, description=f"{des}")
-
-    em.add_field(name="Category:", value=f"{category}", inline=True)
-    em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=True)
-
-    em.set_author(name=f"Question for {ctx.author}",icon_url=ctx.author.avatar_url)
-
-    time = ""
-
-    if difficulty.lower() == "easy":
-        time = 10
-    elif difficulty.lower() == "medium":
-        time = 15
-    elif difficulty.lower() == "hard":
-        time = 20
-
-    em.set_footer(text=f"You have {time} seconds to answer the question.")
-
-    msg = await ctx.send(embed=em)
-
-    A = "🇦"
-    B = "🇧"
-    C = "🇨"
-    D = "🇩"
-    choose = ""
-
-    await msg.add_reaction(A)
-    await msg.add_reaction(B)
-    await msg.add_reaction(C)
-    await msg.add_reaction(D)
-
-    def check(reaction, user):
-        return user == ctx.author and str(reaction.emoji) in ["🇦", "🇧", "🇨", "🇩"]
-
-    # print(cor)
-
-    try:
-        reaction, user = await client.wait_for("reaction_add", check=check, timeout=time)
-
-        if str(reaction.emoji) == "🇦":
-            choose = ans[0]
-
-        elif str(reaction.emoji) == "🇧":
-            choose = ans[1]
-
-        elif str(reaction.emoji) == "🇨":
-            choose = ans[2]
-
-        elif str(reaction.emoji) == "🇩":
-            choose = ans[3]
-
-    except asyncio.TimeoutError:
-        await msg.clear_reactions()
-
-        des = "Options:\n"
-        num = ["a", "b", "c", "d"]
-        for ele in range(len(ans)):
-            if ans[ele] != cor:
-                des += f"{num[ele]}) ~~{ans[ele]}~~\n"
-            else:
-                des += f"{num[ele]}) **{ans[ele]}**\n"
-
-        em = discord.Embed(title=q, description=f"{des}", color=discord.Color.orange())
-
-        em.add_field(name="Category:", value=f"{category}", inline=True)
-        em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=True)
-
-        em.set_author(name=f"{ctx.author}, You didn't answered in time.",icon_url=ctx.author.avatar_url)
-
-        await msg.edit(embed=em)
-        
-        return
-
-    await msg.clear_reactions()
-
-    if choose == cor:
-        # await ctx.reply("Correct!")
-        corr = True
-    else:
-        # await ctx.reply(f"The right answer was: {cor}")
-        corr = False
-
-    if corr:
-
-        des = "Options:\n"
-        num = ["a", "b", "c", "d"]
-        for ele in range(len(ans)):
-            if ans[ele] != cor:
-                des += f"{num[ele]}) ~~{ans[ele]}~~\n"
-            else:
-                des += f"{num[ele]}) **{ans[ele]}**\n"
-
-        em = discord.Embed(title=q, description=f"{des}", color=discord.Color.green())
-
-        em.add_field(name="Category:", value=f"{category}", inline=True)
-        em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=True)
-
-        em.set_author(name=f"{ctx.author}, You're Correct!",icon_url=ctx.author.avatar_url)
-
-        await msg.edit(embed=em)
-
-        lb = db["trivia"]
-        
-        # if str(ctx.guild.id) not in lb:
-        #     lb[str(ctx.guild.id)] = {}
-
-        if str(ctx.author.id) not in lb:
-            lb[str(ctx.author.id)] = 1
-        else:
-            lb[str(ctx.author.id)] += 1
-
-        lb = dict(sorted(lb.items(), key = lambda kv:kv[1], reverse = True))
-
-        db["trivia"] = lb
-
-    else:
-        des = "Options:\n"
-        num = ["a", "b", "c", "d"]
-        for ele in range(len(ans)):
-            if ans[ele] != cor:
-                des += f"{num[ele]}) ~~{ans[ele]}~~\n"
-            else:
-                des += f"{num[ele]}) **{ans[ele]}**\n"
-
-        em = discord.Embed(title=q, description=f"{des}", color=discord.Color.red())
-
-        em.add_field(name="Category:", value=f"{category}", inline=True)
-        em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=True)
-
-        em.set_author(name=f"{ctx.author}, That's Not Right.",icon_url=ctx.author.avatar_url)
-
-        await msg.edit(embed=em)
-
-
 @tasks.loop(seconds=10)
 async def change_presence():
     await client.change_presence(activity=next(presence))
 
 
-@tasks.loop(minutes=30)
+@tasks.loop(minutes=5)
 async def del_snipe():
 
-    global snipe_message_author
-    global snipe_message_content
+    data = {}
+    data2 = {}
 
-    snipe_message_author = {}
-    snipe_message_content = {}
+    with open(sni, "w") as bd:
+        json.dump(data, bd) 
 
-@tasks.loop(minutes=30)
-async def del_esnipe():
-
-    global esnipe_message_author
-    global esnipe_message_content
-    global esnipe_message_link
-
-    esnipe_message_author = {}
-    esnipe_message_content = {}
-    esnipe_message_link = {}
+    with open(esni, "w") as bd2:
+        json.dump(data2, bd2) 
 
 
 keep_alive.keep_alive()
