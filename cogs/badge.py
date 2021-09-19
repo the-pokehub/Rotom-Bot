@@ -4,6 +4,10 @@ from replit import db
 import asyncio
 
 def server_prefix(msg):
+
+    if isinstance(msg.message.channel, discord.channel.DMChannel):
+        return "."
+        
     prefixes = db["prefixes"]
     s_prefix = prefixes[str(msg.guild.id)]
 
@@ -310,7 +314,7 @@ class League(commands.Cog):
 
         await ctx.send(embed=em)
 
-    @commands.command(aliases=["glrole"])
+    @commands.command(aliases=["glrole", "leaderrole"])
     @commands.has_permissions(manage_guild=True)
     async def gl_role(self, ctx, *, role: discord.Role):
 

@@ -8,6 +8,10 @@ save = db["mod"]
 
 
 def server_prefix(msg):
+
+    if isinstance(msg.message.channel, discord.channel.DMChannel):
+        return "."
+    
 	prefixes = db["prefixes"]
 	s_prefix = prefixes[str(msg.guild.id)]
 

@@ -22,8 +22,6 @@ save = db["mod"]
 
 def get_prefix(client, message):
 
-    time.sleep(0.01)
-
     if isinstance(message.channel, discord.channel.DMChannel):
         return "."
         
@@ -47,7 +45,7 @@ intents = discord.Intents.all()
 
 presence = cycle([
     discord.Activity(type=discord.ActivityType.listening, name=".help"),
-    discord.Activity(type=discord.ActivityType.watching, name="Citra Pokéhub")
+    discord.Activity(type=discord.ActivityType.watching, name="The Pokéhub")
 ])
 
 client = commands.Bot(command_prefix=prefix,
@@ -84,8 +82,20 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    
     if message.author == client.user:
         return
+
+    if message.channel.id == 884745067607228456:
+        return
+
+    # if message.content.lower == "<@783598148039868426> hello" or message.content.lower == "<@!783598148039868426> hello":
+
+    #     await message.channel.send(f"Hello {message.author.mention}.\nMy prefix for this server is {prefix}")
+
+    if client.user.mentioned_in(message):
+        if "hello" in message.content.lower():
+            await message.channel.send(f"Hello {message.author.mention}.\nMy prefix for this server is `{get_prefix(client, message)}`")
 
     profanity_check_msg = message.content.translate(
         str.maketrans('', '', string.punctuation))
@@ -189,7 +199,9 @@ async def on_command_error(ctx, error):
         pass
     else:
         try:
-            await ctx.send('{}'.format(str(error)))
+            msg = await ctx.send('{}'.format(str(error)))
+            await asyncio.sleep(5)
+            await msg.delete()
         except:
             pass
 

@@ -28,7 +28,7 @@ class Fun(commands.Cog):
 
         await ctx.send(f"You rolled: {rolled}")
 
-    @commands.command(aliases=["flip"])
+    @commands.command(aliases=["flip", "coinflip"])
     async def toss(self, ctx):
 
         coin = random.randint(1, 2)
@@ -127,7 +127,7 @@ class Fun(commands.Cog):
             except discord.errors.NotFound:
                 pass
 
-    @commands.command(aliases=["poll-show", "show-poll", "ps"])
+    @commands.command(aliases=["pollshow", "showpoll", "sp"])
     async def show_poll(self, ctx, message:discord.Message):
 
         poll = False
@@ -195,9 +195,18 @@ class Fun(commands.Cog):
             subs = 20 - int(per)
             non_filled = empty*subs
             percentage = int(c[1])/tot_r*float(100)
-            total += f"{opt[i]}\n{filled}{non_filled} {percentage}% ({c[1]} votes)\n\n"
 
-        em = discord.Embed(title=title, description=f"{total} [__Poll Jump Url__]({message.jump_url})", colour=discord.Colour.green())
+            if "." in str(percentage):
+                per = str(percentage).split(".")
+                if len(per[1]) > 2:
+                    per[1] = per[1][:2]
+                perce = per[0] + "." + per[1]
+            else:
+                perce = str(percentage)
+
+            total += f"{opt[i]}\n{filled}{non_filled} {perce}% ({c[1]} votes)\n\n"
+
+        em = discord.Embed(title=title, description=f"{total} \nTotal Votes: {tot_r} \n[__Poll Jump Url__]({message.jump_url})", colour=discord.Colour.green())
         em.timestamp = message.created_at
         em.set_footer(text="Poll Results • Poll Created")
         await ctx.send(embed=em)
@@ -231,7 +240,61 @@ class Fun(commands.Cog):
 
         await ctx.reply(embed=em)
 
+    def get(self, replay):
 
+        rat = None
+
+        try:
+            r = requests.get(f"{replay}.json")
+
+            soup = BeautifulSoup(r.content, features="html5lib")
+
+            a = soup.find("body")
+
+            rm = ["<body>", "</body>", "</strong>", "</strong>"]
+            for i in rm:
+                a = str(a).replace(i, "")
+            a = a.replace("null", "None")
+
+            js = eval(a)
+            got = js["log"]
+
+            got = got.split("|win|")
+            got = got[1].split("\n")
+            winner = got[0]
+
+            if js["rating"]:
+                rat = ""
+                for i in got:
+                    if "|raw|" in i:
+                        add = i.replace("|raw|", "")
+                        r = ["&lt;\/strong&gt;<br \=/>", "<strong>"]
+                        for j in r:
+                            add = add.replace(j, "")
+
+                        rat += add + "\n"
+
+            return winner, js, rat
+
+        except:
+            return "Looks like you have put an invalid Battle Replay Link."
+
+
+    @commands.command(aliases=["evaluate", "winner"])
+    async def eval(self, ctx, *, Replay):
+
+        win, got, rat = self.get(Replay)
+
+        if got:
+            send = f"**Format:** {got['format']}\n**Players:** {got['p1']} vs {got['p2']}\n**Winner:** {win}"
+            
+            if rat:
+                send += f"\n**Ladder Update:**\n{rat}"
+
+            await ctx.send(send)
+
+        else:
+            await ctx.send("Looks like you have put an invalid Battle Replay Link.")
 
 
 def setup(client):

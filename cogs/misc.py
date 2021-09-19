@@ -1,15 +1,16 @@
 import discord
 import translator
 from discord.ext import commands
-# from translator import Translator
 from bprofanity import profanity
 from googlesearch import search
 from PyDictionary import PyDictionary
+from replit import db
 import datetime
 from bs4 import BeautifulSoup
 import requests
 # import wikipedia
 import random
+import asyncio
 
 
 dictionary = PyDictionary()
@@ -25,6 +26,7 @@ t = translator.Translator()
 #     """
 #     try:
 #         m=wikipedia.search(query, results=3)
+# 
 #         if len(m) > 0:
 #             results = wikipedia.summary(m[0], sentences=3)
 #             ret = f"According to Wikipedia, {results}"
@@ -223,6 +225,8 @@ class Misc(commands.Cog):
             await ctx.message.delete()
         except discord.errors.NotFound:
             pass
+        except:
+            pass
 
         if profanity.contains_profanity(txt):
             await ctx.send("You cannot use banned words!")
@@ -242,12 +246,21 @@ class Misc(commands.Cog):
         else:
             allowed_mentions=discord.AllowedMentions(everyone=False, roles=False)
 
-        webhooks = await channel.webhooks()
-        webhook = discord.utils.get(webhooks, name = "Rotom Bot")
-        if webhook is None:
-            webhook = await channel.create_webhook(name = "Rotom Bot")
+        try:
+            webhooks = await channel.webhooks()
+            webhook = discord.utils.get(webhooks, name = "Rotom Bot")
+            if webhook is None:
+                webhook = await channel.create_webhook(name = "Rotom Bot")
 
-        await webhook.send(send, username = ctx.author.name, avatar_url = ctx.author.avatar_url, allowed_mentions=allowed_mentions)
+            await webhook.send(send, username = ctx.author.name, avatar_url = ctx.author.avatar_url, allowed_mentions=allowed_mentions)
+        except:
+            msg = await ctx.send("Bot is missing `Manage Webhooks` permission.")
+
+            await asyncio.sleep(3)
+            try:
+                await msg.delete()
+            except:
+                pass
 
 
     @commands.command(aliases=["search", "query"])
@@ -295,7 +308,7 @@ class Misc(commands.Cog):
     async def invite(self, ctx):
 
         em = discord.Embed(
-            description="[**__Here's the link to invite the bot 😉__**](https://discord.com/api/oauth2/authorize?client_id=783598148039868426&permissions=8&scope=bot)",
+            description="[**__Here's the link to invite the bot 😉__**](https://discord.com/api/oauth2/authorize?client_id=783598148039868426&permissions=2684674112&scope=bot)",
             colour=discord.Colour.green())
 
         await ctx.send(embed=em)
@@ -405,6 +418,14 @@ class Misc(commands.Cog):
         embed.timestamp = ctx.guild.created_at
         
         await ctx.send(embed=embed)
+
+    @commands.command(aliases=["change-prefix", "prefix"])
+    @commands.has_permissions(manage_guild=True)
+    async def change_prefix(self, ctx, new_prefix):
+        prefixes = db["prefixes"]
+        prefixes[(str(ctx.guild.id))] = new_prefix
+        db["preixes"] = prefixes
+        await ctx.send(f"Server Prefix has been changed to `{new_prefix}`")
 
 	
 def setup(client):

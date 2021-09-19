@@ -224,13 +224,13 @@ class Mod(commands.Cog):
     #     await ctx.send(f"Gen VI: {gen6}\nGen VII: {gen7}")
     #     await ctx.send(f"Total Gen VI = {len(gen6)}, Gen VII = {len(gen7)}")
 
-    @commands.command(aliases=["change-prefix", "prefix"])
-    @commands.has_permissions(manage_guild=True)
-    async def change_prefix(self, ctx, new_prefix):
-        prefixes = db["prefixes"]
-        prefixes[(str(ctx.guild.id))] = new_prefix
-        db["preixes"] = prefixes
-        await ctx.send(f"Server Prefix has been changed to `{new_prefix}`")
+    # @commands.command(aliases=["change-prefix", "prefix"])
+    # @commands.has_permissions(manage_guild=True)
+    # async def change_prefix(self, ctx, new_prefix):
+    #     prefixes = db["prefixes"]
+    #     prefixes[(str(ctx.guild.id))] = new_prefix
+    #     db["preixes"] = prefixes
+    #     await ctx.send(f"Server Prefix has been changed to `{new_prefix}`")
 
 
 def setup(client):

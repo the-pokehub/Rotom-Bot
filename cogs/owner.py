@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-import asyncio
+import requests
+from bs4 import BeautifulSoup
 from replit import db
 import json
 import os
@@ -20,24 +21,37 @@ class Owner(commands.Cog):
 
         file = filename
 
-        try:
+        data = db[filename]
             
-            data = db[filename]
+        if data:
 
-            for i in data:
-                await ctx.send(f"{i} : {data[i]}")
+            url = str((os.getenv("REPLIT_DB_URL")))
+            
+            req = requests.get("{}/{}".format(url,filename))
+            soup = BeautifulSoup(req.content, features="html5lib")
+            
+            a = soup.find("body")
 
-            # with open("manage.txt", "w") as bot_data:
-            #     bot_data.write(str(data))
+            rm = ["<body>", "</body>", "</strong>", "</strong>"]
+            for i in rm:
+                a = str(a).replace(i, "")
+            a = a.replace("null", "None")
 
-            # await ctx.send(f"{filename} has been transferred")
+            js = eval(a)
+            with open("manage.json", "w") as bd:
+                json.dump(js, bd, indent=4)
 
-        except KeyError:
-            await ctx.send(f"No DataBase named {filename} found")
+            await ctx.send(f"{filename} loaded!")
+        else:
+
+            await ctx.send(f"No DB {filename} found")
+
 
     @commands.command()
     @commands.is_owner()
-    async def rewrite(self, ctx, file):
+    async def rewrite(self, ctx):
+
+        global file
 
         with open("manage.json", "r") as bot_data:
             data = json.load(bot_data)
@@ -45,6 +59,8 @@ class Owner(commands.Cog):
         db[file] = data
 
         await ctx.send(f"{file} has been rewritten")
+        
+        file = ""
 
     @commands.command()
     @commands.is_owner()
@@ -61,13 +77,6 @@ class Owner(commands.Cog):
         del db[file]
 
         await ctx.send(f"Deleted {file} from DataBase")
-
-    @commands.command()
-    async def owner(self, ctx):
-
-        member = ctx.guild.owner
-
-        await ctx.send(member)
 
     
 def setup(client):

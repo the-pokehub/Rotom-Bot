@@ -22,7 +22,7 @@ class Game(commands.Cog):
             pass
 
 
-    @commands.command(aliases=["guessing-game", "guessing_game"])
+    @commands.command(aliases=["guessing-game", "guessinggame"])
     async def gg(self, ctx):
 
         def check(ms):

@@ -1,6 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask
 from threading import Thread
-import random
 
 app = Flask(""
 #   __name__,
