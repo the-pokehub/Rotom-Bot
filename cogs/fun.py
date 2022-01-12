@@ -240,61 +240,15 @@ class Fun(commands.Cog):
 
         await ctx.reply(embed=em)
 
-    def get(self, replay):
 
-        rat = None
+    @commands.command(aliases=["random"])
+    async def rand(self, ctx, *, args):
 
-        try:
-            r = requests.get(f"{replay}.json")
+        r_l = args.split(",")
 
-            soup = BeautifulSoup(r.content, features="html5lib")
+        coin = random.choice(r_l)
 
-            a = soup.find("body")
-
-            rm = ["<body>", "</body>", "</strong>", "</strong>"]
-            for i in rm:
-                a = str(a).replace(i, "")
-            a = a.replace("null", "None")
-
-            js = eval(a)
-            got = js["log"]
-
-            got = got.split("|win|")
-            got = got[1].split("\n")
-            winner = got[0]
-
-            if js["rating"]:
-                rat = ""
-                for i in got:
-                    if "|raw|" in i:
-                        add = i.replace("|raw|", "")
-                        r = ["&lt;\/strong&gt;<br \=/>", "<strong>"]
-                        for j in r:
-                            add = add.replace(j, "")
-
-                        rat += add + "\n"
-
-            return winner, js, rat
-
-        except:
-            return "Looks like you have put an invalid Battle Replay Link."
-
-
-    @commands.command(aliases=["evaluate", "winner"])
-    async def eval(self, ctx, *, Replay):
-
-        win, got, rat = self.get(Replay)
-
-        if got:
-            send = f"**Format:** {got['format']}\n**Players:** {got['p1']} vs {got['p2']}\n**Winner:** {win}"
-            
-            if rat:
-                send += f"\n**Ladder Update:**\n{rat}"
-
-            await ctx.send(send)
-
-        else:
-            await ctx.send("Looks like you have put an invalid Battle Replay Link.")
+        await ctx.send(coin)
 
 
 def setup(client):

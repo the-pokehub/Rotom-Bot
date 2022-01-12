@@ -12,10 +12,10 @@ def server_prefix(msg):
     if isinstance(msg.message.channel, discord.channel.DMChannel):
         return "."
     
-	prefixes = db["prefixes"]
-	s_prefix = prefixes[str(msg.guild.id)]
+    prefixes = db["prefixes"]
+    s_prefix = prefixes[str(msg.guild.id)]
 
-	return s_prefix
+    return s_prefix
 
 
 current_title = str(save["current_league"])

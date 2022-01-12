@@ -9,7 +9,6 @@ import asyncio
 import string
 import datetime
 import json
-import time
 # import random
 # import pymongo, dns
 
@@ -89,14 +88,12 @@ async def on_message(message):
     if message.channel.id == 884745067607228456:
         return
 
-    # if message.content.lower == "<@783598148039868426> hello" or message.content.lower == "<@!783598148039868426> hello":
-
-    #     await message.channel.send(f"Hello {message.author.mention}.\nMy prefix for this server is {prefix}")
-
+    # somebody mentioned bot
     if client.user.mentioned_in(message):
         if "hello" in message.content.lower():
             await message.channel.send(f"Hello {message.author.mention}.\nMy prefix for this server is `{get_prefix(client, message)}`")
 
+    # check profanity
     profanity_check_msg = message.content.translate(
         str.maketrans('', '', string.punctuation))
 
@@ -149,6 +146,19 @@ async def on_message(message):
                 except discord.errors.NotFound:
                     pass
 
+    '''# check for sus
+    sentence = message.content.lower()
+    if 'sus' in sentence:
+        await message.add_reaction('<:sus:890084041271963668>')
+
+    # check for gay
+    if sentence.endswith("gay") or sentence.endswith("gey") or sentence.endswith("gae"):
+        if sentence.startswith('im') or sentence.startswith('im') or sentence.startswith('i am'):
+            await message.add_reaction('<a:yesyou:853634517109964841>')
+        else:
+            await message.add_reaction('<:nou:842962963953746002>')'''
+
+    # give trainers and advanced trainers role
     if message.channel.id == 775388498919948299:
         if "you just advanced to level 15!" in message.content:
             member_id = ''.join(filter(lambda i: i.isdigit(), message.content))
@@ -229,7 +239,8 @@ async def on_message_delete(message):
     data[str(message.channel.id)] = {
         "author": str(message.author),
         "content": message.content,
-        "attachment": attach    
+        "attachment": attach,
+        "time": datetime.datetime.timestamp(datetime.datetime.utcnow())
     }
 
     with open(sni, "w") as bd:
@@ -242,10 +253,51 @@ async def on_message_edit(before, after):
     with open(esni, "r") as bd:
         data = json.load(bd)
 
+    profanity_check_msg = after.content.translate(
+        str.maketrans('', '', string.punctuation))
+
+    def replaceDoubleCharacters(string):
+        lastLetter, replacedString = "", ""
+        for letter in string:
+            if letter != lastLetter:
+                replacedString += letter
+            lastLetter = letter
+        return replacedString
+
+    if profanity.contains_profanity(profanity_check_msg) or profanity.contains_profanity(replaceDoubleCharacters(profanity_check_msg)):
+        try:
+            await after.delete()
+
+            embed = discord.Embed(
+                    description=
+                    f"**{after.author.mention} you are not allowed to say that.**",
+                    colour=discord.Colour.red())
+
+            msg = await after.channel.send(embed=embed)
+
+            em = discord.Embed(
+                title="Deleted Message",
+                description=
+                f"From {after.author.mention} in <#{after.channel.id}>",
+                colour=discord.Colour.red())
+
+            em.add_field(name="Message", value=after.content)
+            em.timestamp = datetime.datetime.utcnow()
+
+            channel = client.get_channel(836139191666343966)
+            await channel.send(embed=em)
+
+            await asyncio.sleep(10)
+            await msg.delete()
+
+        except:
+            pass
+
     data[str(before.channel.id)] = {
         "author": str(before.author),
         "content": before.content,
-        "link": before.jump_url    
+        "link": before.jump_url,
+        "time": datetime.datetime.timestamp(datetime.datetime.utcnow())
     }
 
     with open(esni, "w") as bd:
@@ -255,6 +307,10 @@ async def on_message_edit(before, after):
 
 @client.command()
 async def snipe(ctx):
+
+    if ctx.channel.id == 861952254072586240:
+        return
+        
     channel = ctx.channel
 
     with open(sni, "r") as bd:
@@ -277,6 +333,12 @@ async def snipe(ctx):
 
         if profanity.contains_profanity(profanity_check_msg) or profanity.contains_profanity(replaceDoubleCharacters(profanity_check_msg)):
             return await ctx.send("Deleted message contains words which is not allowed.")
+
+        elif "discord.gg" in message['content']:
+            return await ctx.send("<:uhh:880305186827014195> ")
+
+        if message['content'].count(":") > 11:
+            return await ctx.send("<:uhh:880305186827014195> ")
 
         snipeEmbed = discord.Embed(title=f"Last Deleted message in #{channel.name}", description = f"{message['content']}")
 
@@ -328,15 +390,39 @@ async def change_presence():
 @tasks.loop(minutes=5)
 async def del_snipe():
 
-    data = {}
-    data2 = {}
+    datad = {}
+    datad2 = {}
+
+    with open(sni, "r") as bd:
+        data = json.load(bd) 
+
+    with open(esni, "r") as bd2:
+        data2 = json.load(bd2) 
+
+    for i in data:
+        t1 = data[i]["time"]
+        t2 = datetime.datetime.timestamp(datetime.datetime.utcnow())
+
+        td = t2-t1
+
+        if td < 60:
+            datad[i] = data[i]
+
+    for i in data2:
+        t1 = data2[i]["time"]
+        t2 = datetime.datetime.timestamp(datetime.datetime.utcnow())
+
+        td = t2-t1
+
+        if td < 60:
+            datad[i] = data2[i]
+
 
     with open(sni, "w") as bd:
-        json.dump(data, bd) 
+        json.dump(datad, bd) 
 
     with open(esni, "w") as bd2:
-        json.dump(data2, bd2) 
-
+        json.dump(datad2, bd2) 
 
 keep_alive.keep_alive()
 client.run(os.environ.get("TOKEN"))

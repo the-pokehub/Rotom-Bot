@@ -8,7 +8,6 @@ from replit import db
 import datetime
 from bs4 import BeautifulSoup
 import requests
-# import wikipedia
 import random
 import asyncio
 
@@ -16,34 +15,6 @@ import asyncio
 dictionary = PyDictionary()
 
 t = translator.Translator()
-
-# def wiki_get(query: str):
-#     """
-#     Function to fetch wikipedia about the query.
-
-#     :param query: The query to be fetched.
-#     :return: Result or Error.
-#     """
-#     try:
-#         m=wikipedia.search(query, results=3)
-# 
-#         if len(m) > 0:
-#             results = wikipedia.summary(m[0], sentences=3)
-#             ret = f"According to Wikipedia, {results}"
-#         else:
-#             ret = "No result found"
-        
-#     except wikipedia.exceptions.DisambiguationError as e:
-#         s=random.choice(e.options)
-#         results = wikipedia.summary(s, sentences=3)
-#         ret = f"According to Wikipedia, {results}"
-
-#     except wikipedia.exceptions.WikipediaException:
-#         ret = "Error, try again later."
-
-#     # except GuessedAtParserWarning:
-
-#     return ret
 
 
 class Misc(commands.Cog):
@@ -58,7 +29,11 @@ class Misc(commands.Cog):
         msgID = payload.message_id
         emoji = payload.emoji
         channel = self.client.get_channel(payload.channel_id)
-        msg = await channel.fetch_message(msgID)
+        try:
+            msg = await channel.fetch_message(msgID)
+        except:
+            pass
+            
         users_list = []
 
         emoji_list = {
@@ -95,18 +70,6 @@ class Misc(commands.Cog):
                     f"{gtranslated.text}\nLanguage Detected: {translator.LANGUAGES[gtranslated.src].capitalize()}", mention_author=False)
             except KeyError:
                 pass
-
-    @commands.command()
-    async def av(self, ctx, *, member: discord.Member = None):
-
-        if member is None:
-            member = ctx.author
-
-        em = discord.Embed(title=f"{member}'s Avatar")
-        em.set_image(url=member.avatar_url)
-        em.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
-
-        await ctx.send(embed=em)
 
     @commands.command(aliases=["id"])
     async def _id(self, ctx, *, member: discord.Member = None):
@@ -304,14 +267,14 @@ class Misc(commands.Cog):
 
             await ctx.send(embed=em)
 
-    @commands.command()
-    async def invite(self, ctx):
+    # @commands.command()
+    # async def invite(self, ctx):
 
-        em = discord.Embed(
-            description="[**__Here's the link to invite the bot 😉__**](https://discord.com/api/oauth2/authorize?client_id=783598148039868426&permissions=2684674112&scope=bot)",
-            colour=discord.Colour.green())
+    #     em = discord.Embed(
+    #         description="[**__Here's the link to invite the bot 😉__**](https://discord.com/api/oauth2/authorize?client_id=783598148039868426&permissions=2684674112&scope=bot)",
+    #         colour=discord.Colour.green())
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
     @commands.command(aliases=["meaning", "dictionary"])
     async def dict(self, ctx, *, word):
@@ -341,14 +304,14 @@ class Misc(commands.Cog):
 
         await ctx.send(embed=em)
 
-    @commands.command()
-    async def bump(self, ctx):
+    # @commands.command()
+    # async def bump(self, ctx):
 
-        em = discord.Embed(
-            description="[**__Here's the link to bump our server 😉__**](https://discordservers.com/server/676777139776913408/bump)",
-            colour=discord.Colour.green())
+    #     em = discord.Embed(
+    #         description="[**__Here's the link to bump our server 😉__**](https://discordservers.com/server/676777139776913408/bump)",
+    #         colour=discord.Colour.green())
 
-        await ctx.send(embed=em)
+    #     await ctx.send(embed=em)
 
     # @commands.command(aliases=["wiki"])
     # async def wikipedia(self, ctx, *, query):
@@ -400,7 +363,7 @@ class Misc(commands.Cog):
 
         embed.add_field(name="Server ID:", value=ctx.guild.id)
 
-        embed.add_field(name="Region:", value=ctx.guild.region)
+        # embed.add_field(name="Region:", value=str(ctx.guild.region).capitalize())
 
         embed.add_field(name="Member Count:", value=ctx.guild.member_count)
 
@@ -424,7 +387,7 @@ class Misc(commands.Cog):
     async def change_prefix(self, ctx, new_prefix):
         prefixes = db["prefixes"]
         prefixes[(str(ctx.guild.id))] = new_prefix
-        db["preixes"] = prefixes
+        db["prefixes"] = prefixes
         await ctx.send(f"Server Prefix has been changed to `{new_prefix}`")
 
 	

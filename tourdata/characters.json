@@ -1,0 +1,582 @@
+{
+    "red": {
+        "mons": "pikachu, venusaur, charizard, blastoise, snorlax, lapras, espeon, machamp, meganium, feraligatr, typhlosion, jolteon, scizor, tauros, raikou, entei, suicune, dragonite, poliwrath, gyarados, aerodactyl, nidorino, diglett, sandshrew, victreebel, fearow, nidoking, nidoqueen, exeggcute, parasect, butterfree, krabby",
+        "tier": "S"
+    },
+    "blue": {
+        "mons": "scizor, charizard, golduck, machamp, porygon2, rhydon, rhyperior, pumpkaboo, pidgeot, ninetales, exeggutor, alakazam, arcanine, gyarados, blastoise, venusaur, sandslash, vaporeon, magneton, jolteon, cloyster, flareon, heracross, tyranitar, aerodactyl, tauros, slowbro, clefable, electabuzz, pinsir, gengar, miltank",
+        "tier": "S"
+    },
+    "dahlia": {
+        "mons": "dusknoir, medicham, ludicolo, zapdos, blaziken, togekiss, empoleon, rapidash, lopunny",
+        "tier": "S"
+    },
+    "anabel": {
+        "mons": "alakazam, entei, snorlax, raikou, latios, weavile, mismagius, salamence, lucario, metagross, espeon",
+        "tier": "S"
+    },
+    "wally": {
+        "mons": "altaria, delcatty, roselia, magneton, gardevoir, gallade, roserade, magnezone, talonflame, azumarill, garchomp, kecleon, cacturne, flygon",
+        "tier": "S"
+    },
+    "cynthia": {
+        "mons": "spiritomb, roserade, gastrodon, lucario, milotic, garchomp, gabite, togekiss, eelektross, braviary, glaceon",
+        "tier": "S"
+    },
+    "riley": {
+        "mons": "absol, ursaring, metagross, lucario, salamence, poliwrath, machamp, gyarados, dragonite, heracross, tyranitar, breloom, slaking, hariyama, medicham, infernape, rampados, garchomp, rhyperior, toxicroak, mamoswine, gallade, regigigas, pinsir, entei",
+        "tier": "S"
+    },
+    "ash": {
+        "mons": "pikachu, butterfree, bulbasaur, squirtle, charizard, pidgeot, raticate, kingler, primeape, muk, tauros, lapras, snorlax, bayleef, cyndaquil, totodile, noctowl, phanpy, heracross, beedrill, swellow, sceptile, corphish, aipom, staraptor, torterra, buizel, quilava, infernape, gliscor, gible, unfezant, oshawott, pignite, snivy, scraggy, leavanny, boldore, krookodile, palpitoad, greninjaash, goodra, lycanrocdusk, talonflame, hawlucha, noivern, incineroar, castform, rowlet",
+        "tier": "S"
+    },
+    "lance": {
+        "mons": "gyarados, dragonair, dragonite, aerodactyl, charizard, kingdra, salamence, garchomp, altaria, hydreigon, haxorus, flygon, exeggutoralola, castform, tyranitar",
+        "tier": "A"
+    },
+    "giovanni": {
+        "mons": "beedrill, cloyster, nidoqueen, golemalola, castform, nidoking, dugtrio, rhyhorn, rhydon, crobat, aggron, ursaring, sneasel, onix, kangaskhan, persian, honchkrow, rhyperior, marowakalola, sandslash, garchomp, gliscor, krookodile, hippowdon, arcanine, exeggutoralola, castform, gyarados, tauros, gengar, moltres",
+        "tier": "A"
+    },
+    "clair": {
+        "mons": "dragonair, kingdra, gyarados, aerodactyl, charizard, dragonite, altaria, salamence, druddigon, garchomp, ampharos, arcanine, lapras, rhydon, nidoking",
+        "tier": "A"
+    },
+    "jasmine": {
+        "mons": "togetic, magneton, ampharos, steelix, metagross, magnezone, skarmory, bronzong, empoleon, forretress, mawile, lucario, klinklang, ferrothorn, excadrill, corsola, mantine, stantler, blastoise, slowbro, rapidash, scizor",
+        "tier": "A"
+    },
+    "tucker": {
+        "mons": "salamence, charizard, swampert, arcanine, metagross, latias",
+        "tier": "A"
+    },
+    "paul": {
+        "mons": "torterra, electivire, magmortar, ursaring, weavile, honchkrow, aggron, gastrodon, drapion, ninjask, froslass, gliscor, nidoking, hariyama, stantler, azumarill, chimchar",
+        "tier": "A"
+    },
+    "fantina": {
+        "mons": "dusknoir, duskull, mismagius, misdreavus, gengar, haunter, drifblim, banette, spiritomb, rotom, jellicent, giratina",
+        "tier": "A"
+    },
+    "barry": {
+        "mons": "empoleon, staraptor, roserade, heracross, skarmory, hitmonlee, rapidash, floatzel, torterra, infernape, snorlax",
+        "tier": "A"
+    },
+    "iris": {
+        "mons": "haxorus, axew, fraxure, druddigon, hydreigon, archeops, aggron, lapras, salamence, excadrill, drilbur, emolga, dragonite, gible",
+        "tier": "A"
+    },
+    "brycen": {
+        "mons": "beartic, vanilluxe, vanillish, cryogonal, weavile, dewgong, walrein, bisharp, pawniard, mandibuzz, vullaby, honchkrow, scrafty, zoroark, heracross, sawk, escavalier, houndoom, hydreigon, sharpedo",
+        "tier": "A"
+    },
+    "sawyer": {
+        "mons": "sceptile, salamence, slurpuff, aegislash, clawitzer, slaking",
+        "tier": "A"
+    },
+    "tierno": {
+        "mons": "talonflame, roserade, crawdaunt, hawlucha, blastoise, ludicolo, politoed, raichu, hitmontop",
+        "tier": "A"
+    },
+    "alian": {
+        "mons": "charizard, bisharp, metagross, unfezant, weavile, tyranitar",
+        "tier": "A"
+    },
+    "gladion": {
+        "mons": "crobat, weavile, porygonz, lucario, venusaur, silvally, charizard, zoroark, blastoise, umbreon, lycanrocmidnight",
+        "tier": "A"
+    },
+    "kukui": {
+        "mons": "lycanrocmidnight, lycanroc, ninetales, mukalola, braviary, magnezone, snorlax, incineroar, primarina, decidueye, crabominable, venusaur, empoleon, lucario",
+        "tier": "A"
+    },
+    "cyrus": {
+        "mons": "houndoom, crobat, honchkrow, gyarados, weavile, probopass, magnezone",
+        "tier": "A"
+    },
+    "n": {
+        "mons": "carracosta, klinklang, zoroark, archeops, purrloin, pidove, timburr, darumaka, sigilyph, sandile, politoed, lanturn, tentacruel, omastar, kabutops, starmie, ninetales, arcanine, scraggy, rapidash, shiftry, ninjask, leafeon, hippowdon, gastrodon, cradily, armaldo, scizor, rhyperior, abomasnow, vanilluxe, cloyster, mamoswine, glaceon, froslass",
+        "tier": "A"
+    },
+    "ghetsis": {
+        "mons": "cofagrigus, kyuremblack, bisharp, bouffalant, seismitoad, eelektross, hydreigon, toxicroak, drapion",
+        "tier": "A"
+    },
+    "colress": {
+        "mons": "magneton, magnezone, rotomwash, metagross, beheeyem, klinklang, mukalola, electrode, porygon2, porygonz",
+        "tier": "A"
+    },
+    "steven": {
+        "mons": "skarmory, claydol, aggron, cradily, armaldo, metagross, excadrill, archeops, carbink, aerodactyl",
+        "tier": "B"
+    },
+    "drake": {
+        "mons": "shelgon, altaria, kingdra, flygon, salamence, dragalge, haxorus",
+        "tier": "B"
+    },
+    "wallace": {
+        "mons": "luvdisc, sealeo, seaking, whiscash, milotic, wailord, tentacruel, ludicolo, gyarados, sharpedo, walrein, swampert, starmie, clamperl",
+        "tier": "B"
+    },
+    "palmer": {
+        "mons": "milotic, rhyperior, dragonite, regigigas, heatran, cresselia, cranidos",
+        "tier": "B"
+    },
+    "crasherwake": {
+        "mons": "gyarados, floatzel, quagsire, gastrodon, sharpedo, ludicolo, lumineon, empoleon, poliwrath",
+        "tier": "B"
+    },
+    "byron": {
+        "mons": "bastiodon, shieldon, bronzong, bronzor, steelix, onix, kabutops, kabuto, omastar, omanyte, omastar, omanyte, cradily, armaldo, magnezone, magneton, skarmory, aggron, forretress, excadrill",
+        "tier": "B"
+    },
+    "flint": {
+        "mons": "rapidash, steelix, drifblim, lopunny, infernape, monferno, houndoom, flareon, magmortar",
+        "tier": "B"
+    },
+    "cheren": {
+        "mons": "serperior, snivy, servine, emboar, tepig, pignite, samurott, oshawott, dewott, simisage, pansage, simisear, pansear, simipour, panpour, liepard, purrloin, unfezant, pidove, tranquill, gigalith, boldore, haxorus, stoutland, lillipup, herdier, watchog, cinccino, minccino, zangoose, lopunny, castform, bouffalant, porygonz, lickilicky, sunflora, ducklett, shinx, basculin, bisharp, beartic",
+        "tier": "B"
+    },
+    "cilan": {
+        "mons": "simisage, pansage, crustle, dwebble, stunfisk, basculin, lillipup, maractus, ferrothorn, jumpluff, whimsicott, lilligant, serperior",
+        "tier": "B"
+    },
+    "chili": {
+        "mons": "simisear, pansear, lillipup, heatmor, darmanitan, arcanine, camerupt, magmortar, emboar",
+        "tier": "B"
+    },
+    "clay": {
+        "mons": "krookodile, krokorok, seismitoad, palpitoad, sandslash, excadrill, onix, claydol, mamoswine, golurk, flygon",
+        "tier": "B"
+    },
+    "drayden": {
+        "mons": "haxorus, fraxure, druddigon, flygon, altaria, hydreigon, salamence",
+        "tier": "B"
+    },
+    "shauntal": {
+        "mons": "cofagrigus, jellicent, golurk, chandelure, froslass, drifblim, banette, mismagius, gengar",
+        "tier": "B"
+    },
+    "marshal": {
+        "mons": "sawk, throh, conkeldurr, mienshao, breloom, toxicroak, lucario, medicham, machamp, tirtouga",
+        "tier": "B"
+    },
+    "grimsley": {
+        "mons": "scrafty, krookodile, liepard, bisharp, sharpedo, drapion, absol, honchkrow, houndoom, tyranitar",
+        "tier": "B"
+    },
+    "caitlin": {
+        "mons": "reuniclus, musharna, sigilyph, gothitelle, bronzong, metagross, gallade, alakazam",
+        "tier": "B"
+    },
+    "alder": {
+        "mons": "accelgor, escavalier, bouffalant, druddigon, vanilluxe, volcarona, conkeldurr, braviary, reuniclus, krookodile, chandelure",
+        "tier": "B"
+    },
+    "dexio": {
+        "mons": "slowking, metagross, espeon, alakazam, mukalola, raichu, mrrime, braviary, passimian, turtonator, ninetales, mukalola, slowbro, whimsicott",
+        "tier": "B"
+    },
+    "sina": {
+        "mons": "glaceon, lilligant, mandibuzz, drampa, oranguru, sandslashalola, abomasnow, delibird, smoochum",
+        "tier": "B"
+    },
+    "serena": {
+        "mons": "meowsticf, clefable, jolteon, absol, altaria, delphox, chesnaught, vaporeon, greninja, flareon, pancham, sylveon",
+        "tier": "B"
+    },
+    "calem": {
+        "mons": "meowstic, clefable, absol, altaria, vaporeon, jolteon, flareon, greninja, chesnaught, delphox, charizard",
+         "tier": "B"
+    },    
+    "trevor": {
+        "mons": "charizard, aerodactyl, florges, tyrantrum, aurorus, raichu",
+        "tier": "B"
+    },
+    "diantha": {
+        "mons": "hawlucha, gourgeist, gardevoir, goodra, tyrantrum, aurorus",
+        "tier": "B"
+    },
+    "bcevelyn": {
+        "mons": "primeape, persian, pachirisu, lumineon, raikou, entei, suicune, latios",
+        "tier": "B"
+    },
+    "bcdana": {
+        "mons": "piloswine, dragalge, whimsicott, magneton, girafarig, magcargo, articuno, zapdos, moltres, regirock, registeel, regice",
+        "tier": "B"
+    },
+    "bcnita": {
+        "mons": "purugly, wigglytuff, grumpig, tornadus, thundurus, landorus",
+        "tier": "B"
+    },
+    "bcmorgan": {
+        "mons": "mantine, sawsbuck, swalot, klefki, cobalion, terrakion, virizion, latias",
+        "tier": "B"
+    },
+    "hau": {
+        "mons": "raichu, mukalola, flareon, tauros, noivern, crabominable, primarina, vaporeon, decidueye, leafeon, incineroar",
+        "tier": "B"
+    },
+    "guzma": {
+        "mons": "golisopod, ariados, scizor, masquerain, pinsir, vikavolt, toxapex, bisharp, toxicroak, liepard, honchkrow",
+        "tier": "B"
+    },
+    "harrison": {
+        "mons": "sneasel, steelix, blaziken, houndoom, hypno, kecleon, miltank",
+        "tier": "B"
+    },
+    "dawn": {
+        "mons": "piplup, prinplup, buneary, pachirisu, mamoswine, piloswine, togekiss, quilava, ambipom, buizel, clefairy, kadabra, chimchar, monferno, turtwig, grotle",
+        "tier": "C"
+    },
+    "roark": {
+        "mons": "aerodactyl, probopass, sudowoodo, golem, rampardos, tyranitar, onix, relicanth, archeops, crustle",
+        "tier": "C"
+    },
+    "gardenia": {
+        "mons": "cherrim, cherubi, torterra, turtwig, roserade, jumpluff, bellossom, carnivine, tangrowth, leafeon, tropius, breloom, cacnea",
+        "tier": "C"
+    },
+    "maylene": {
+        "mons": "lucario, riolu, infernape, toxicroak, machamp, machoke, medicham, meditite, gallade, breloom, hitmontop",
+        "tier": "C"
+    },
+    "candice": {
+        "mons": "abomasnow, snover, weavile, sneasel, medicham, froslass, mamoswine, piloswine, glaceon, glalie, dodrio, turtwig, regice, regirock, registeel",
+        "tier": "C"
+    },
+    "volkner": {
+        "mons": "raichu, pikachu, ambipom, octillery, luxray, jolteon, electivire, elekid, lanturn, rotom, rotomfan, electrode, eelektross, galvantula, zebstrika, pachirisu",
+        "tier": "C"
+    },
+    "aaron": {
+        "mons": "dustox, beautifly, vespiquen, heracross, drapion, skorupi, yanmega, scizor, stunky",
+        "tier": "C"
+    },
+    "bertha": {
+        "mons": "quagsire, golem, sudowoodo, whiscash, hippowdon, gliscor, rhyperior",
+        "tier": "C"
+    },
+    "lucian": {
+        "mons": "mrmime, girafarig, medicham, alakazam, bronzong, espeon, gallade",
+        "tier": "C"
+    },
+    "bianca": {
+        "mons": "serperior, emboar, samurott, minccino, escavalier, stoutland, musharna, simisage, simisear, simipour, mienshao, chandelure, audino, haxorus, toxicroak, gothitelle, bisharp, abomasnow, nidoqueen, reuniclus",
+        "tier": "C"
+    },
+    "cress": {
+        "mons": "simipour, panpour, lillipup, basculin, slowking, golduck, floatzel, azumarill, crawdaunt, samurott, seismitoad",
+        "tier": "C"
+    },
+    "lenora": {
+        "mons": "stoutland, lillipup, herdier, watchog, patrat, audino, clefable, kangaskhan, sawsbuck, dunsparce, braviary, cinccino, lickilicky",
+        "tier": "C"
+    },
+    "burgh": {
+        "mons": "leavanny, sewaddle, swadloon, crustle, dwebble, whirlipede, venipede, accelgor, shelmet, escavalier, karrablast, vespiquen, durant, heracross",
+        "tier": "C"
+    },
+    "elesa": {
+        "mons": "emolga, zebstrika, blitzle, ampharos, flaaffy, galvantula, joltik, eelektross, tynamo, stunfisk, luxray",
+        "tier": "C"
+    },
+    "skyla": {
+        "mons": "swoobat, unfezant, swanna, skarmory, sigilyph, archeops, braviary, mandibuzz, jumpluff, drifblim",
+        "tier": "C"
+    },
+    "roxie": {
+        "mons": "koffing, scolipede, whirlipede, grimer, seviper, garbodor, crobat, golbat, drapion, amoonguss, toxicroak",
+        "tier": "C"
+    },
+    "marlon": {
+        "mons": "carracosta, wailord, jellicent, frillish, mantine, starmie, alomomola, quagsire, cloyster",
+        "tier": "C"
+    },
+    "lusamine": {
+        "mons": "clefable, bewear, lilligant, milotic, lopunny, mismagius, nihilego",
+        "tier": "C"
+    },
+    "shauna": {
+        "mons": "delcatty, goodra, delphox, greninja, chesnaught, sylveon",
+        "tier": "C"
+    },
+    "zinnia": {
+        "mons": "goodra, tyrantrum, salamence, noivern, altaria",
+        "tier": "C"
+    },
+    "ryuki": {
+        "mons": "dragonite, garchomp, drampa, kommoo, turtonator, druddigon, zweilous",
+        "tier": "C"
+    },
+    "plumeria": {
+        "mons": "gengar, toxapex, crobat, toxapex, salazzle, lurantis",
+        "tier": "C"
+    },
+    "faba": {
+        "mons": "hypno, slowbro, bruxish, raichu, mukalola, alakazam, claydol",
+        "tier": "C"
+    },
+    "viola": {
+        "mons": "vivillon, masquerain",
+        "tier": "C"
+    },
+    "grant": {
+        "mons": "aurorus, tyrantrum, onix",
+        "tier": "C"
+    },
+    "korrina": {
+        "mons": "hawlucha, lucario",
+        "tier": "C"
+    },
+    "ramos": {
+        "mons": "victreebel, gogoat, jumpluff, sunflora, bellossom, vileplume, exeggutor",
+        "tier": "C"
+    },
+    "wulfric": {
+        "mons": "abomasnow, avalugg, cryogonal",
+        "tier": "C"
+    },
+    "clemont": {
+        "mons": "emolga, heliolisk, magnezone, pikachu, electrode, stunfisk, dedenne, pachirisu, ampharos",
+        "tier": "C"
+    },
+    "valerie": {
+        "mons": "mawile, mrmime, sylveon, aromatisse",
+        "tier": "C"
+    },
+    "olympia": {
+        "mons": "sigilyph, slowking, meowstic",
+        "tier": "C"
+    },
+    "malva": {
+        "mons": "pyroar, torkoal, chandelure, talonflame, houndoom",
+        "tier": "C"
+    },
+    "drasna": {
+        "mons": "dragalge, druddigon, altaria, noivern",
+        "tier": "C"
+    },
+    "siebold": {
+        "mons": "clawitzer, gyarados, starmie, barbaracle",
+        "tier": "C"
+    },
+    "wikstrom": {
+        "mons": "klefki, probopass, scizor, aegislash, escavalier, dedenne, chandelure",
+        "tier": "C"
+    },
+    "ilima": {
+        "mons": "gumshoos, smeargle, komala, eevee, kangaskhan",
+        "tier": "C"
+    },
+    "lana": {
+        "mons": "lanturn, cloyster, araquanid, wishiwashi",
+        "tier": "C"
+    },
+    "kiawe": {
+        "mons": "arcanine, marowak, kangaskhan, talonflame, salazzle, charizard",
+        "tier": "C"
+    },
+    "mallow": {
+        "mons": "sceptile, trevenant, talonflame, toucannon, lurantis, tsareena, comfey",
+        "tier": "C"
+    },
+    "sophocles": {
+        "mons": "togedemaru, magnezone, electivire, golem, vikavolt",
+        "tier": "C"
+    },
+    "mina": {
+        "mons": "klefki, granbull, shiinotic, wigglytuff, ribombee, mrmime, ninetales",
+        "tier": "C"
+    },
+    "hala": {
+        "mons": "hariyama, machamp, bewear, poliwrath, crabominable",
+        "tier": "C"
+    },
+    "nanu": {
+        "mons": "sableye, krookodile, honchkrow, absol, persian",
+        "tier": "C"
+    },
+    "hapu": {
+        "mons": "dugtrio, gastrodon, krookodile, flygon, mudsdale, golurk",
+        "tier": "C"
+    },
+    "kahili": {
+        "mons": "braviary, hawlucha, oricorio, mandibuzz, toucannon, skarmory, crobat",
+        "tier": "C"
+    },
+    "molayne": {
+        "mons": "skarmory, sandslash, magnezone, metagross, dugtrio, klefki, bisharp",
+        "tier": "C"
+    },
+    "acerola": {
+        "mons": "sableye, dhelmise, drifblim, froslass, palossand, banette",
+        "tier": "C"
+    },
+    "olivia": {
+        "mons": "relicanth, carbink, golem, probopass, lycanrocmidnight, armaldo, cradily, gigalith, stufful",
+        "tier": "C"
+    },
+    "will": {
+        "mons": "xatu, exeggutor, slowbro, jynx, bronzong, grumpig, gardevoir",
+        "tier": "C"
+    },
+    "koga": {
+        "mons": "ariados, venomoth, forretress, muk, crobat, tentacruel, weezing, swalot, toxicroak, skuntank",
+        "tier": "C"
+    },
+    "bruno": {
+        "mons": "hitmonchan, hitmonlee, hitmontop, steelix, machamp, hariyama, lucario, poliwrath, golem",
+        "tier": "C"
+    },
+    "karen": {
+        "mons": "weavile, absol, spiritomb, houndoom, honchkrow, umbreon, vileplume, gengar",
+        "tier": "C"
+    },
+    "sidney": {
+        "mons": "mightyena, cacturne, shiftry, sharpedo, absol, zoroark, scrafty, mandibuzz",
+        "tier": "C"
+    },
+    "phoebe": {
+        "mons": "dusknoir, chandelure, sableye, mismagius, drifblim, banette",
+        "tier": "C"
+    },
+    "glacia": {
+        "mons": "walrein, glalie, abomasnow, vanilluxe, beartic, froslass",
+        "tier": "C"
+    },
+    "lizaandtate": {
+        "mons": "hypno, claydol, slowking, solrock, lunatone, xatu, bronzong, gallade, reuniclus, gothitelle",
+        "tier": "C"
+    },
+    "winona": {
+        "mons": "swellow, pelipper, skarmory, altaria, dragonite, tropius, noctowl, honchkrow, sigilyph, gyarados",
+        "tier": "C"
+    },
+    "norman": {
+        "mons": "slaking, blissey, kangaskhan, tauros, spinda, stoutland, sawsbuck, bouffalant, ambipom, staraptor, exploud, kecleon, zangoose, castform",
+        "tier": "C"
+    },
+    "flannery": {
+        "mons": "camerupt, torkoal, magcargo, arcanine, houndoom, rapidash, blaziken, magmortar, chandelure",
+        "tier": "C"
+    },
+    "wattson": {
+        "mons": "magnezone, manectric, electrode, raichu, plusle, minun, electivire, ampharos, rotomwash",
+        "tier": "C"
+    },
+    "brawly": {
+        "mons": "medicham, hitmonlee, hitmonchan, machamp, hitmontop, hariyama, scrafty, breloom, heracross, mienshao",
+        "tier": "C"
+    },
+    "roxxane": {
+        "mons": "aerodactyl, omastar, golem, kabutops, steelix, probopass, armaldo, cradily, aggron, relicanth, carracosta",
+        "tier": "C"
+    },
+    "blaine": {
+        "mons": "arcanine, rapidash, torkoal, camerupt, magcargo, houndoom, magmortar, ninetales, flareon, charizard, rotomheat",
+        "tier": "C"
+    },
+    "sabrina": {
+        "mons": "alakazam, espeon, mrmime, jynx, wobbuffet, gallade, venomoth, slowking, hypno, exeggutor, metagross, sigilyph, swoobat, slowbro, snorlax, scizor, typhlosion, wigglytuff",
+        "tier": "B"
+    },
+    "erika": {
+        "mons": "tangrowth, shiftry, jumpluff, victreebel, vileplume, roserade, bellossom, exeggutor, venusaur, abomasnow, cradily, whimsicott, lilligant, parasect",
+        "tier": "C"
+    },
+    "lt.surge": {
+        "mons": "raichu, manectric, magnezone, electrode, pachirisu, electivire, jolteon, ampharos, lanturn",
+        "tier": "C"
+    },
+    "misty": {
+        "mons": "lapras, starmie, quagsire, lanturn, floatzel, milotic, golduck, seaking, slowbro, blastoise, jellicent, swanna, carracosta, dewgong, vaporeon, gyarados, kingler, suicune, blastoise, jigglypuff, togetic",
+        "tier": "C"
+    },
+    "brock": {
+        "mons": "golem, relicanth, omastar, kabutops, onix, rampardos, tyranitar, rhyperior",
+        "tier": "C"
+    },
+    "pryce": {
+        "mons": "glalie, abomasnow, dewgong, froslass, walrein, mamoswine, jynx, cloyster, lapras, weavile",
+        "tier": "C"
+    },
+    "chuck": {
+        "mons": "medicham, hitmonchan, hitmonlee, poliwrath, primeape, breloom, hitmontop, machamp, conkeldurr",
+        "tier": "C"
+    },
+    "morty": {
+        "mons": "gengar, mismagius, banette, dusknoir, sableye, froslass, chandelure, drifblim",
+        "tier": "C"
+    },
+    "whitney": {
+        "mons": "miltank, clefable, girafarig, lickilicky, bibarel, delcatty, wigglytuff, tauros, ambipom, ursaring, blissey, lopunny",
+        "tier": "C"
+    },
+    "bugsy": {
+        "mons": "scizor, shedinja, yanmega, pinsir, heracross, vespiquen, shuckle, forretress, armaldo",
+        "tier": "C"
+    },
+    "falkner": {
+        "mons": "pidgeot, crobat, aerodactyl, honchkrow, xatu, swellow, noctowl, fearow, dodrio, staraptor, pelipper",
+        "tier": "C"
+    },
+    "greta": {
+        "mons": "breloom, umbreon, gengar, hariyama, medicham, shedinja, heracross",
+        "tier": "C"
+    },
+    "lucy": {
+        "mons": "seviper, shuckle, milotic, steelix, gyarados",
+        "tier": "C"
+    },
+    "spencer": {
+        "mons": "crobat, slaking, lapras, arcanine, suicune, venusaur, chansey, shiftry, claydol",
+        "tier": "C"
+    },
+    "brandon": {
+        "mons": "regirock, registeel, regice, articuno, zapdos, moltres",
+        "tier": "C"
+    },
+    "silver": {
+        "mons": "weavile, crobat, magnezone, alakazam, gengar, meganium, typhlosion, feraligatr, nidoking",
+        "tier": "C"
+    },
+    "noland": {
+        "mons": "venusaur, machamp, rhyperior, breloom, aggron, pinsir, camerupt, sandslash, golduck, manectric, flygon",
+        "tier": "C"
+    },
+    "darach": {
+        "mons": "staraptor, empoleon, houndoom, entei, gallade",
+        "tier": "C"
+    },
+    "lysandre": {
+        "mons": "gyarados, pyroar, mienshao, honchkrow, mienfoo, murkrow",
+        "tier": "C"
+    },
+    "archie": {
+        "mons": "mightyena, crobat, sharpedo, muk",
+        "tier": "C"
+    },
+    "maxie": {
+        "mons": "mightyena, crobat, camerupt, koffing",
+        "tier": "C"
+    },
+    "nate":  {
+        "mons": "dewott, pansear, servine, panpour, emboar, pansage, lucario, arcanine, conkeldurr, excadrill, sawk, krookodile, darmanitan, archeops, chandelure, reuniclus, vanilluxe, escavalier, eelektross, haxorus, beartic, mienshao, cyroganal, accelgor, druddigon, golurk, bisharp, bouffalaunt, braviary, audino, amoonguss, jellicent, alomomola, musharna, gigalith, throh, lilligant, scrafty, cofagrigus, ferrothorn, klinklang, mandibuzz, durant",
+        "tier": "A"
+    },
+    "rosa":  {
+        "mons": "dewott, pansear, panpour, pignite, serperior, pansage, conkeldurr, excadrill, sawk, krookodile, darmanitan, archeops, chandelure, reuniclus, vanilluxe, escavalier, eelektross, haxorus, beartic, mienshao, cyroganal, accelgor, druddigon, golurk, bisharp, bouffalaunt, braviary, audino, amoonguss, jellicent, alomomola, musharna, gigalith, throh, lilligant, scrafty, cofagrigus, ferrothorn, klinklang, mandibuzz, durant",
+        "tier": "A"
+    },
+    "hilbert":  {
+        "mons": "conkeldurr, excadrill, sawk, krookodile, darmanitan, archeops, chandelure, reuniclus, vanilluxe, escavalier, eelektross, haxorus, beartic, mienshao, cyroganal, accelgor, druddigon, golurk, bisharp, bouffalaunt, braviary, audino, amoonguss, jellicent, alomomola, musharna, gigalith, throh, lilligant, scrafty, cofagrigus, ferrothorn, klinklang, mandibuzz, durant",
+        "tier": "A"
+    },
+    "hinda":  {
+        "mons": "conkeldurr, excadrill, sawk, krookodile, darmanitan, archeops, chandelure, reuniclus, vanilluxe, escavalier, eelektross, haxorus, beartic, mienshao, cyroganal, accelgor, druddigon, golurk, bisharp, bouffalaunt, braviary, audino, amoonguss, jellicent, alomomola, musharna, gigalith, throh, lilligant, scrafty, cofagrigus, ferrothorn, klinklang, mandibuzz, durant",
+        "tier": "A"
+    }
+}

@@ -15,7 +15,7 @@ class Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def load(self, ctx, filename):
+    async def load1(self, ctx, filename):
 
         global file
 
@@ -49,7 +49,7 @@ class Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def rewrite(self, ctx):
+    async def rewrite1(self, ctx):
 
         global file
 
@@ -62,6 +62,7 @@ class Owner(commands.Cog):
         
         file = ""
 
+
     @commands.command()
     @commands.is_owner()
     async def keys(self, ctx): 
@@ -70,13 +71,16 @@ class Owner(commands.Cog):
         await ctx.send(keys)
         await ctx.send(os.getenv("REPLIT_DB_URL"))
 
+
     @commands.command()
     @commands.is_owner()
-    async def delete(self, ctx, file):
+    async def delete1(self, ctx, file):
 
         del db[file]
 
         await ctx.send(f"Deleted {file} from DataBase")
+
+    
 
     
 def setup(client):
