@@ -1,2 +1,18 @@
+# folders to not include 
 __pycache__
 .vscode
+tourdata
+data
+snipe
+
+# files to not include 
+pyproject.toml
+poetry.lock
+villian.py
+manage.json
+league.py
+mons6.txt
+mons7.txt
+illegal6.txt
+illegal7.txt
+help.py
