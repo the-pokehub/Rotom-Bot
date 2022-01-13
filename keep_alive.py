@@ -1,14 +1,15 @@
 from flask import Flask
 from threading import Thread
 
-app = Flask(""
-#   __name__,
-#   template_folder='templates',
-#   static_folder='styles'
+app = Flask(
+    ""
+    #   __name__,
+    #   template_folder='templates',
+    #   static_folder='styles'
 )
 
 
-@app.route('/')
+@app.route("/")
 def main():
     # return render_template('index.html')
     return "Active"
