@@ -3,7 +3,7 @@
 </picture>
 
 # Rotom Bot
-The official server management bot for the Discord server <a href="https://discord.gg/7FBupspBZB"> The Pokehub</a> written in Python using the discord.py wrapper.
+The official server management bot for the Discord server <a href="https://discord.gg/thepokehub"> The Pokehub</a> written in Python using the discord.py wrapper.
 </br></br>
 
 
@@ -72,7 +72,7 @@ Leave your current team ```.jt None``` </br>
   <img src="./img/rotombot_team_leave.png" alt="Leave team" height="50%" width="50%"/>
 </picture>
 
-Bot restricts member from switching teams if they have just switched teams recently within 24 hours
+Bot restricts members from switching teams if they have just switched teams recently within 24 hours
 <picture>
   <img src="./img/rotombot_team_duration_limit.jpg" alt="Team switch duration limit" height="50%" width="50%"/>
 </picture>
