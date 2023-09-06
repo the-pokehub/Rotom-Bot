@@ -2,6 +2,8 @@
   <img src="./img/rotombot_logo.png" alt="Project description image" height="150px" width="150px"/>
 </picture>
 
+# THIS REPO IS OUTDATED NOW
+
 # Rotom Bot
 The official server management bot for the Discord server <a href="https://discord.gg/7FBupspBZB"> The Pokehub</a> written in Python using the discord.py wrapper.
 </br></br>
