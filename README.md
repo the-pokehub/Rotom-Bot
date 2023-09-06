@@ -3,7 +3,7 @@
 </picture>
 
 # Rotom Bot
-The official server management bot for the Discord server <a href="https://discord.gg/thepokehub"> The Pokehub</a> written in Python using the discord.py wrapper.
+The official server management bot for the Discord server <a href="https://discord.gg/7FBupspBZB"> The Pokehub</a> written in Python using the discord.py wrapper.
 </br></br>
 
 
