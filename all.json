@@ -1,0 +1,143 @@
+{
+    "music": {
+        "Join": "Summons the bot to a voice channel.",
+        "Leave": "Clears the queue and leaves the voice channel.",
+        "Play": "Plays a song.",
+        "Pause": "Pauses the currently playing song.",
+        "Resume": "Resumes a currently paused song.",
+        "Now": "Displays the currently playing song.",
+        "Stop": "Stops playing song and clears the queue.",
+        "Skip": "Skip to next song.",
+        "Queue": "Shows the player's queue.",
+        "Shuffle": "Shuffles the queue.",
+        "Remove": "Removes a song from the queue.",
+        "Loop": "Loop or unloop the currently playing song.",
+        "cat": "cat",
+        "drop": false
+    },
+    "badge": {
+        "badges": "View your Profile.",
+        "gyms": "View all the Gym Leaders.",
+        "sbadges": "View all the Badges.",
+        "glrole": "Add a Gym Leader role.",
+        "elrole": "Add a Elite role.",
+        "badgen": "Add a new badge.",
+        "leaderadd": "Add a Gym Leader.",
+        "leaderremove": "Remove a Gym Leader.",
+        "award": "Award a Gym Badge.",
+        "revoke": "Revoke a Gym Badge.",
+        "badgelb": "Check the server's Leaderboard of Badges",
+        "streaka": "Add a Elite Streak.",
+        "streakr": "Remove all Elite Streak.",
+        "badgereset": "Erase all badges data.",
+        "cat": "cat",
+        "drop": true
+    },
+    "badges": {
+        "des": "View your (or someone else's) current Gym Badges of the server.",
+        "Syntax": "`{prefix}badges {user}`",
+        "Uses": "{prefix}badges\n{prefix}badges @Sayan",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "gyms": {
+        "des": "View all the gyms with their leaders of the server.",
+        "Syntax": "`{prefix}gyms`",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "sbadges": {
+        "des": "View all the badges available to the server.",
+        "Syntax": "`{prefix}sbadges`",
+        "Aliases": "sbadges, serverbadges",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "glrole": {
+        "des": "Set the Gym Leader role of the server. Members with this role can award or revoke badges.",
+        "Syntax": "`{prefix}glrole [role]`",
+        "Aliases": "glrole, leaderrole",
+        "Uses": "{prefix}glrole @gymleaders",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "elrole": {
+        "des": "Set the Elite role of the server. Members with this role can add or remove elite streaks.",
+        "Syntax": "`{prefix}glrole [role]`",
+        "Aliases": "elrole, eliterole",
+        "Uses": "{prefix}elrole @elites",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "badgen": {
+        "des": "Create a new badge for the server.",
+        "Syntax": "`{prefix}badgen [badge name] [symbol]`\nSymbol can be an emoji or text. Recommended to use Emojis.",
+        "Aliases": "badgen, badgenew",
+        "Uses": "{prefix}badgen Steel 🔧",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "leaderadd": {
+        "des": "Add Gym Leaders for the server, so other members can view them.\nMust have added the Badge first using `badgen`.",
+        "Syntax": "`{prefix}leaderadd [user] [badge name]`",
+        "Aliases": "leada, leaderadd",
+        "Uses": "{prefix}leada @Sayan Steel",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "leaderremove": {
+        "des": "Remove a previously added Gym Leader using `leaderadd`.",
+        "Syntax": "`{prefix}leaderremove [user] [badge name]`",
+        "Aliases": "leadr, leaderremove",
+        "Uses": "{prefix}leadr @Sayan Steel",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "award": {
+        "des": "Award a Gym Badge to a Member. The command user must have any of the Gym Leader role or Manage Server Permission. If you are a Gym Leader, you don't have to mention the `badge`. It will add automatically",
+        "Syntax": "`{prefix}award [member] {badge}`",
+        "Aliases": "aw, award, badgea",
+        "Uses": "{prefix}award @Sayan\n{prefix}award @Sayan Water",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "revoke": {
+        "des": "Remove a Gym Badge from a Member added previously. The command user must have any of the Gym Leader role or Manage Server Permission.",
+        "Syntax": "`{prefix}revoke [member] [badge]`",
+        "Aliases": "rv, revoke",
+        "Uses": "{prefix}revoke @Sayan Water",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "badgelb": {
+        "des": "View the Badge Leaderboard of the server. Shows top 10 Members with most badges.",
+        "Syntax": "`{prefix}badgelb`",
+        "Uses": "{prefix}badgelb",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "streaka": {
+        "des": "Increase Elite Streak of a Member by 1. The command user must have any of the Elite role or Manage Server Permission.",
+        "Syntax": "`{prefix}streaka [member]`",
+        "Aliases": "streaka, streakadd",
+        "Uses": "{prefix}streaka @Sayan",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "streakr": {
+        "des": "Remove all the Elite Streak gained by the Member. The command user must have any of the Elite role or Manage Server Permission.",
+        "Syntax": "`{prefix}streakr [member]`",
+        "Aliases": "streakr, streakremove",
+        "Uses": "{prefix}streakr [member]",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+    "badgereset": {
+        "des": "Reset the whole Badge System for the server. Member's Profile will be resetted, Gl and El Roles will be resetted, Gym Leaders will be resetted etc.",
+        "Syntax": "`{prefix}badgereset`",
+        "Aliases": "bdrs, badgereset",
+        "Uses": "{prefix}bdrs",
+        "footer": "Argument in {} are Optional argument and in [] are required.",
+        "cat": "com"
+    },
+}

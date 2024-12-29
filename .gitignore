@@ -1,9 +1,12 @@
 # folders to not include 
 __pycache__
+.bot
 .vscode
 tourdata
 data
 snipe
+sets
+.env
 
 # files to not include 
 pyproject.toml
@@ -16,3 +19,5 @@ mons7.txt
 illegal6.txt
 illegal7.txt
 help.py
+try.py
+ship.jpg

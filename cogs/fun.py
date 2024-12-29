@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 import random
-import requests
-from bs4 import BeautifulSoup
 import datetime
 
 
@@ -10,15 +8,17 @@ class Fun(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
-    async def roll(self, ctx, num: int = None):
+    @commands.hybrid_command(name="roll")
+    async def roll(self, ctx, no: int = None):
 
-        if num is None:
-            num = 1
+        "Roll Dice/No. of die."
+
+        if no is None:
+            no = 1
 
         rolled = ""
 
-        for i in range(num):
+        for i in range(no):
             rol = random.randint(1, 6)
             if rolled == "":
                 rolled += str(rol)
@@ -28,8 +28,10 @@ class Fun(commands.Cog):
 
         await ctx.send(f"You rolled: {rolled}")
 
-    @commands.command(aliases=["flip", "coinflip"])
+    @commands.hybrid_command(name="toss", aliases=["flip", "coinflip"])
     async def toss(self, ctx):
+
+        "Toss coin."
 
         coin = random.randint(1, 2)
 
@@ -40,49 +42,16 @@ class Fun(commands.Cog):
 
         await ctx.send(tossed)
 
-    @commands.command()
-    async def urban(self, ctx, *, word):
+    @commands.hybrid_command(name="poll")
+    async def poll(self, ctx, *, message):
 
-        r = requests.get("http://www.urbandictionary.com/define.php?term={}".format(word))
+        "Make a poll with upto 20 questions. [question // option1, option2, ....]"
 
-        if r:
-            em = discord.Embed(title=f"Urban {word}", colour=discord.Colour.green())
-
-            soup = BeautifulSoup(r.content, features="html5lib")
-
-            a = soup.find("div", attrs={"class": "meaning"}).text
-            b = soup.find("div", attrs={"class": "example"}).text
-            c = soup.find("div", attrs={"class": "contributor"}).text
-
-            up = soup.find(attrs={"class": "up"})
-            d = up.find("span", attrs={"class": "count"}).text
-
-            down = soup.find(attrs={"class": "down"})
-            e = down.find("span", attrs={"class": "count"}).text
-
-            if a:
-                em.add_field(name="Definition", value=a, inline=False)
-            if b:
-                em.add_field(name="Example", value=b, inline=False)
-            if d:
-                em.add_field(name="👍", value=d)
-            if e:
-                em.add_field(name="👎", value=e)
-            if c:
-                em.add_field(name="\u200b", value=c, inline=False)
-
-        else:
-            em = discord.Embed(title="❌Error Nothing Found!", colour=discord.Colour.green())
-
-        await ctx.send(embed=em)
-
-    @commands.command()
-    async def poll(self, ctx, *, txt):
-        if "//" not in txt:
-            await ctx.send("Please provide valid Options.")
+        if "//" not in message:
+            await ctx.send("Poll format is ```.poll <question> // <answer1>,<answer2>,...```")
             return
 
-        txt = txt.split("//")
+        txt = message.split("//")
 
         ask = txt[0]
         options = txt[1]
@@ -127,8 +96,10 @@ class Fun(commands.Cog):
             except discord.errors.NotFound:
                 pass
 
-    @commands.command(aliases=["pollshow", "showpoll", "sp"])
-    async def show_poll(self, ctx, message:discord.Message):
+    @commands.hybrid_command(name="poll-show", aliases=["pollshow", "showpoll", "sp"])
+    async def show_poll(self, ctx, message: discord.Message):
+
+        "Show the result of a previously created poll."
 
         poll = False
         emo = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬",
@@ -177,7 +148,7 @@ class Fun(commands.Cog):
 
         if tot_r == 0:
             tot_r = 1
-        
+
         opt = []
         for i in des:
             for j in emo:
@@ -190,11 +161,11 @@ class Fun(commands.Cog):
         total = ""
         for i in range(len(rea)):
             c = rea[i].split(", ")
-            per = int(c[1])/tot_r*float(20)
-            filled = fill*int(per)
+            per = int(c[1]) / tot_r * float(20)
+            filled = fill * int(per)
             subs = 20 - int(per)
-            non_filled = empty*subs
-            percentage = int(c[1])/tot_r*float(100)
+            non_filled = empty * subs
+            percentage = int(c[1]) / tot_r * float(100)
 
             if "." in str(percentage):
                 per = str(percentage).split(".")
@@ -211,8 +182,11 @@ class Fun(commands.Cog):
         em.set_footer(text="Poll Results • Poll Created")
         await ctx.send(embed=em)
 
-    @commands.command(aliases=["8pool", "8p"])
+    @commands.hybrid_command(name="8pool", aliases=["8p"])
     async def _8pool(self, ctx, *, question):
+
+        "..."
+
         answers = [
             'It is certain',
             'It is decidedly so',
@@ -225,8 +199,8 @@ class Fun(commands.Cog):
             'Yes',
             'Signs point to yes',
             'Reply hazy, try again',
-            'Ask again later', 
-            'Better not tell you now', 
+            'Ask again later',
+            'Better not tell you now',
             'Cannot predict now',
             'Concentrate and ask again',
             'Dont count on it',
@@ -236,10 +210,9 @@ class Fun(commands.Cog):
             'Very doubtful']
 
         answer = random.choice(answers)
-        em = discord.Embed(description=f"Question: {question}\nMy Answer: {answer}.") 
+        em = discord.Embed(description=f"Question: {question}\nMy Answer: {answer}.")
 
         await ctx.reply(embed=em)
-
 
     @commands.command(aliases=["random"])
     async def rand(self, ctx, *, args):
@@ -251,5 +224,5 @@ class Fun(commands.Cog):
         await ctx.send(coin)
 
 
-def setup(client):
-    client.add_cog(Fun(client))
+async def setup(client):
+    await client.add_cog(Fun(client))

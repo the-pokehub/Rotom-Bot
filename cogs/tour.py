@@ -1,70 +1,10 @@
 import discord
 from discord.ext import commands
+import re
 import requests
 from bs4 import BeautifulSoup
-from replit import db
-import difflib
-import json
 import string
-import re
-
-
-def get_data(find):
-
-    dat = "data/pokedex.json Pokedex"
-    dat = dat.split()
-    
-    with open(dat[0], "r") as load:
-        data = json.load(load)
-
-    with open("data/aliases.json", "r") as ala:
-        lit = json.load(ala)
-
-    find1 = find.translate(
-        str.maketrans('', '', string.punctuation))
-
-    find1 = find1.replace(" ", "")
-
-    if find1 in data[dat[1]]:
-        return find1
-
-    if find1 in lit[dat[1]]:
-        mod = lit[dat[1]][find1]
-        return mod
-
-    match = difflib.get_close_matches(find1, data[dat[1]], 1)
-
-    best = None
-
-    if match:
-        best = match[0]
-
-    if best:
-        return best
-
-    return None
-
-
-def validate(user):
-    try:
-        r = requests.get(f"https://pokemonshowdown.com/users/{user}")
-
-    except:
-        return False
-
-    soup = BeautifulSoup(r.content, features="html5lib")
-
-    try:
-        a = soup.find_all("div")[4]
-    except:
-        return False
-
-    b = a.find("p").get_text()
-
-    if "(Unregistered)" in b:
-        return False
-    else:
-        return True
+from replit import db
 
 
 def evalu(url):
@@ -78,89 +18,128 @@ def evalu(url):
     js = eval(a.get_text().replace("null", "None"))
     got = js["log"]
 
-    rawTm = got.split("|clearpoke\n")[1]
-    rawTm = rawTm.split("|teampreview\n")[0]
-
-    rm = ["|", "poke", "item", ", F", ", M"]
-    for i in rm:
-        rawTm = rawTm.replace(i, "")
-
-    p1 = []
-    p2 = []
-
-    tm = rawTm.split("\n")
-
-    for i in tm:
-        if "p1" in i:
-            i = i.replace("p1", "")
-            p1.append(get_data(i.lower()))
-        elif "p2" in i:
-            i = i.replace("p2", "")
-            p2.append(get_data(i.lower()))
-
-    pl1 = js["p1id"].lower()
-    pl2 = js["p2id"].lower()
-
-    team = {pl1: p1, pl2: p2}
+    p1 = js["p1id"].translate(str.maketrans('', '', string.punctuation)).replace(" ", "")
+    p2 = js["p2id"].translate(str.maketrans('', '', string.punctuation)).replace(" ", "")
 
     got = got.split("|win|")
     got = got[1].split("\n")
     winner = got[0].translate(str.maketrans('', '', string.punctuation)).lower().replace(" ", "")
 
-    return team, winner
+    p1m, p2m = get_rmon(js["log"])
+
+    if winner == p1:
+        return p1, p2, p1m, p2m
+    elif winner == p2:
+        return p2, p1, p2m, p1m
+    else:
+        return
 
 
-def won(replay):
+async def won(replay, self):
 
     if "replay.pokemonshowdown.com" not in replay:
         return
 
-    url = re.search("(?P<url>https?://[^\s]+)", replay).group("url")
+    url = re.search(r"(?P<url>https?://[^\s]+)", replay).group("url")
 
-    rep = evalu(url)
+    p1, p2, p1m, p2m = evalu(url)
 
-    if not rep:
-        return None
+    members = db["registered"]
 
-    team = rep[0]
-    winner = rep[1]
+    with open("SpookyMons.txt", "r") as bd:
+        valid = bd.read()
 
-    tmlst = list(team.keys())
-    pl1 = tmlst[0]
-    pl2 = tmlst[1]
-    # p1 = team[pl1]
-    # p2 = team[pl2]
+    valid = valid.split("\n")
 
-    # register = db["register"]
-    sdid = db["sdid"]
-
-    try:
-        mem1 = sdid[pl1]
-    except:
-        return "id", pl1
-
-    try:
-        mem2 = sdid[pl2]
-    except:
-        return "id", pl2
-
-    # pool1 = register[mem1]["pool"]
-    # pool2 = register[mem2]["pool"]
-
-    # for i in p1:
-    #     if i not in pool1:
-    #         return "pool", {i: mem1}
-
-    # for i in p2:
-    #     if i not in pool2:
-    #         return "pool", {i, mem2}
-    
-    if winner == pl1:
-        return mem1, mem2
-    elif winner == pl2:
-        return mem2, mem1
+    if p1 in members:
+        won = await self.client.fetch_user(int(members[p1]))
     else:
-        print("error")
+        return "error", f"{p1} is not registered."
+
+    if p2 in members:
+        lost = await self.client.fetch_user(int(members[p2]))
+    else:
+        return "error", f"{p2} is not registered."
+
+    p1in = []
+    p2in = []
+
+    for i in p1m:
+        if i not in valid:
+            p1in.append(i)
+
+    if p1in:
+        return "error", f"{p1} team is not valid consisting of {p1in}"
+
+    for i in p2m:
+        if i not in valid:
+            p2in.append(i)
+
+    if p2in:
+        return "error", f"{p2} team is not valid consisting of {p2in}"
+
+    if not p1:
+        return None
+    else:
+        return "log", f"{won.mention} won against {lost.mention}."
+
+
+def validate(user):
+    try:
+        r = requests.get(f"https://pokemonshowdown.com/users/{user}")
+
+    except Exception:
+        return False
+
+    soup = BeautifulSoup(r.content, features="html5lib")
+
+    try:
+        a = soup.find_all("div")[4]
+    except Exception:
+        return False
+
+    b = a.find("p").get_text()
+
+    if "(Unregistered)" in b:
+        return False
+    else:
+        return True
+
+
+def get_rmon(js):
+
+    mons = js.split("\n|poke|")
+    lastm = mons[-1].split("|\n|teampre")[0]
+    mons = mons[1:-1]
+
+    p1m = []
+    p2m = []
+
+    rm = ["|", "p1", "p2", ", M", ", F", ", L50", "-*"]
+    for i in mons:
+        if "p1" in i:
+            for r in rm:
+                i = i.replace(r, "")
+                # print(i)
+            p1m.append(i)
+
+        elif "p2" in i:
+            for r in rm:
+                i = i.replace(r, "")
+            p2m.append(i)
+
+    for r in rm:
+        lastm = lastm.replace(r, "")
+
+    p2m.append(lastm)
+
+    return p1m, p2m
+
+    # print(lastm[0])
+    # print(mons)
+
+    # mons = mons.append(lastm[0])
+    # print(mons)
 
 
 class Tour(commands.Cog):
@@ -169,330 +148,72 @@ class Tour(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-
         if message.author == self.client.user:
             return
 
-        if message.channel.id == 798035217423925319 or message.channel.id == 847509607185383494 or message.channel.id == 770846450896470049:
-
-            msg = won(message.content)
-            if msg:
-                if msg[0] == "pool":
-
-                    await message.add_reaction("❌")
-                    mon = list(msg[1].keys())[0]
-                    mem = await self.client.fetch_user(int(msg[1][mon]))
-                    await message.reply(f"{mon} not in pool of {mem}")
-
-                elif msg[0] == "id":
-
-                    await message.add_reaction("❌")
-                    await message.reply(f"PSD ID {msg[1]} is not registered.")
-
-                else:
-                    await message.add_reaction("✅")
-                    channel = self.client.get_channel(898820997501820958)
-                    mem1 = await self.client.fetch_user(int(msg[0]))
-                    mem2 = await self.client.fetch_user(int(msg[1]))
-
-                    await channel.send(f"{mem1.mention} won against {mem2.mention}.")
-
-
-        if message.channel.id == 861952254072586240 or message.channel.id == 847509607185383494 or message.channel.id == 770846450896470049:
-
-            author = message.author
-            if message.mentions:
-
-                mentions = message.mentions
-                if author not in mentions:
-                    return
-
-                msg = message.content
-
-                for i in mentions:
-                    msg = msg.replace(f"<@!{str(i.id)}>", "")
-                    msg = msg.replace(f"<@{str(i.id)}>", "")
-
-                id = validate(msg.replace(" ", ""))
-                # print(msg)
-
-                if not id:
-                    await message.reply("You need a registered PSD ID to register.")
-
-                else:
-
-                    members = db["register"]
-                    members[str(author.id)] = msg.replace(" ", "")
-                    db["register"] =  members
-                    await message.reply("You have been successfully registered.")
-            
-
-    # @commands.command(aliases=["r"])
-    # async def register(self, ctx, *, text):
-
-    #     if ctx.channel.id != 861952254072586240 and ctx.channel.id != 847509607185383494:
-    #         return
-
-    #     channel = self.client.get_channel(847509607185383494)
-    #     send = ctx.message.content
-
-    #     await ctx.message.delete()
-
-    #     text = text.replace(" ", "").lower().split(",")
-    #     sdid = text[0]
-    #     char = text[1]
-    #     pool = text[2:]
-
-    #     members = db["register"]
-    #     if str(ctx.author.id) in members:
-    #         return await ctx.send("You have already registered.")
-
-    #     val = validate(sdid)
-
-    #     if not val:
-    #         return await ctx.send("You need a registered PSD ID to register.")
-    #     # else:
-    #     #     await ctx.send("ID verificaion sucessfull.")
-
-    #     with open("characters.json", "r") as cdata:
-    #         data = json.load(cdata)
-
-    #     if char not in data:
-    #         return await ctx.send("The character you choosed is either not valid or misspelled.")
-
-    #     mons = data[char]["mons"].split(", ")
-
-    #     fpool = set()
-    #     for i in pool:
-    #         got = get_data(i)
-
-    #         if not got:
-    #             if i != "":
-    #                 return await ctx.send(f"{i} is not valid.")
-
-    #         fpool.add(got)
-
-    #     tier = data[char]["tier"]
-
-    #     if tier == "S":
-    #         tot = 6
-    #     elif tier == "A":
-    #         tot = 8
-    #     elif tier == "B":
-    #         tot = 10
-    #     else:
-    #         tot = 12
-
-    #     valid = set()
-
-    #     for i in mons:
-    #         for j in fpool:
-    #             if i == j:
-    #                 valid.add(j)
-
-    #     not_valid = list(set(fpool).difference(valid))
-    #     wrong = ", ".join(not_valid)
-
-    #     if len(fpool) != len(valid):
-    #         return await ctx.send(
-    #             f"{wrong} is/are not in the pool of {char.capitalize()}."
-    #         )
-        
-    #     if 6 > len(valid):
-    #         return await ctx.send("You need pool of atleast 6.")
-
-    #     if len(valid) > tot:
-    #         return await ctx.send(f"You cannot have more than {tot} Pokémon in a {tier} tier Character.")
-        
-    #     members[str(ctx.author.id)] = {"pool": list(valid), "character": char, "sdid": sdid}
-
-    #     db["register"] = members
-    #     getcr = db["characters"]
-    #     if char in getcr:
-    #         if getcr[char] == 3:
-    #             return await ctx.send("That character has already got it's maximum participants, choose another character.")
-    #         else:
-    #             mem = getcr[char]
-    #             getcr[char] = mem + 1
-    #     else:
-    #         getcr[char] = 1
-    #     db["characters"] = getcr
-
-    #     await ctx.send("Your details have been saved.")
-    #     await channel.send(send)
-
-    # @commands.command()
-    # async def replace(self, ctx, *, text):
-
-    #     if ctx.channel.id != 861952254072586240 and ctx.channel.id != 847509607185383494:
-    #         return
-
-    #     channel = self.client.get_channel(847509607185383494)
-    #     send = ctx.message.content
-
-    #     await ctx.message.delete()
-
-    #     text = text.replace(" ", "").lower().split(",")
-    #     sdid = text[0]
-    #     char = text[1]
-    #     pool = text[2:]
-
-    #     members = db["register"]
-    #     if str(ctx.author.id) not in members:
-    #         return await ctx.send("You have not registered yet.")
-
-    #     val = validate(sdid)
-
-    #     precr = members[str(ctx.author.id)]["character"]
-
-
-    #     if not val:
-    #         return await ctx.send("You need a registered PSD ID to register.")
-    #     # else:
-    #     #     await ctx.send("ID verificaion sucessfull.")
-
-    #     with open("characters.json", "r") as cdata:
-    #         data = json.load(cdata)
-
-    #     if char not in data:
-    #         return await ctx.send("The character you choosed is either not valid or misspelled.")
-
-    #     mons = data[char]["mons"].split(", ")
-
-    #     fpool = set()
-    #     for i in pool:
-    #         got = get_data(i)
-
-    #         if not got:
-    #             if i != "":
-    #                 return await ctx.send(f"{i} is not valid.")
-
-    #         fpool.add(got)
-
-    #     tier = data[char]["tier"]
-
-    #     if tier == "S":
-    #         tot = 6
-    #     elif tier == "A":
-    #         tot = 8
-    #     elif tier == "B":
-    #         tot = 10
-    #     else:
-    #         tot = 12
-
-    #     valid = set()
-
-    #     for i in mons:
-    #         for j in fpool:
-    #             if i == j:
-    #                 valid.add(j)
-
-    #     not_valid = list(set(fpool).difference(valid))
-    #     wrong = ", ".join(not_valid)
-
-    #     if len(fpool) != len(valid):
-    #         return await ctx.send(
-    #             f"{wrong} is/are not in the pool of {char.capitalize()}."
-    #         )
-        
-    #     if 6 > len(valid):
-    #         return await ctx.send("You need pool of atleast 6.")
-
-    #     if len(valid) > tot:
-    #         return await ctx.send(f"You cannot have more than {tot} Pokémon in a {tier} tier Character.")
-        
-    #     members[str(ctx.author.id)] = {"pool": list(valid), "character": char, "sdid": sdid}
-
-    #     db["register"] = members
-    #     getcr = db["characters"]
-    #     if char in getcr:
-    #         if getcr[char] == 3:
-    #             return await ctx.send("That character has already got it's maximum participants, choose another character.")
-    #         else:
-    #             mem = getcr[char]
-    #             getcr[char] = mem + 1
-    #     else:
-    #         getcr[char] = 1
-
-    #     _1 = getcr[precr]
-    #     getcr[precr] = _1 - 1
-
-    #     db["characters"] = getcr
-
-    #     await ctx.send("Your details have been saved.")
-    #     await channel.send(send)
-
-
-    # @commands.command(aliases=["pl", "pokemon"])
-    # async def pool(self, ctx, *, member: discord.Member = None):
-
-    #     if not member:
-    #         member = ctx.author
-
-    #     data = db["register"]
-
-    #     if str(member.id) not in data:
-    #         return await ctx.send(f"{member} is not registered.")
-
-    #     registered = data[str(member.id)]["pool"]
-    #     registered_str = ""
-
-    #     with open("data/pokedex.json", "r") as load:
-    #         dex = json.load(load)
-
-    #     for i in registered:
-    #         mon = dex["Pokedex"][i]["name"]
-    #         registered_str += mon + "\n"
-
-    #     em = discord.Embed(title=f"{member}'s Pool:",
-    #                         colour=discord.Colour.orange())   
-
-    #     em.set_thumbnail(url=member.avatar_url)
-    #     em.add_field(name="Character:", value=data[str(member.id)]["character"].capitalize())
-    #     em.add_field(name="PSD ID:", value=data[str(member.id)]["sdid"])
-    #     em.add_field(name="Pool:", value=registered_str, inline=False)
-        
-    #     await ctx.send(embed=em)
-
-    @commands.command()
-    async def participants(self, ctx):
-        register = db["register"]
-
-        desc = ""
-        count = 0
-
-        for i in register:
-            try:
-                mem = await ctx.guild.fetch_member(int(i))
-                desc += f"{mem.mention}\n"
-                # desc += f"{mem.mention} - {register[i]['character'].capitalize()}\n"
-                count += 1
-            except:
+        if message.channel.id in [991682121791983676, 847509607185383494, 992846848282857615]:
+
+            logCh = await self.client.fetch_channel(898820997501820958)
+
+            got = await won(message.content, self)
+            if got and len(got) > 1:
+                log, msg = got
+            else:
+                return
+
+            if log == "error":
+                await message.channel.send(msg)
+            elif log == "log":
+                await logCh.send(msg)
+            else:
                 pass
 
-        em = discord.Embed(title="Ant Tour Participants:", description=desc, colour=discord.Colour.orange())
+    @commands.hybrid_command(name="register", description="Register yourself for the Spooky Cup")
+    async def register(self, ctx, showdown_id: str):
 
-        em.add_field(name="Total Participants:", value=count)
+        if ctx.channel.id not in [861952254072586240, 847509607185383494]:
+            return await ctx.send("Use it in <#861952254072586240>.", ephemeral=True)
 
-        await ctx.send(embed=em)
-        
+        sdid = showdown_id.lower()
 
-    @commands.command()
-    @commands.is_owner()
-    async def formid(self, ctx):
+        members = db["registered"]
 
-        ids = {}
-        register = db["register"]
-        for i in register:
-            sdid = register[i].translate(str.maketrans('', '', string.punctuation)).lower()
-            sdid = sdid.replace(" ", "")
-            register[i] = sdid
-            ids[sdid] = i
+        if str(ctx.author.id) in members.values():
+            return await ctx.reply("You have already registered, contact a mod if you want to change your Showdown ID.")
+        if sdid in members:
+            return await ctx.reply("There is already a registered user with this ID.")
 
-        db['sdid'] = ids
+        val = validate(sdid)
 
-        await ctx.send(ids)
+        if not val:
+            return await ctx.reply("You need a registered PSD ID to register.")
+
+        members[sdid] = str(ctx.author.id)
+
+        await ctx.reply("You are successfully registered for the Spooky Cup.")
+        role = ctx.guild.get_role(856351985519165450)
+        await ctx.author.add_roles(role)
+
+    @commands.hybrid_command(name="participants", description="See the participants of Spooky Cup")
+    async def participants(self, ctx):
+
+        members = db["registered"]
+
+        des = ""
+
+        tot = 0
+
+        for i in members.values():
+            mem = await ctx.guild.fetch_member(i)
+            des += f"{mem.mention}\n"
+            tot += 1
+
+        em = discord.Embed(title="Spooky Cup Participants", description=des, color=discord.Color.orange())
+
+        em.set_footer(text=f"Total Participants: {tot}")
+
+        await ctx.reply(embed=em)
 
 
-def setup(client):
-    client.add_cog(Tour(client))
+async def setup(client):
+    await client.add_cog(Tour(client), guilds=[discord.Object(id=676777139776913408)])
